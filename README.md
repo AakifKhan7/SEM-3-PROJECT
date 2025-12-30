@@ -25,8 +25,8 @@ This project automatically collects product data from various e-commerce website
 
 ## Documentation
 
-- **[System Architecture](SYSTEM_ARCHITECTURE.md)** - Complete system design, database schema, API specifications, and technical architecture
-- **[Development Guide](DEVELOPMENT_GUIDE.md)** - Step-by-step development guide for a team of 3, including task distribution and timeline
+- **[System Architecture](./docs/SYSTEM_ARCHITECTURE.md)** - Complete system design, database schema, API specifications, and technical architecture
+- **[Development Guide](./docs/DEVELOPMENT_GUIDE.md)** - Step-by-step development guide for a team of 3, including task distribution and timeline
 
 ## Quick Start
 
@@ -64,4 +64,4 @@ This project automatically collects product data from various e-commerce website
 
 ## Project Status
 
-🚧 **In Development** - See [Development Guide](DEVELOPMENT_GUIDE.md) for current phase and tasks.
+🚧 **In Development** - See [Development Guide](./docs/DEVELOPMENT_GUIDE.md) for current phase and tasks.
