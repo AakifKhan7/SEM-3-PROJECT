@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.database import get_db, init_db
+from app.models import User, UserAuth, UserRole
 
 app = FastAPI(
     title="Product Comparison API",
@@ -7,7 +9,10 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS middleware
+@app.on_event("startup")
+async def startup_event():
+    init_db()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
