@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.database import get_db, init_db
+from app.database import init_db
 from app.models import User, UserAuth, UserRole
+from app.api import auth
 
 app = FastAPI(
     title="Product Comparison API",
@@ -20,6 +21,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(auth.router)
 
 @app.get("/")
 async def root():
