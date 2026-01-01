@@ -12,4 +12,5 @@ class User(BaseModel):
     
     auth = relationship("UserAuth", back_populates="user", uselist=False)
     roles = relationship("UserRole", back_populates="user")
+    auth_activity = relationship("AuthActivity", back_populates="user")
 
