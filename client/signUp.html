@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="overflow-hidden">
@@ -34,16 +34,19 @@
                     <div class="card shadow-lg p-4 bg-dark bg-opacity-75 text-white">
                         <form action="#" method="post">
                             <fieldset>
-                                <legend class="leg">Sign In Details</legend>
+                                <legend class="leg">Sign Up Details</legend>
                                 <label for="username" class="leg">UserName : </label>
                                 <input type="text" name="username" id="username" required><br><br>
+                                <label for="email" class="leg">Email : </label><br>
+                                <input type="email" name="email" id="email" required><br><br>
+                                <label for="phone" class="leg">Phone Number : </label><br>
+                                <input type="tel" name="phone" id="phone" required><br><br>
                                 <label for="pass" class="leg">Password :  </label>
                                 <input type="password" name="password" id="password" required><br><br>
+                                <label for="confirmPassword" class="leg">Confirm Password :  </label>
+                                <input type="password" name="confirmPassword" id="confirmPassword" required><br><br>
                                 <input type="checkbox" name="rememberMe"> Remember Password   <br><br>      
-                                Not a member? <a href="signUp.html" class="text-info">Sign Up</a>
-                                
-                                <br><br>
-                                <input type="submit" value="Sign In" class="leg">
+                                <input type="submit" value="Sign Up" class="leg">
                             </fieldset>
                         </form>
                     </div>
@@ -54,5 +57,4 @@
 </div>
 
 </body>
-
 </html>
