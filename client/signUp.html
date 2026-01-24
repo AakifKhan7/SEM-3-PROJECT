@@ -3,58 +3,699 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Sign Up - Create Account</title>
+    
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: bgMove 20s linear infinite;
+        }
+
+        @keyframes bgMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Floating Shapes */
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape1 {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape2 {
+            width: 120px;
+            height: 120px;
+            top: 70%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .shape3 {
+            width: 60px;
+            height: 60px;
+            bottom: 10%;
+            left: 30%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* Main Container */
+        .signup-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 480px;
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Header */
+        .signup-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .signup-header h2 {
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .signup-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        /* Form Styles */
+        .form-floating-custom {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .form-control-custom {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px 16px 12px 45px;
+            color: white;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            width: 100%;
+            height: 50px;
+        }
+
+        .form-control-custom::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-control-custom:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1rem;
+            z-index: 1;
+        }
+
+        /* Checkbox */
+        .form-check-custom {
+            margin-bottom: 25px;
+        }
+
+        .form-check-input-custom {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-check-input-custom:checked {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-check-label-custom {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.2) 100%);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Divider */
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .divider span {
+            background: var(--glass-bg);
+            padding: 0 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Social Login */
+        .social-login {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Sign In Link */
+        .signin-link {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+
+        .signin-link a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .signin-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Error Message */
+        .error-message {
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            color: #ffcdd2;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        /* Success Message */
+        .success-message {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            color: #c8e6c9;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 576px) {
+            .glass-card {
+                padding: 30px 20px;
+            }
+
+            .signup-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .social-login {
+                flex-direction: column;
+            }
+        }
+
+        /* Country Code Select */
+        .country-code-select {
+            position: absolute;
+            left: 45px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.85rem;
+            padding: 5px 8px;
+            cursor: pointer;
+            z-index: 2;
+            min-width: 80px;
+        }
+
+        .country-code-select option {
+            background: #333;
+            color: white;
+        }
+
+        .phone-input {
+            padding-left: 140px !important;
+        }
+
+        /* Loading State */
+        .btn-submit.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .btn-submit.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            margin: auto;
+            border: 2px solid transparent;
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
-<body class="overflow-hidden">
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation"></div>
+    
+    <!-- Floating Shapes -->
+    <div class="floating-shape shape1"></div>
+    <div class="floating-shape shape2"></div>
+    <div class="floating-shape shape3"></div>
 
-<!-- Background Slider -->
-<div id="bgCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img src="images/img1.webp" class="d-block w-100 vh-100">
-        </div>
-        <div class="carousel-item">
-            <img src="images/img2.webp" class="d-block w-100 vh-100">
-        </div>
-        <div class="carousel-item">
-            <img src="images/img3.webp" class="d-block w-100 vh-100">
-        </div>
-    </div>
-</div>
+    <!-- Main Container -->
+    <div class="signup-container">
+        <div class="glass-card">
+            <!-- Header -->
+            <div class="signup-header">
+                <h2>Create Account</h2>
+                <p>Join us today and get started</p>
+            </div>
 
-<!-- Centered Form -->
-<div class="form-overlay">
-    <div class="position-absolute top-50 start-50 translate-middle w-100">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-4">
-                    <div class="card shadow-lg p-4 bg-dark bg-opacity-75 text-white">
-                        <form action="#" method="post">
-                            <fieldset>
-                                <legend class="leg">Sign Up Details</legend>
-                                <label for="username" class="leg">UserName : </label><br>
-                                <input type="text" name="username" id="username" required><br><br>
-                                <label for="email" class="leg">Email : </label><br>
-                                <input type="email" name="email" id="email" required><br><br>
-                                <label for="phone" class="leg">Phone Number : </label><br>
-                                <input type="tel" name="phone" id="phone" required><br><br>
-                                <label for="pass" class="leg">Password :  </label><br>
-                                <input type="password" name="password" id="password" required><br><br>
-                                <label for="confirmPassword" class="leg">Confirm Password :  </label><br>
-                                <input type="password" name="confirmPassword" id="confirmPassword" required><br><br>
-                                <input type="checkbox" name="rememberMe"> Remember Password   <br><br>      
-                                <input type="submit" value="Sign Up" class="leg">
-                            </fieldset>
-                        </form>
-                    </div>
+            <!-- Error/Success Messages -->
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+
+            <!-- Signup Form -->
+            <form id="signupForm" method="post">
+                <!-- Username Field -->
+                <div class="form-floating-custom">
+                    <i class="bi bi-person input-icon"></i>
+                    <input type="text" 
+                           class="form-control-custom" 
+                           id="username" 
+                           name="username" 
+                           placeholder="Enter your username" 
+                           required>
                 </div>
+
+                <!-- Email Field -->
+                <div class="form-floating-custom">
+                    <i class="bi bi-envelope input-icon"></i>
+                    <input type="email" 
+                           class="form-control-custom" 
+                           id="email" 
+                           name="email" 
+                           placeholder="Enter your email" 
+                           required>
+                </div>
+
+                <!-- Phone Field -->
+                <div class="form-floating-custom">
+                    <i class="bi bi-phone input-icon"></i>
+                    <select class="country-code-select" id="countryCode" name="countryCode">
+                        <option value="+91">🇮🇳 +91</option>
+                        <option value="+1">🇺🇸 +1</option>
+                        <option value="+44">🇬🇧 +44</option>
+                        <option value="+61">🇦🇺 +61</option>
+                        <option value="+86">🇨🇳 +86</option>
+                        <option value="+81">🇯🇵 +81</option>
+                        <option value="+49">🇩🇪 +49</option>
+                        <option value="+33">🇫🇷 +33</option>
+                        <option value="+971">🇦🇪 +971</option>
+                        <option value="+65">🇸🇬 +65</option>
+                    </select>
+                    <input type="tel" 
+                           class="form-control-custom phone-input" 
+                           id="phone" 
+                           name="phone" 
+                           placeholder="Enter phone number" 
+                           required>
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-floating-custom">
+                    <i class="bi bi-lock input-icon"></i>
+                    <input type="password" 
+                           class="form-control-custom" 
+                           id="password" 
+                           name="password" 
+                           placeholder="Enter your password" 
+                           required>
+                </div>
+
+                <!-- Confirm Password Field -->
+                <div class="form-floating-custom">
+                    <i class="bi bi-lock-fill input-icon"></i>
+                    <input type="password" 
+                           class="form-control-custom" 
+                           id="confirmPassword" 
+                           name="confirmPassword" 
+                           placeholder="Confirm your password" 
+                           required>
+                </div>
+
+                <!-- Remember Me Checkbox -->
+                <div class="form-check-custom">
+                    <input type="checkbox" 
+                           class="form-check-input-custom" 
+                           id="rememberMe" 
+                           name="rememberMe">
+                    <label class="form-check-label-custom" for="rememberMe">
+                        Remember me on this device
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    Sign Up
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
+            <!-- Social Login -->
+            <div class="social-login">
+                <a href="#" class="social-btn">
+                    <i class="bi bi-google"></i>
+                    Google
+                </a>
+                <a href="#" class="social-btn">
+                    <i class="bi bi-facebook"></i>
+                    Facebook
+                </a>
+            </div>
+
+            <!-- Sign In Link -->
+            <div class="signin-link">
+                Already have an account? <a href="login.html">Sign In</a>
             </div>
         </div>
     </div>
-</div>
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('signupForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+
+            // Form validation and submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Reset messages
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+                
+                // Validate passwords match
+                if (password.value !== confirmPassword.value) {
+                    showError('Passwords do not match!');
+                    return;
+                }
+                
+                // Validate password strength
+                if (password.value.length < 8) {
+                    showError('Password must be at least 8 characters long!');
+                    return;
+                }
+                
+                // Show loading state
+                submitBtn.classList.add('loading');
+                submitBtn.textContent = '';
+                
+                // Simulate API call
+                setTimeout(function() {
+                    submitBtn.classList.remove('loading');
+                    submitBtn.textContent = 'Sign Up';
+                    
+                    // Show success message
+                    showSuccess('Account created successfully! Redirecting...');
+                    
+                    // Reset form
+                    form.reset();
+                    
+                    // Redirect after 2 seconds
+                    setTimeout(function() {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                }, 2000);
+            });
+
+            // Real-time password validation
+            confirmPassword.addEventListener('input', function() {
+                if (this.value && password.value !== this.value) {
+                    this.style.borderColor = 'rgba(244, 67, 54, 0.5)';
+                } else if (this.value && password.value === this.value) {
+                    this.style.borderColor = 'rgba(76, 175, 80, 0.5)';
+                } else {
+                    this.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                }
+            });
+
+            // Phone number validation
+            const phoneInput = document.getElementById('phone');
+            const countryCodeSelect = document.getElementById('countryCode');
+            
+            phoneInput.addEventListener('input', function() {
+                // Remove non-numeric characters
+                this.value = this.value.replace(/[^0-9]/g, '');
+                
+                // Validate phone number length based on country
+                const countryCode = countryCodeSelect.value;
+                const phoneNumber = this.value;
+                let isValidLength = false;
+                
+                switch(countryCode) {
+                    case '+91': // India - 10 digits
+                        isValidLength = phoneNumber.length === 10;
+                        break;
+                    case '+1': // USA - 10 digits
+                        isValidLength = phoneNumber.length === 10;
+                        break;
+                    case '+44': // UK - 10-11 digits
+                        isValidLength = phoneNumber.length >= 10 && phoneNumber.length <= 11;
+                        break;
+                    case '+61': // Australia - 9 digits
+                        isValidLength = phoneNumber.length === 9;
+                        break;
+                    case '+86': // China - 11 digits
+                        isValidLength = phoneNumber.length === 11;
+                        break;
+                    case '+81': // Japan - 10-11 digits
+                        isValidLength = phoneNumber.length >= 10 && phoneNumber.length <= 11;
+                        break;
+                    case '+49': // Germany - 10-11 digits
+                        isValidLength = phoneNumber.length >= 10 && phoneNumber.length <= 11;
+                        break;
+                    case '+33': // France - 9 digits
+                        isValidLength = phoneNumber.length === 9;
+                        break;
+                    case '+971': // UAE - 8-9 digits
+                        isValidLength = phoneNumber.length >= 8 && phoneNumber.length <= 9;
+                        break;
+                    case '+65': // Singapore - 8 digits
+                        isValidLength = phoneNumber.length === 8;
+                        break;
+                    default:
+                        isValidLength = phoneNumber.length >= 8 && phoneNumber.length <= 15;
+                }
+                
+                // Visual feedback for phone validation
+                if (phoneNumber.length > 0) {
+                    if (isValidLength) {
+                        this.style.borderColor = 'rgba(76, 175, 80, 0.5)';
+                    } else {
+                        this.style.borderColor = 'rgba(244, 67, 54, 0.5)';
+                    }
+                } else {
+                    this.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                }
+            });
+            
+            // Update phone validation when country changes
+            countryCodeSelect.addEventListener('change', function() {
+                // Trigger phone input validation to check new country requirements
+                phoneInput.dispatchEvent(new Event('input'));
+            });
+
+            // Helper functions
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 5000);
+            }
+
+            function showSuccess(message) {
+                successMessage.textContent = message;
+                successMessage.style.display = 'block';
+            }
+
+            // Social login handlers
+            document.querySelectorAll('.social-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showError('Social login coming soon!');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
