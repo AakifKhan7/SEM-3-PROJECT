@@ -1337,7 +1337,7 @@
                         </div>
                     `;
                 } else {
-                    dealsList.innerHTML = deals.map(deal => `
+                    dealsList.innerHTML = deals.map((deal, index) => `
                         <div class="col-md-4 mb-4">
                             <div class="deal-card bg-glass border border-light rounded p-3 h-100">
                                 <div class="text-center mb-3">
@@ -1353,9 +1353,14 @@
                                     <small class="text-muted text-decoration-line-through">${deal.originalPrice}</small>
                                     <span class="badge bg-danger ms-2">${deal.discount}</span>
                                 </div>
-                                <a href="${deal.dealUrl}" class="btn btn-primary btn-sm w-100" target="_blank">
-                                    <i class="bi bi-cart"></i> View Deal
-                                </a>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-info btn-sm" onclick="openProductDetails('${deal.title}', '${deal.retailer}', '${deal.price}', '${deal.originalPrice}', '${deal.discount}', '${deal.rating}', '${deal.imageUrl}')">
+                                        <i class="bi bi-info-circle"></i> View Details
+                                    </button>
+                                    <a href="${deal.dealUrl}" class="btn btn-primary btn-sm" target="_blank">
+                                        <i class="bi bi-cart"></i> View Deal
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     `).join('');
@@ -1390,6 +1395,29 @@
                     block: 'start'
                 });
             }
+        }
+
+        // Function to open product details in new tab
+        function openProductDetails(title, retailer, price, originalPrice, discount, rating, imageUrl) {
+            // Create product data object
+            const productData = {
+                title: title,
+                retailer: retailer,
+                price: price,
+                originalPrice: originalPrice,
+                discount: discount,
+                rating: parseFloat(rating),
+                image: imageUrl,
+                name: title.split(' - ')[0], // Extract product name
+                reviews: Math.floor(Math.random() * 1000) + 100 // Random review count
+            };
+
+            // Store product data in localStorage for the details page to retrieve
+            localStorage.setItem('selectedProduct', JSON.stringify(productData));
+
+            // Open product details page in new tab
+            const productDetailsUrl = `productDetails.html?name=${encodeURIComponent(productData.name)}&id=${productData.name.toLowerCase().replace(/\s+/g, '-')}`;
+            window.open(productDetailsUrl, '_blank');
         }
     </script>
 </body>

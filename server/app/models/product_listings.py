@@ -35,3 +35,5 @@ class ProductListing(BaseModel):
     product = relationship("Product", back_populates="listings")
     platform = relationship("Platform")
     price_history = relationship("PriceHistory", back_populates="listing")
+
+    availability_status = Column(String(50), nullable=True)
