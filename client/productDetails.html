@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - Tech Deals Finder</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533483, #c06c84);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 50% 25%; }
+            50% { background-position: 100% 50%; }
+            75% { background-position: 50% 75%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Glass Card Effect */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Header */
+        .header-section {
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .header-title {
+            color: white;
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+        }
+
+        .breadcrumb-item {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .breadcrumb-item.active {
+            color: white;
+        }
+
+        .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb-item a:hover {
+            color: white;
+        }
+
+        /* Product Image Section */
+        .product-image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .product-main-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        .image-gallery {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .thumbnail:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        /* Product Info */
+        .product-title {
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .stars {
+            color: #ffc107;
+        }
+
+        .rating-text {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .price-section {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .current-price {
+            color: #4caf50;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .original-price {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.5rem;
+            text-decoration: line-through;
+            margin-left: 1rem;
+        }
+
+        .discount-badge {
+            background: #f44336;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            display: inline-block;
+            margin-left: 1rem;
+        }
+
+        /* Product Features */
+        .features-section {
+            margin-bottom: 2rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            color: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-list li i {
+            color: #4caf50;
+            margin-right: 10px;
+        }
+
+        /* Specifications */
+        .specs-table {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .specs-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .specs-table th,
+        .specs-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .specs-table th {
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+            width: 40%;
+        }
+
+        .specs-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Retailer Cards */
+        .retailer-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .retailer-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .retailer-name {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .retailer-price {
+            color: #4caf50;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .retailer-stock {
+            color: #4caf50;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .retailer-stock.out-of-stock {
+            color: #f44336;
+        }
+
+        .btn-buy {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        /* Loading State */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 2rem;
+            }
+            
+            .product-title {
+                font-size: 1.5rem;
+            }
+            
+            .current-price {
+                font-size: 2rem;
+            }
+            
+            .original-price {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <section class="header-section">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="#" onclick="history.back()">Search Results</a></li>
+                    <li class="breadcrumb-item active" id="breadcrumbProductName">Product Details</li>
+                </ol>
+            </nav>
+            <h1 class="header-title" id="productPageTitle">Loading Product Details...</h1>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container mb-5">
+        <div class="row">
+            <!-- Product Image Section -->
+            <div class="col-lg-6 mb-4">
+                <div class="glass-card p-4">
+                    <div class="product-image-container">
+                        <img id="productMainImage" src="https://via.placeholder.com/400x400?text=Product+Image" alt="Product" class="product-main-image">
+                    </div>
+                    <div class="image-gallery" id="imageGallery">
+                        <!-- Thumbnails will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Info Section -->
+            <div class="col-lg-6 mb-4">
+                <div class="glass-card p-4">
+                    <h2 class="product-title" id="productTitle">Product Name</h2>
+                    
+                    <div class="product-rating">
+                        <div class="stars" id="productRating">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-half"></i>
+                        </div>
+                        <span class="rating-text" id="ratingText">4.5 out of 5 (234 reviews)</span>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="d-flex align-items-center flex-wrap">
+                            <span class="current-price" id="currentPrice">$999</span>
+                            <span class="original-price" id="originalPrice">$1,299</span>
+                            <span class="discount-badge" id="discountBadge">23% OFF</span>
+                        </div>
+                        <p class="text-white mb-0 mt-2">
+                            <i class="bi bi-tag-fill text-success"></i>
+                            Best price available across all retailers
+                        </p>
+                    </div>
+
+                    <div class="features-section">
+                        <h4 class="text-white mb-3">Key Features</h4>
+                        <ul class="feature-list" id="featuresList">
+                            <li><i class="bi bi-check-circle-fill"></i> High-quality display with vibrant colors</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Powerful processor for smooth performance</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Advanced camera system</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Long-lasting battery life</li>
+                            <li><i class="bi bi-check-circle-fill"></i> Premium build quality</li>
+                        </ul>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-lg btn-buy" onclick="scrollToRetailers()">
+                            <i class="bi bi-shopping-cart"></i> View All Deals
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Specifications Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="glass-card p-4">
+                    <h3 class="text-white mb-4">Technical Specifications</h3>
+                    <div class="specs-table">
+                        <table id="specsTable">
+                            <tbody>
+                                <tr>
+                                    <th>Display</th>
+                                    <td id="specDisplay">6.7-inch Super Retina XDR</td>
+                                </tr>
+                                <tr>
+                                    <th>Processor</th>
+                                    <td id="specProcessor">A17 Pro chip</td>
+                                </tr>
+                                <tr>
+                                    <th>Storage</th>
+                                    <td id="specStorage">128GB / 256GB / 512GB / 1TB</td>
+                                </tr>
+                                <tr>
+                                    <th>Camera</th>
+                                    <td id="specCamera">48MP Main + 12MP Ultra Wide + 12MP Telephoto</td>
+                                </tr>
+                                <tr>
+                                    <th>Battery</th>
+                                    <td id="specBattery">All-day battery life</td>
+                                </tr>
+                                <tr>
+                                    <th>Connectivity</th>
+                                    <td id="specConnectivity">5G, Wi-Fi 6E, Bluetooth 5.3</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Retailer Deals Section -->
+        <div class="row" id="retailersSection">
+            <div class="col-12">
+                <div class="glass-card p-4">
+                    <h3 class="text-white mb-4">
+                        <i class="bi bi-shop"></i> Available Deals from Retailers
+                    </h3>
+                    <div id="retailersList">
+                        <div class="loading-spinner">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    
+    <script>
+        // Product data structure
+        let productData = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProductDetails();
+        });
+
+        function loadProductDetails() {
+            // Get product data from URL parameters or localStorage
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            const productName = urlParams.get('name');
+            
+            // Try to get product data from localStorage first
+            const storedProduct = localStorage.getItem('selectedProduct');
+            if (storedProduct) {
+                productData = JSON.parse(storedProduct);
+                localStorage.removeItem('selectedProduct'); // Clean up
+            } else if (productId || productName) {
+                // Load product based on URL parameters
+                loadProductByIdentifier(productId || productName);
+            } else {
+                // Show sample product for demo
+                loadSampleProduct();
+            }
+        }
+
+        function loadProductByIdentifier(identifier) {
+            // This would normally make an API call to fetch product details
+            // For demo purposes, we'll use mock data
+            const mockProducts = {
+                'iphone': getiPhoneData(),
+                'samsung': getSamsungData(),
+                'macbook': getMacBookData(),
+                'ipad': getiPadData()
+            };
+            
+            const productKey = identifier.toLowerCase();
+            productData = mockProducts[productKey] || getSampleProduct();
+            
+            displayProductDetails();
+        }
+
+        function loadSampleProduct() {
+            productData = getSampleProduct();
+            displayProductDetails();
+        }
+
+        function getSampleProduct() {
+            return {
+                id: 'sample-product',
+                name: 'Premium Smartphone',
+                title: 'Premium Smartphone - Latest Model',
+                price: '$899',
+                originalPrice: '$1,199',
+                discount: '25% OFF',
+                rating: 4.5,
+                reviews: 234,
+                image: 'https://via.placeholder.com/400x400?text=Premium+Smartphone',
+                images: [
+                    'https://via.placeholder.com/400x400?text=Premium+Smartphone',
+                    'https://via.placeholder.com/400x400?text=Side+View',
+                    'https://via.placeholder.com/400x400?text=Back+View'
+                ],
+                features: [
+                    'High-quality display with vibrant colors',
+                    'Powerful processor for smooth performance',
+                    'Advanced camera system',
+                    'Long-lasting battery life',
+                    'Premium build quality'
+                ],
+                specifications: {
+                    display: '6.7-inch Super Retina XDR',
+                    processor: 'Latest flagship processor',
+                    storage: '128GB / 256GB / 512GB',
+                    camera: '48MP Main + 12MP Ultra Wide',
+                    battery: 'All-day battery life',
+                    connectivity: '5G, Wi-Fi 6E, Bluetooth 5.3'
+                },
+                retailers: [
+                    {
+                        name: 'TechStore',
+                        price: '$899',
+                        originalPrice: '$1,199',
+                        discount: '25% OFF',
+                        stock: 'In Stock',
+                        url: '#',
+                        rating: 4.7
+                    },
+                    {
+                        name: 'ElectroHub',
+                        price: '$929',
+                        originalPrice: '$1,199',
+                        discount: '23% OFF',
+                        stock: 'Limited Stock',
+                        url: '#',
+                        rating: 4.5
+                    }
+                ]
+            };
+        }
+
+        function getiPhoneData() {
+            return {
+                id: 'iphone-15-pro',
+                name: 'iPhone 15 Pro',
+                title: 'iPhone 15 Pro Max - Latest Model',
+                price: '$1,199',
+                originalPrice: '$1,399',
+                discount: '14% OFF',
+                rating: 4.8,
+                reviews: 1250,
+                image: 'https://via.placeholder.com/400x400?text=iPhone+15+Pro',
+                images: [
+                    'https://via.placeholder.com/400x400?text=iPhone+15+Pro',
+                    'https://via.placeholder.com/400x400?text=iPhone+15+Pro+Side',
+                    'https://via.placeholder.com/400x400?text=iPhone+15+Pro+Back'
+                ],
+                features: [
+                    'A17 Pro chip with 6-core CPU',
+                    'Pro camera system with 3x zoom',
+                    'Titanium design',
+                    'ProMotion display with 120Hz',
+                    'USB-C connectivity'
+                ],
+                specifications: {
+                    display: '6.7-inch Super Retina XDR with ProMotion',
+                    processor: 'A17 Pro chip with 6-core CPU',
+                    storage: '256GB / 512GB / 1TB',
+                    camera: '48MP Main + 12MP Ultra Wide + 12MP Telephoto',
+                    battery: 'Up to 29 hours video playback',
+                    connectivity: '5G, Wi-Fi 6E, Bluetooth 5.3, USB-C'
+                },
+                retailers: [
+                    {
+                        name: 'Apple Store',
+                        price: '$1,199',
+                        originalPrice: '$1,399',
+                        discount: '14% OFF',
+                        stock: 'In Stock',
+                        url: 'https://apple.com',
+                        rating: 4.9
+                    },
+                    {
+                        name: 'Amazon',
+                        price: '$1,149',
+                        originalPrice: '$1,399',
+                        discount: '18% OFF',
+                        stock: 'In Stock',
+                        url: 'https://amazon.com',
+                        rating: 4.7
+                    },
+                    {
+                        name: 'Best Buy',
+                        price: '$1,179',
+                        originalPrice: '$1,399',
+                        discount: '16% OFF',
+                        stock: 'Limited Stock',
+                        url: 'https://bestbuy.com',
+                        rating: 4.6
+                    }
+                ]
+            };
+        }
+
+        function getSamsungData() {
+            return {
+                id: 'samsung-s24-ultra',
+                name: 'Samsung Galaxy S24 Ultra',
+                title: 'Samsung Galaxy S24 Ultra - Just Launched',
+                price: '$1,299',
+                originalPrice: '$1,499',
+                discount: '13% OFF',
+                rating: 4.9,
+                reviews: 890,
+                image: 'https://via.placeholder.com/400x400?text=Galaxy+S24+Ultra',
+                images: [
+                    'https://via.placeholder.com/400x400?text=Galaxy+S24+Ultra',
+                    'https://via.placeholder.com/400x400?text=Galaxy+S24+Ultra+Side',
+                    'https://via.placeholder.com/400x400?text=Galaxy+S24+Ultra+Back'
+                ],
+                features: [
+                    'S Pen included',
+                    '200MP main camera',
+                    '6.8-inch Dynamic AMOLED 2X',
+                    'Snapdragon 8 Gen 3 processor',
+                    '5000mAh battery'
+                ],
+                specifications: {
+                    display: '6.8-inch Dynamic AMOLED 2X, 120Hz',
+                    processor: 'Snapdragon 8 Gen 3 for Galaxy',
+                    storage: '256GB / 512GB / 1TB + microSD',
+                    camera: '200MP Main + 12MP Ultra Wide + 50MP Telephoto + 10MP Telephoto',
+                    battery: '5000mAh with 45W fast charging',
+                    connectivity: '5G, Wi-Fi 7, Bluetooth 5.3, USB-C'
+                },
+                retailers: [
+                    {
+                        name: 'Samsung',
+                        price: '$1,299',
+                        originalPrice: '$1,499',
+                        discount: '13% OFF',
+                        stock: 'In Stock',
+                        url: 'https://samsung.com',
+                        rating: 4.8
+                    },
+                    {
+                        name: 'Best Buy',
+                        price: '$1,249',
+                        originalPrice: '$1,499',
+                        discount: '17% OFF',
+                        stock: 'In Stock',
+                        url: 'https://bestbuy.com',
+                        rating: 4.7
+                    }
+                ]
+            };
+        }
+
+        function getMacBookData() {
+            return {
+                id: 'macbook-pro',
+                name: 'MacBook Pro',
+                title: 'MacBook Pro 14-inch - M3 Pro',
+                price: '$1,999',
+                originalPrice: '$2,199',
+                discount: '9% OFF',
+                rating: 4.8,
+                reviews: 567,
+                image: 'https://via.placeholder.com/400x400?text=MacBook+Pro',
+                images: [
+                    'https://via.placeholder.com/400x400?text=MacBook+Pro',
+                    'https://via.placeholder.com/400x400?text=MacBook+Pro+Open',
+                    'https://via.placeholder.com/400x400?text=MacBook+Pro+Side'
+                ],
+                features: [
+                    'M3 Pro chip',
+                    '14.2-inch Liquid Retina XDR display',
+                    'Up to 18 hours battery life',
+                    'Magic Keyboard with Touch ID',
+                    'Advanced camera and audio system'
+                ],
+                specifications: {
+                    display: '14.2-inch Liquid Retina XDR, 120Hz ProMotion',
+                    processor: 'Apple M3 Pro chip (11-core CPU, 14-core GPU)',
+                    storage: '512GB / 1TB / 2TB / 4TB SSD',
+                    camera: '1080p FaceTime HD camera',
+                    battery: 'Up to 18 hours battery life',
+                    connectivity: 'Wi-Fi 6E, Bluetooth 5.3, 3 Thunderbolt 4 ports'
+                },
+                retailers: [
+                    {
+                        name: 'Apple Store',
+                        price: '$1,999',
+                        originalPrice: '$2,199',
+                        discount: '9% OFF',
+                        stock: 'In Stock',
+                        url: 'https://apple.com',
+                        rating: 4.9
+                    },
+                    {
+                        name: 'Amazon',
+                        price: '$1,899',
+                        originalPrice: '$2,199',
+                        discount: '14% OFF',
+                        stock: 'In Stock',
+                        url: 'https://amazon.com',
+                        rating: 4.7
+                    }
+                ]
+            };
+        }
+
+        function getiPadData() {
+            return {
+                id: 'ipad-pro',
+                name: 'iPad Pro',
+                title: 'iPad Pro 12.9-inch - M2 Chip',
+                price: '$1,099',
+                originalPrice: '$1,299',
+                discount: '15% OFF',
+                rating: 4.7,
+                reviews: 445,
+                image: 'https://via.placeholder.com/400x400?text=iPad+Pro',
+                images: [
+                    'https://via.placeholder.com/400x400?text=iPad+Pro',
+                    'https://via.placeholder.com/400x400?text=iPad+Pro+Side',
+                    'https://via.placeholder.com/400x400?text=iPad+Pro+Back'
+                ],
+                features: [
+                    'M2 chip',
+                    '12.9-inch Liquid Retina XDR display',
+                    'ProMotion technology',
+                    'Face ID',
+                    'Support for Apple Pencil and Magic Keyboard'
+                ],
+                specifications: {
+                    display: '12.9-inch Liquid Retina XDR, ProMotion 120Hz',
+                    processor: 'Apple M2 chip',
+                    storage: '128GB / 256GB / 512GB / 1TB / 2TB',
+                    camera: '12MP Wide + 10MP Ultra Wide',
+                    battery: 'Up to 10 hours battery life',
+                    connectivity: 'Wi-Fi 6E, Bluetooth 5.3, USB-C, Thunderbolt'
+                },
+                retailers: [
+                    {
+                        name: 'Apple Store',
+                        price: '$1,099',
+                        originalPrice: '$1,299',
+                        discount: '15% OFF',
+                        stock: 'In Stock',
+                        url: 'https://apple.com',
+                        rating: 4.8
+                    },
+                    {
+                        name: 'Best Buy',
+                        price: '$1,049',
+                        originalPrice: '$1,299',
+                        discount: '19% OFF',
+                        stock: 'In Stock',
+                        url: 'https://bestbuy.com',
+                        rating: 4.6
+                    }
+                ]
+            };
+        }
+
+        function displayProductDetails() {
+            if (!productData) return;
+
+            // Update basic product info
+            document.getElementById('productPageTitle').textContent = productData.title;
+            document.getElementById('breadcrumbProductName').textContent = productData.name;
+            document.getElementById('productTitle').textContent = productData.title;
+            document.getElementById('currentPrice').textContent = productData.price;
+            document.getElementById('originalPrice').textContent = productData.originalPrice;
+            document.getElementById('discountBadge').textContent = productData.discount;
+
+            // Update rating
+            updateRating(productData.rating, productData.reviews);
+
+            // Update main image
+            document.getElementById('productMainImage').src = productData.image;
+            document.getElementById('productMainImage').alt = productData.name;
+
+            // Update image gallery
+            updateImageGallery(productData.images);
+
+            // Update features
+            updateFeatures(productData.features);
+
+            // Update specifications
+            updateSpecifications(productData.specifications);
+
+            // Update retailers
+            updateRetailers(productData.retailers);
+        }
+
+        function updateRating(rating, reviews) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 !== 0;
+            let starsHTML = '';
+
+            for (let i = 0; i < fullStars; i++) {
+                starsHTML += '<i class="bi bi-star-fill"></i>';
+            }
+            if (hasHalfStar) {
+                starsHTML += '<i class="bi bi-star-half"></i>';
+            }
+            const emptyStars = 5 - Math.ceil(rating);
+            for (let i = 0; i < emptyStars; i++) {
+                starsHTML += '<i class="bi bi-star"></i>';
+            }
+
+            document.getElementById('productRating').innerHTML = starsHTML;
+            document.getElementById('ratingText').textContent = `${rating} out of 5 (${reviews} reviews)`;
+        }
+
+        function updateImageGallery(images) {
+            const gallery = document.getElementById('imageGallery');
+            gallery.innerHTML = '';
+
+            images.forEach((image, index) => {
+                const thumbnail = document.createElement('img');
+                thumbnail.src = image;
+                thumbnail.alt = `Product view ${index + 1}`;
+                thumbnail.className = 'thumbnail';
+                thumbnail.onclick = () => {
+                    document.getElementById('productMainImage').src = image;
+                };
+                gallery.appendChild(thumbnail);
+            });
+        }
+
+        function updateFeatures(features) {
+            const featuresList = document.getElementById('featuresList');
+            featuresList.innerHTML = '';
+
+            features.forEach(feature => {
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="bi bi-check-circle-fill"></i> ${feature}`;
+                featuresList.appendChild(li);
+            });
+        }
+
+        function updateSpecifications(specs) {
+            document.getElementById('specDisplay').textContent = specs.display;
+            document.getElementById('specProcessor').textContent = specs.processor;
+            document.getElementById('specStorage').textContent = specs.storage;
+            document.getElementById('specCamera').textContent = specs.camera;
+            document.getElementById('specBattery').textContent = specs.battery;
+            document.getElementById('specConnectivity').textContent = specs.connectivity;
+        }
+
+        function updateRetailers(retailers) {
+            const retailersList = document.getElementById('retailersList');
+            retailersList.innerHTML = '';
+
+            retailers.forEach(retailer => {
+                const retailerCard = document.createElement('div');
+                retailerCard.className = 'retailer-card';
+                retailerCard.innerHTML = `
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <div class="retailer-name">${retailer.name}</div>
+                            <div class="retailer-price">${retailer.price}</div>
+                            <div class="retailer-stock ${retailer.stock === 'Out of Stock' ? 'out-of-stock' : ''}">
+                                <i class="bi bi-check-circle-fill"></i> ${retailer.stock}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-white">
+                                <small>Was: ${retailer.originalPrice}</small><br>
+                                <strong>${retailer.discount}</strong>
+                            </div>
+                            <div class="stars mt-1">
+                                ${generateStars(retailer.rating)}
+                                <small class="text-white-50">(${retailer.rating})</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a href="${retailer.url}" target="_blank" class="btn-buy">
+                                <i class="bi bi-cart-plus"></i> Buy Now
+                            </a>
+                        </div>
+                    </div>
+                `;
+                retailersList.appendChild(retailerCard);
+            });
+        }
+
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 !== 0;
+            let starsHTML = '';
+
+            for (let i = 0; i < fullStars; i++) {
+                starsHTML += '<i class="bi bi-star-fill text-warning"></i>';
+            }
+            if (hasHalfStar) {
+                starsHTML += '<i class="bi bi-star-half text-warning"></i>';
+            }
+            const emptyStars = 5 - Math.ceil(rating);
+            for (let i = 0; i < emptyStars; i++) {
+                starsHTML += '<i class="bi bi-star text-warning"></i>';
+            }
+
+            return starsHTML;
+        }
+
+        function scrollToRetailers() {
+            document.getElementById('retailersSection').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+    </script>
+</body>
+</html>

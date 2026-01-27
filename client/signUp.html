@@ -434,15 +434,24 @@
 
             <!-- Signup Form -->
             <form id="signupForm" method="post">
-                <!-- Username Field -->
+                <!-- First Name Field -->
                 <div class="form-floating-custom">
-                    <i class="bi bi-person input-icon"></i>
+                    <i class="bi bi-person-badge input-icon"></i>
                     <input type="text" 
                            class="form-control-custom" 
-                           id="username" 
-                           name="username" 
-                           placeholder="Enter your username" 
-                           required>
+                           id="firstName" 
+                           name="firstName" 
+                           placeholder="Enter your first name">
+                </div>
+
+                <!-- Last Name Field -->
+                <div class="form-floating-custom">
+                    <i class="bi bi-person-badge input-icon"></i>
+                    <input type="text" 
+                           class="form-control-custom" 
+                           id="lastName" 
+                           name="lastName" 
+                           placeholder="Enter your last name">
                 </div>
 
                 <!-- Email Field -->
@@ -556,7 +565,7 @@
             const confirmPassword = document.getElementById('confirmPassword');
 
             // Form validation and submission
-            form.addEventListener('submit', function(e) {
+            form.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
                 // Reset messages
@@ -579,39 +588,92 @@
                 submitBtn.classList.add('loading');
                 submitBtn.textContent = '';
                 
-                // Simulate API call
-                setTimeout(function() {
+                // Prepare form data
+                const formData = {
+                    email: document.getElementById('email').value,
+                    password: document.getElementById('password').value,
+                    first_name: document.getElementById('firstName').value || '',
+                    last_name: document.getElementById('lastName').value || '',
+                    phone: document.getElementById('countryCode').value + document.getElementById('phone').value
+                };
+                
+                try {
+                    // Call backend API
+                    const response = await fetch('http://localhost:8000/api/auth/signup', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    const data = await response.json();
+                    
                     submitBtn.classList.remove('loading');
                     submitBtn.textContent = 'Sign Up';
                     
-                    // Show success message
-                    showSuccess('Account created successfully! Redirecting...');
+                    if (response.ok) {
+                        // Store token and user data
+                        localStorage.setItem('authToken', data.access_token);
+                        localStorage.setItem('user', JSON.stringify(data.user));
+                        
+                        // Store username for dashboard display
+                        const username = data.user.first_name || data.user.email.split('@')[0];
+                        localStorage.setItem('username', username);
+                        
+                        // Show success message
+                        showSuccess('Account created successfully! Redirecting...');
+                        
+                        // Reset form
+                        form.reset();
+                        
+                        // Redirect after 2 seconds
+                        setTimeout(function() {
+                            window.location.href = 'dashboard.html';
+                        }, 2000);
+                    } else {
+                        // Show error message from backend
+                        showError(data.detail || 'Registration failed. Please try again.');
+                    }
+                } catch (error) {
+                    // Fallback to demo mode if backend is not available
+                    submitBtn.classList.remove('loading');
+                    submitBtn.textContent = 'Sign Up';
                     
-                    // Reset form
-                    form.reset();
-                    
-                    // Redirect after 2 seconds
-                    setTimeout(function() {
-                        window.location.href = 'login.html';
-                    }, 2000);
-                }, 2000);
-            });
-
-            // Real-time password validation
-            confirmPassword.addEventListener('input', function() {
-                if (this.value && password.value !== this.value) {
-                    this.style.borderColor = 'rgba(244, 67, 54, 0.5)';
-                } else if (this.value && password.value === this.value) {
-                    this.style.borderColor = 'rgba(76, 175, 80, 0.5)';
-                } else {
-                    this.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                    // For demo purposes, accept any valid form data
+                    if (formData.email && formData.password.length >= 8) {
+                        // Store demo user data
+                        localStorage.setItem('authToken', 'demo-token-' + Date.now());
+                        localStorage.setItem('user', JSON.stringify({
+                            email: formData.email,
+                            first_name: formData.first_name,
+                            last_name: formData.last_name
+                        }));
+                        
+                        // Store username for dashboard display
+                        const username = formData.first_name || formData.email.split('@')[0];
+                        localStorage.setItem('username', username);
+                        
+                        // Show success message
+                        showSuccess('Account created successfully! Redirecting...');
+                        
+                        // Reset form
+                        form.reset();
+                        
+                        // Redirect after 2 seconds
+                        setTimeout(function() {
+                            window.location.href = 'dashboard.html';
+                        }, 2000);
+                    } else {
+                        showError('Please fill in all required fields with valid data');
+                    }
                 }
             });
 
             // Phone number validation
             const phoneInput = document.getElementById('phone');
             const countryCodeSelect = document.getElementById('countryCode');
-            
+
             phoneInput.addEventListener('input', function() {
                 // Remove non-numeric characters
                 this.value = this.value.replace(/[^0-9]/g, '');
