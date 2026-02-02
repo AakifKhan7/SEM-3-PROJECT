@@ -16,6 +16,13 @@ class ProductListingResponse(BaseModel):
     class Config:
         from_attributes = True
 
+class PriceHistoryPoint(BaseModel):
+    price: float
+    recorded_at: datetime
+
+    class Config:
+        from_attributes = True
+
 class ProductResponse(BaseModel):
     id: int
     name: str

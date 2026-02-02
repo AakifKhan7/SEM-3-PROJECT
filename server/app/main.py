@@ -4,6 +4,8 @@ from app.database import init_db
 from app.models import User, UserAuth, UserRole
 from app.api import auth
 from app.api import products
+from app.api import comparison
+from app.api import users
 
 app = FastAPI(
     title="Product Comparison API",
@@ -26,6 +28,9 @@ app.add_middleware(
 app.include_router(auth.router)
 
 app.include_router(products.router)
+
+app.include_router(comparison.router)
+app.include_router(users.router)
 
 @app.get("/")
 async def root():

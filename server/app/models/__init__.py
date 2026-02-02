@@ -10,6 +10,7 @@ from app.models.product_listings import ProductListing
 from app.models.price_history import PriceHistory
 from app.models.saved_search import SavedSearch
 from app.models.price_alert import PriceAlert
+from app.models.refresh_token import RefreshToken
 
 __all__ = [
     "Base",
@@ -24,4 +25,5 @@ __all__ = [
     "PriceHistory",
     "SavedSearch",
     "PriceAlert",
+    "RefreshToken",
 ]

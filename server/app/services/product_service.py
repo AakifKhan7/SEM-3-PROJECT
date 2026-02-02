@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from app.models import Product, ProductListing, Platform
 from app.services.scrapers import AmazonScraper, FlipkartScraper
+from app.models.price_history import PriceHistory
 from datetime import datetime
 
 
@@ -31,17 +32,35 @@ def search_and_sync_products(db: Session, query: str):
             ProductListing.platform_id == platform.id
         ).first()
 
+        current_price = float(item.current_price)
+
         if listing:
-            listing.price = float(item.current_price)
+            listing.price = current_price
             listing.last_scraped_at = datetime.utcnow()
+
+            # Always record a history point when we scrape
+            history = PriceHistory(
+                product_listing_id=listing.id,
+                price=current_price,
+            )
+            db.add(history)
         else:
             new_listing = ProductListing(
-                product_id=product.id, platform_id=platform.id,
-                product_url=item.platform_url, price=float(item.current_price),
+                product_id=product.id,
+                platform_id=platform.id,
+                product_url=item.platform_url,
+                price=current_price,
                 availability_status=item.availability_status,
-                platform_product_id=item.platform_product_id
+                platform_product_id=item.platform_product_id,
             )
             db.add(new_listing)
+            db.flush()  # ensure new_listing.id is available
+
+            history = PriceHistory(
+                product_listing_id=new_listing.id,
+                price=current_price,
+            )
+            db.add(history)
 
     db.commit()
     return db.query(Product).filter(Product.name.ilike(f"%{query}%")).all()

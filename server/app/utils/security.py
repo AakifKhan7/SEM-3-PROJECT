@@ -1,8 +1,14 @@
+import secrets
 from datetime import datetime, timedelta
 from typing import Optional, Dict
 from jose import JWTError, jwt
 import bcrypt
 from app.config import settings
+
+
+def create_refresh_token_string() -> str:
+    """Generate a secure random string for refresh token."""
+    return secrets.token_urlsafe(48)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     password_bytes = plain_password.encode('utf-8')

@@ -32,6 +32,11 @@ class UserLogin(BaseModel):
 class UserLoginResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
+    refresh_token: Optional[str] = None
     user_id: int
     email: EmailStr
+
+
+class RefreshRequest(BaseModel):
+    refresh_token: str = Field(..., min_length=1)
 
