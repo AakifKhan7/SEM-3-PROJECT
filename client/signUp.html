@@ -588,13 +588,13 @@
                 submitBtn.classList.add('loading');
                 submitBtn.textContent = '';
                 
-                // Prepare form data
+                // Prepare form data according to backend UserCreate schema
                 const formData = {
                     email: document.getElementById('email').value,
                     password: document.getElementById('password').value,
-                    first_name: document.getElementById('firstName').value || '',
-                    last_name: document.getElementById('lastName').value || '',
-                    phone: document.getElementById('countryCode').value + document.getElementById('phone').value
+                    first_name: document.getElementById('firstName').value || null,
+                    last_name: document.getElementById('lastName').value || null,
+                    phone: document.getElementById('countryCode').value + document.getElementById('phone').value || null
                 };
                 
                 try {
@@ -613,12 +613,18 @@
                     submitBtn.textContent = 'Sign Up';
                     
                     if (response.ok) {
-                        // Store token and user data
+                        // Store token and user data from backend response
                         localStorage.setItem('authToken', data.access_token);
-                        localStorage.setItem('user', JSON.stringify(data.user));
+                        localStorage.setItem('user', JSON.stringify({
+                            id: data.user_id,
+                            email: data.email,
+                            first_name: document.getElementById('firstName').value || null,
+                            last_name: document.getElementById('lastName').value || null,
+                            phone: document.getElementById('countryCode').value + document.getElementById('phone').value || null
+                        }));
                         
                         // Store username for dashboard display
-                        const username = data.user.first_name || data.user.email.split('@')[0];
+                        const username = document.getElementById('firstName').value || data.email.split('@')[0];
                         localStorage.setItem('username', username);
                         
                         // Show success message
