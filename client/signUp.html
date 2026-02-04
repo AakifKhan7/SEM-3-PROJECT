@@ -40,17 +40,20 @@
             justify-content: center;
             padding: 20px;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
+            min-width: 320px;
         }
 
         /* Animated Background */
         .bg-animation {
-            position: absolute;
+            position: fixed;
             width: 100%;
             height: 100%;
             top: 0;
             left: 0;
             z-index: 0;
+            pointer-events: none;
         }
 
         .bg-animation::before {
@@ -72,12 +75,13 @@
 
         /* Floating Shapes */
         .floating-shape {
-            position: absolute;
+            position: fixed;
             border-radius: 50%;
             background: var(--glass-bg);
             backdrop-filter: blur(10px);
             border: 1px solid var(--glass-border);
             animation: float 6s ease-in-out infinite;
+            pointer-events: none;
         }
 
         .shape1 {
@@ -347,8 +351,16 @@
 
         /* Responsive Design */
         @media (max-width: 576px) {
+            body {
+                padding: 15px;
+                align-items: flex-start;
+                padding-top: 20px;
+                padding-bottom: 20px;
+            }
+            
             .glass-card {
-                padding: 30px 20px;
+                padding: 25px 20px;
+                margin-bottom: 20px;
             }
 
             .signup-header h2 {
@@ -357,6 +369,104 @@
 
             .social-login {
                 flex-direction: column;
+            }
+            
+            .signup-container {
+                max-width: 100%;
+                width: 100%;
+            }
+            
+            .form-control-custom {
+                font-size: 0.9rem;
+                padding: 10px 14px 10px 40px;
+                height: 45px;
+            }
+            
+            .input-icon {
+                left: 12px;
+                font-size: 1rem;
+            }
+            
+            .country-code-select {
+                left: 38px;
+                min-width: 70px;
+                font-size: 0.8rem;
+                padding: 4px 6px;
+            }
+            
+            .phone-input {
+                padding-left: 120px !important;
+            }
+            
+            .btn-submit {
+                padding: 12px;
+                font-size: 0.9rem;
+            }
+            
+            .signup-header {
+                margin-bottom: 25px;
+            }
+            
+            .form-floating-custom {
+                margin-bottom: 15px;
+            }
+            
+            .form-check-custom {
+                margin-bottom: 20px;
+            }
+            
+            .divider {
+                margin: 20px 0;
+            }
+        }
+        
+        @media (max-width: 380px) {
+            body {
+                padding: 10px;
+            }
+            
+            .glass-card {
+                padding: 20px 15px;
+            }
+            
+            .signup-header h2 {
+                font-size: 1.3rem;
+            }
+            
+            .signup-header p {
+                font-size: 0.85rem;
+            }
+            
+            .form-control-custom {
+                font-size: 0.85rem;
+                padding: 8px 12px 8px 35px;
+                height: 40px;
+            }
+            
+            .input-icon {
+                left: 10px;
+                font-size: 0.9rem;
+            }
+            
+            .country-code-select {
+                left: 32px;
+                min-width: 65px;
+                font-size: 0.75rem;
+            }
+            
+            .phone-input {
+                padding-left: 105px !important;
+            }
+            
+            .btn-submit {
+                padding: 10px;
+                font-size: 0.85rem;
+            }
+        }
+        
+        @media (min-height: 800px) {
+            body {
+                align-items: center;
             }
         }
 
