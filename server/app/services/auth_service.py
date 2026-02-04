@@ -73,13 +73,15 @@ def generate_token_response(db: Session, user_auth: UserAuth) -> dict:
     )
     db.add(refresh_row)
     db.commit()
-    return {
+    response = {
         "access_token": access_token,
         "token_type": "bearer",
         "refresh_token": refresh_token_str,
         "user_id": user_auth.user_id,
         "email": user_auth.email,
     }
+    print(f"DEBUG: generate_token_response response: {response}")
+    return response
 
 
 def refresh_access_token(db: Session, refresh_token_str: str) -> dict:

@@ -12,6 +12,7 @@ router = APIRouter(prefix="/api/auth", tags=["Authentication"])
 @router.post("/signup", response_model=UserLoginResponse, status_code=status.HTTP_201_CREATED)
 async def signup_endpoint(user_data: UserCreate, db: Session = Depends(get_db)):
     token_response = signup(db, user_data)
+    print(f"DEBUG: signup_endpoint token_response: {token_response}")
     return UserLoginResponse(**token_response)
 
 @router.post("/login", response_model=UserLoginResponse)
