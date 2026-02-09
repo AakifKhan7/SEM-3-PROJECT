@@ -67,7 +67,7 @@
 
                 <div class="mb-3">
                     <input type="tel" class="custom-input form-control" id="phone" pattern="[0-9]{10}"
-                        placeholder="Mobile Number">
+                        required inputmode="numeric" placeholder="Mobile Number">
                 </div>
 
                 <div class="mb-3 password-container">
@@ -107,8 +107,8 @@
     <script>
         const phone = document.getElementById("phone");
         phone.addEventListener("input", () => {
-            if (!phone.validity.valid) {
-                phone.setCustomValidity("Please enter an 11 digit mobile number");
+            if (phone.value.length !== 10) {
+                phone.setCustomValidity("Please enter an 10 digit mobile number");
             } else {
                 phone.setCustomValidity("");
             }
