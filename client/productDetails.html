@@ -1,144 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Details - Tech Deals Finder</title>
-    
+
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/dashboard.css">
+
     <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533483, #c06c84);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            25% { background-position: 50% 25%; }
-            50% { background-position: 100% 50%; }
-            75% { background-position: 50% 75%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Glass Card Effect */
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Header */
-        .header-section {
-            padding: 2rem 0;
-            margin-bottom: 2rem;
-        }
-
-        .header-title {
-            color: white;
-            font-weight: 700;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .breadcrumb {
-            background: transparent;
-            padding: 0;
-        }
-
-        .breadcrumb-item {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .breadcrumb-item.active {
-            color: white;
-        }
-
-        .breadcrumb-item a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .breadcrumb-item a:hover {
-            color: white;
-        }
-
-        /* Product Image Section */
-        .product-image-container {
-            position: relative;
-            overflow: hidden;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-        }
-
+        /* Product Specific Overrides */
         .product-main-image {
             width: 100%;
             height: 400px;
             object-fit: cover;
-            border-radius: 15px;
+            border-radius: 12px;
         }
 
         .image-gallery {
             display: flex;
             gap: 10px;
             margin-top: 1rem;
+            overflow-x: auto;
+            padding-bottom: 5px;
         }
 
         .thumbnail {
             width: 80px;
             height: 80px;
             object-fit: cover;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
             border: 2px solid transparent;
+            transition: all 0.2s;
         }
 
         .thumbnail:hover {
-            border-color: #667eea;
-            transform: scale(1.05);
-        }
-
-        /* Product Info */
-        .product-title {
-            color: white;
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
+            border-color: var(--accent-color);
         }
 
         .product-rating {
@@ -152,205 +61,66 @@
             color: #ffc107;
         }
 
-        .rating-text {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
         .price-section {
-            background: rgba(76, 175, 80, 0.1);
-            border: 1px solid rgba(76, 175, 80, 0.3);
-            border-radius: 15px;
+            background-color: rgba(255, 255, 255, 0.05);
             padding: 1.5rem;
+            border-radius: 12px;
             margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
         }
 
         .current-price {
-            color: #4caf50;
             font-size: 2.5rem;
             font-weight: 700;
+            color: var(--text-color);
         }
 
         .original-price {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             text-decoration: line-through;
-            margin-left: 1rem;
+            color: var(--text-muted);
+            margin-left: 10px;
         }
 
         .discount-badge {
-            background: #f44336;
+            background-color: #dc3545;
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
             font-weight: 600;
-            display: inline-block;
-            margin-left: 1rem;
+            font-size: 0.9rem;
+            margin-left: 10px;
         }
 
-        /* Product Features */
-        .features-section {
-            margin-bottom: 2rem;
+        .retailer-card {
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
         }
 
-        .feature-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .feature-list li {
-            color: rgba(255, 255, 255, 0.9);
-            padding: 0.5rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .feature-list li:last-child {
+        .retailer-card:last-child {
             border-bottom: none;
-        }
-
-        .feature-list li i {
-            color: #4caf50;
-            margin-right: 10px;
-        }
-
-        /* Specifications */
-        .specs-table {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .specs-table table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .specs-table th,
-        .specs-table td {
-            padding: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.9);
         }
 
         .specs-table th {
-            background: rgba(255, 255, 255, 0.1);
-            font-weight: 600;
             width: 40%;
-        }
-
-        .specs-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        /* Retailer Cards */
-        .retailer-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .retailer-card:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-3px);
-        }
-
-        .retailer-name {
-            color: white;
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .retailer-price {
-            color: #4caf50;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .retailer-stock {
-            color: #4caf50;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-
-        .retailer-stock.out-of-stock {
-            color: #f44336;
-        }
-
-        .btn-buy {
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            padding: 0.75rem 2rem;
-            border-radius: 25px;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-        }
-
-        .btn-buy:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-            color: white;
-        }
-
-        /* Loading State */
-        .loading-spinner {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 200px;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(255, 255, 255, 0.3);
-            border-top: 5px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .header-title {
-                font-size: 2rem;
-            }
-            
-            .product-title {
-                font-size: 1.5rem;
-            }
-            
-            .current-price {
-                font-size: 2rem;
-            }
-            
-            .original-price {
-                font-size: 1.2rem;
-            }
+            color: var(--text-muted);
+            font-weight: 500;
         }
     </style>
 </head>
+
 <body>
     <!-- Header Section -->
     <section class="header-section">
         <div class="container">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="#" onclick="history.back()">Search Results</a></li>
-                    <li class="breadcrumb-item active" id="breadcrumbProductName">Product Details</li>
-                </ol>
-            </nav>
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <a href="dashboard.html" class="btn-buy"
+                    style="padding: 6px 16px; font-size: 0.9rem; text-decoration: none;">Dashboard</a>
+                <a href="#" onclick="history.back()" class="btn-buy"
+                    style="padding: 6px 16px; font-size: 0.9rem; text-decoration: none;">Search Results</a>
+                <span class="text-white ms-2" style="font-weight: 500;" id="breadcrumbProductName">Product
+                    Details</span>
+            </div>
             <h1 class="header-title" id="productPageTitle">Loading Product Details...</h1>
         </div>
     </section>
@@ -362,7 +132,8 @@
             <div class="col-lg-6 mb-4">
                 <div class="glass-card p-4">
                     <div class="product-image-container">
-                        <img id="productMainImage" src="https://via.placeholder.com/400x400?text=Product+Image" alt="Product" class="product-main-image">
+                        <img id="productMainImage" src="https://via.placeholder.com/400x400?text=Product+Image"
+                            alt="Product" class="product-main-image">
                     </div>
                     <div class="image-gallery" id="imageGallery">
                         <!-- Thumbnails will be populated here -->
@@ -374,7 +145,7 @@
             <div class="col-lg-6 mb-4">
                 <div class="glass-card p-4">
                     <h2 class="product-title" id="productTitle">Product Name</h2>
-                    
+
                     <div class="product-rating">
                         <div class="stars" id="productRating">
                             <i class="bi bi-star-fill"></i>
@@ -410,7 +181,7 @@
                     </div>
 
                     <div class="d-grid gap-2">
-                        <button class="btn btn-lg btn-buy" onclick="scrollToRetailers()">
+                        <button class="btn-buy" onclick="scrollToRetailers()" style="width: 100%;">
                             <i class="bi bi-shopping-cart"></i> View All Deals
                         </button>
                     </div>
@@ -475,14 +246,16 @@
     </main>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
     <script>
         // Product data structure
         let productData = null;
 
         // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             loadProductDetails();
         });
 
@@ -491,7 +264,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
             const productName = urlParams.get('name');
-            
+
             // Try to get product data from localStorage first
             const storedProduct = localStorage.getItem('selectedProduct');
             if (storedProduct) {
@@ -515,10 +288,10 @@
                 'macbook': getMacBookData(),
                 'ipad': getiPadData()
             };
-            
+
             const productKey = identifier.toLowerCase();
             productData = mockProducts[productKey] || getSampleProduct();
-            
+
             displayProductDetails();
         }
 
@@ -950,10 +723,11 @@
         }
 
         function scrollToRetailers() {
-            document.getElementById('retailersSection').scrollIntoView({ 
-                behavior: 'smooth' 
+            document.getElementById('retailersSection').scrollIntoView({
+                behavior: 'smooth'
             });
         }
     </script>
 </body>
+
 </html>

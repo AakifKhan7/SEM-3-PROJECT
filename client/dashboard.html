@@ -64,7 +64,8 @@
             <div class="header-section"
                 style="margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color);">
                 <div>
-                    <h1 class="page-title" style="font-size: 1.5rem; margin-bottom: 0;margin-left: 1rem;">Welcome Back!</h1>
+                    <h1 class="page-title" style="font-size: 1.5rem; margin-bottom: 0;margin-left: 1rem;">Welcome Back!
+                    </h1>
                 </div>
                 <!-- Last login moved/removed to declutter or kept minimal -->
                 <div style="text-align: right; color: var(--text-muted); font-size: 0.8rem;">
@@ -141,7 +142,7 @@
                     <div>
                         <h4 style="color: white; margin-bottom: 10px;">Our Mission</h4>
                         <p style="color: var(--text-muted); font-size: 0.9rem;">To make every cent of your hard-earned
-                            money worth investing in tech devices.</p>
+                            cent worth investing in tech devices.</p>
                     </div>
                     <div>
                         <h4 style="color: white; margin-bottom: 10px;">Contact</h4>
@@ -227,7 +228,7 @@
                                 <h4 style="margin: 0;">${query} - Best Deal</h4>
                                 <p style="color: var(--text-muted); margin: 5px 0;">Amazon • $999.00</p>
                             </div>
-                            <button class="search-btn">View Deal</button>
+                            <a href="productDetails.html?name=${encodeURIComponent(query)}" class="btn-buy">View Deal</a>
                         </div>
                         <div class="dashboard-card" style="display: flex; gap: 1rem; align-items: center;">
                             <div style="background: #fff; padding: 10px; border-radius: 8px;">
@@ -237,7 +238,7 @@
                                 <h4 style="margin: 0;">${query} - Refurbished</h4>
                                 <p style="color: var(--text-muted); margin: 5px 0;">BestBuy • $850.00</p>
                             </div>
-                            <button class="search-btn" style="background-color: transparent; border: 1px solid var(--accent-color);">View Deal</button>
+                            <a href="productDetails.html?name=${encodeURIComponent(query)}" class="btn-buy">View Deal</a>
                         </div>
                     `;
 
