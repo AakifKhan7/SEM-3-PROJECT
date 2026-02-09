@@ -1,575 +1,272 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Price Comparison - Tech Deals Dashboard</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4e+/b6+ZkP4N/OZ3Xe72dqZJG4aWtiAcViiVJCVwSokF1E9U2j6td7Tm2cF0aLys" crossorigin="anonymous">
-    
+    <title>Compare Prices - TechScope</title>
+
     <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS (needed for grid/forms if not fully covered by dashboard.css, but dashboard.css seems custom. dashboard.html DOES NOT link bootstrap css, only icons. However compare.html USED bootstrap. I should probably keep boostrap if the form relies on row/col) -->
+    <!-- dashboard.html uses custom classes. compare.html uses bootstrap grid (row, col-md-8). 
+         I should include Bootstrap CSS but make sure it doesn't override dashboard.css variables too much. 
+         Actually, dashboard.html does NOT use bootstrap CSS. It uses valid CSS grid/flex.
+         If I include Bootstrap, it might mess up dashboard.css reset.
+         BUT compare.html uses `row`, `col-md-8`, `form-control`, `form-select`.
+         I will include Bootstrap CSS *before* dashboard.css so dashboard.css takes precedence.
+    -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4e+/b6+ZkP4N/OZ3Xe72dqZJG4aWtiAcViiVJCVwSokF1E9U2j6td7Tm2cF0aLys" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/dashboard.css">
+
     <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-            --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-            --glass-bg: rgba(255, 255, 255, 0.08);
-            --glass-border: rgba(255, 255, 255, 0.15);
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.85);
-            --text-muted: rgba(255, 255, 255, 0.6);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* Overrides to make Bootstrap play nice with Dashboard theme */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            min-height: 100vh;
-            color: var(--text-primary);
-            overflow-x: hidden;
-            position: relative;
+            background-color: var(--bg-color);
+            color: var(--text-color);
         }
 
-        /* Enhanced Animated Background */
-        .bg-animation {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -2;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(240, 147, 251, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(79, 172, 254, 0.2) 0%, transparent 50%),
-                linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            background-size: 400% 400%;
-            animation: gradientShift 20s ease infinite;
+        .form-control,
+        .form-select {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
         }
 
-        /* Floating Particles */
-        .particles {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            overflow: hidden;
-        }
-
-        .particle {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            animation: float 15s infinite ease-in-out;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.1; }
-            50% { transform: translateY(-100px) rotate(180deg); opacity: 0.3; }
-        }
-
-        /* Compare Container */
-        .compare-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 80px 20px 40px;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Header Section */
-        .compare-header {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.1) 0%, 
-                rgba(255, 255, 255, 0.05) 100%);
-            backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            border-radius: 25px;
-            padding: 50px 40px;
-            margin-bottom: 40px;
-            text-align: center;
-            animation: fadeInDown 0.8s ease-out;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .compare-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--accent-gradient);
-            border-radius: 25px 25px 0 0;
-        }
-
-        /* Search Section */
-        .search-section {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.08) 0%, 
-                rgba(255, 255, 255, 0.03) 100%);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 35px;
-            margin-bottom: 30px;
-            animation: fadeInUp 0.6s ease-out;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .search-section:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.12) 0%, 
-                rgba(255, 255, 255, 0.06) 100%);
-        }
-
-        /* Form Styles */
-        .form-control, .form-select {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.08) 0%, 
-                rgba(255, 255, 255, 0.04) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: var(--text-primary);
-            border-radius: 12px;
-            padding: 15px 18px;
-            transition: all 0.3s ease;
-            font-size: 15px;
-        }
-
-        .form-control:focus, .form-select:focus {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.12) 0%, 
-                rgba(255, 255, 255, 0.06) 100%);
-            border-color: rgba(255, 255, 255, 0.3);
-            color: var(--text-primary);
-            box-shadow: 0 0 0 0.2rem rgba(79, 172, 254, 0.2);
-            transform: translateY(-2px);
+        .form-control:focus,
+        .form-select:focus {
+            background-color: var(--input-bg);
+            border-color: var(--accent-color);
+            color: var(--text-color);
+            box-shadow: none;
         }
 
         .form-control::placeholder {
             color: var(--text-muted);
-            font-style: italic;
         }
 
-        .form-label {
-            color: var(--text-secondary);
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Button Styles */
-        .btn-primary {
-            background: var(--primary-gradient);
-            border: none;
-            border-radius: 12px;
-            padding: 14px 28px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 14px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .btn-primary:hover::before {
-            left: 100%;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-outline-light {
-            border: 2px solid rgba(255, 255, 255, 0.25);
-            color: var(--text-primary);
-            border-radius: 12px;
-            padding: 12px 24px;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 13px;
-        }
-
-        .btn-outline-light:hover {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.15) 0%, 
-                rgba(255, 255, 255, 0.08) 100%);
-            border-color: rgba(255, 255, 255, 0.4);
-            color: var(--text-primary);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
-        }
-
-        /* Comparison Results */
-        .comparison-results {
-            display: none;
-            animation: fadeInUp 0.6s ease-out;
-        }
-
+        /* Comparison specific styles */
         .comparison-card {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.08) 0%, 
-                rgba(255, 255, 255, 0.03) 100%);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 25px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            height: 100%;
+            transition: transform 0.2s;
         }
 
         .comparison-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.12) 0%, 
-                rgba(255, 255, 255, 0.06) 100%);
         }
 
         .retailer-logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 15px;
-            background: var(--glass-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            color: white;
-            margin-bottom: 15px;
-            border: 2px solid var(--glass-border);
+            font-size: 2rem;
+            margin-bottom: 1rem;
         }
 
         .price-tag {
-            font-size: 2rem;
-            font-weight: 700;
-            background: var(--success-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin: 10px 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
         }
 
         .original-price {
             text-decoration: line-through;
             color: var(--text-muted);
-            font-size: 1.2rem;
-        }
-
-        .discount-badge {
-            background: var(--warning-gradient);
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .rating {
-            color: #ffc107;
-            font-size: 14px;
-        }
-
-        /* Headings */
-        h1 {
-            font-size: 2.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-        }
-
-        h2 {
-            font-size: 2rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        h3 {
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 20px;
-        }
-
-        h2 i, h3 i {
-            color: #4facfe;
-            font-size: 1.2rem;
-        }
-
-        /* Animations */
-        @keyframes fadeInDown {
-            from { 
-                opacity: 0; 
-                transform: translateY(-30px); 
-            }
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
-            }
-        }
-
-        @keyframes fadeInUp {
-            from { 
-                opacity: 0; 
-                transform: translateY(30px); 
-            }
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
-            }
-        }
-
-        /* Loading Spinner */
-        .loading-spinner {
-            display: none;
-            text-align: center;
-            padding: 40px;
-        }
-
-        .spinner-border {
-            width: 3rem;
-            height: 3rem;
-            border-width: 0.3em;
-        }
-
-        /* Alert Styles */
-        .alert {
-            border-radius: 12px;
-            border: none;
-            backdrop-filter: blur(15px);
-            font-weight: 500;
-        }
-
-        .alert-info {
-            background: linear-gradient(135deg, 
-                rgba(33, 150, 243, 0.15) 0%, 
-                rgba(144, 202, 249, 0.1) 100%);
-            color: #93c5fd;
-            border: 1px solid rgba(33, 150, 243, 0.2);
-        }
-
-        .alert-warning {
-            background: linear-gradient(135deg, 
-                rgba(255, 152, 0, 0.15) 0%, 
-                rgba(255, 193, 7, 0.1) 100%);
-            color: #ffd54f;
-            border: 1px solid rgba(255, 152, 0, 0.2);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .compare-container {
-                padding: 60px 15px 30px;
-            }
-            
-            .compare-header, .search-section, .comparison-card {
-                padding: 25px 20px;
-            }
-            
-            h1 {
-                font-size: 2.2rem;
-            }
-            
-            h2 {
-                font-size: 1.6rem;
-            }
-            
-            .price-tag {
-                font-size: 1.6rem;
-            }
-        }
-
-        /* Scrollbar Styling */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 5px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #764ba2, #667eea);
         }
     </style>
 </head>
+
 <body>
-    <div class="bg-animation"></div>
-    <div class="particles" id="particles"></div>
-    
-    <div class="compare-container">
-        <!-- Header Section -->
-        <div class="compare-header">
-            <h1>
-                <i class="bi bi-arrow-left-right"></i> Price Comparison
-            </h1>
-            <p class="lead">Compare prices across multiple retailers to find the best deals on your favorite tech products</p>
-        </div>
 
-        <!-- Search Section -->
-        <div class="search-section">
-            <h2>
-                <i class="bi bi-search"></i> Search for Product
-            </h2>
-            
-            <form id="compareForm">
-                <div class="row g-3">
-                    <div class="col-md-8">
-                        <label class="form-label">Product Name</label><br>
-                        <input type="text" class="form-control" id="productName" 
-                               placeholder="Enter product name (e.g., iPhone 15 Pro, MacBook Pro M3, Samsung Galaxy S24)" 
-                               required>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Category</label><br>
-                        <select class="form-select" id="category" required>
-                            <option value="">Select Category</option>
-                            <option value="smartphones">Smartphones</option>
-                            <option value="laptops">Laptops</option>
-                            <option value="tablets">Tablets</option>
-                            <option value="headphones">Headphones</option>
-                            <option value="smartwatches">Smartwatches</option>
-                            <option value="gaming">Gaming Consoles</option>
-                            <option value="cameras">Cameras</option>
-                            <option value="accessories">Accessories</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="row g-3 mt-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Brand (Optional)</label><br>
-                        <input type="text" class="form-control" id="brand" 
-                               placeholder="e.g., Apple, Samsung, Sony, Dell">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Price Range (Optional)</label><br>
-                        <select class="form-select" id="priceRange">
-                            <option value="">Any Price</option>
-                            <option value="0-500">Under $500</option>
-                            <option value="500-1000">$500 - $1,000</option>
-                            <option value="1000-1500">$1,000 - $1,500</option>
-                            <option value="1500-2000">$1,500 - $2,000</option>
-                            <option value="2000+">Above $2,000</option>
-                        </select>
-                    </div>
-                </div>
-                <br>
-                <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        <i class="bi bi-arrow-left-right me-2"></i> Compare Prices
-                    </button>
-                </div>
-            </form>
-        </div>
+    <button class="mobile-toggle" id="mobileToggle">
+        <i class="bi bi-list"></i>
+    </button>
 
-        <!-- Loading Spinner -->
-        <div class="loading-spinner" id="loadingSpinner">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <a href="dashboard.html" class="brand">
+                <i class="bi bi-grid-3x3-gap-fill"></i>
+                TechScope
+            </a>
+
+            <nav class="nav-links">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="bi bi-house-door"></i> Home
+                </a>
+                <a href="dashboard.html#search" class="nav-item">
+                    <i class="bi bi-search"></i> Find Deals
+                </a>
+                <a href="compare.html" class="nav-item active">
+                    <i class="bi bi-arrow-left-right"></i> Compare
+                </a>
+                <a href="profile.html" class="nav-item">
+                    <i class="bi bi-person-circle"></i> Profile
+                </a>
+            </nav>
+
+            <div class="user-profile">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-details">
+                    <div class="user-name" id="displayUsername">Guest</div>
+                    <div class="user-role">Member</div>
+                </div>
+                <a href="#" class="logout-btn" id="logoutBtn"
+                    style="padding: 4px 8px; border: none; background: transparent;">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
             </div>
-            <p class="mt-3">Searching for best prices across multiple retailers...</p>
-        </div>
+        </aside>
 
-        <!-- Alert Messages -->
-        <div id="alertContainer"></div>
-
-        <!-- Comparison Results -->
-        <div class="comparison-results" id="comparisonResults">
-            <h2>
-                <i class="bi bi-bar-chart"></i> Comparison Results
-            </h2>
-            
-            <div class="row" id="resultsContainer">
-                <!-- Comparison cards will be populated here -->
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <div class="header-section"
+                style="margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color);">
+                <div>
+                    <h1 class="page-title" style="font-size: 1.5rem; margin-bottom: 0;">Price Comparison</h1>
+                </div>
             </div>
-        </div>
+
+            <!-- Search Section -->
+            <div class="dashboard-card" style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1.5rem;"><i class="bi bi-search"></i> Search for Product</h3>
+
+                <form id="compareForm">
+                    <div class="row mb-3 align-items-center">
+                        <label for="productName" class="col-sm-3 col-form-label">Product Name</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="productName"
+                                placeholder="Enter product name (e.g., iPhone 15 Pro, MacBook Pro M3)" required>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row mb-3 align-items-center">
+                        <label for="category" class="col-sm-3 col-form-label">Category</label>
+                        <div class="col-sm-9">
+                            <select class="form-select" id="category" required>
+                                <option value="">Select Category</option>
+                                <option value="smartphones">Smartphones</option>
+                                <option value="laptops">Laptops</option>
+                                <option value="tablets">Tablets</option>
+                                <option value="headphones">Headphones</option>
+                                <option value="smartwatches">Smartwatches</option>
+                                <option value="gaming">Gaming Consoles</option>
+                                <option value="cameras">Cameras</option>
+                                <option value="accessories">Accessories</option>
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row mb-3 align-items-center">
+                        <label for="brand" class="col-sm-3 col-form-label">Brand (Optional)</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="brand" placeholder="e.g., Apple, Samsung, Sony">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row mb-3 align-items-center">
+                        <label for="priceRange" class="col-sm-3 col-form-label">Price Range</label>
+                        <div class="col-sm-9">
+                            <select class="form-select" id="priceRange">
+                                <option value="">Any Price</option>
+                                <option value="0-500">Under $500</option>
+                                <option value="500-1000">$500 - $1,000</option>
+                                <option value="1000-1500">$1,000 - $1,500</option>
+                                <option value="1500-2000">$1,500 - $2,000</option>
+                                <option value="2000+">Above $2,000</option>
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary"
+                            style="background-color: var(--accent-color); border: none; padding: 10px 30px;">
+                            <i class="bi bi-arrow-left-right me-2"></i> Compare Prices
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div class="text-center my-5" id="loadingSpinner" style="display: none;">
+                <div class="spinner-border text-primary" role="status" style="color: var(--accent-color) !important;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3 text-muted">Searching for best prices across multiple retailers...</p>
+            </div>
+
+            <!-- Alert Messages -->
+            <div id="alertContainer"></div>
+
+            <!-- Comparison Results -->
+            <div class="comparison-results" id="comparisonResults" style="display: none;">
+                <h3 style="margin-bottom: 1.5rem;">
+                    <i class="bi bi-bar-chart"></i> Comparison Results
+                </h3>
+
+                <div class="row" id="resultsContainer">
+                    <!-- Comparison cards will be populated here -->
+                </div>
+            </div>
+
+        </main>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
     <script>
-        // Create floating particles
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            const particleCount = 50;
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                
-                // Random size
-                const size = Math.random() * 4 + 2;
-                particle.style.width = size + 'px';
-                particle.style.height = size + 'px';
-                
-                // Random position
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                
-                // Random animation delay and duration
-                particle.style.animationDelay = Math.random() * 15 + 's';
-                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
-                
-                particlesContainer.appendChild(particle);
-            }
-        }
+        document.addEventListener('DOMContentLoaded', function () {
+            // User Data
+            const username = localStorage.getItem('username') || 'Guest';
+            document.getElementById('displayUsername').textContent = username;
+            document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+
+            // Mobile Menu Logic
+            const mobileToggle = document.getElementById('mobileToggle');
+            const sidebar = document.getElementById('sidebar');
+
+            mobileToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sidebar.classList.toggle('active');
+                mobileToggle.innerHTML = sidebar.classList.contains('active')
+                    ? '<i class="bi bi-x-lg"></i>'
+                    : '<i class="bi bi-list"></i>';
+            });
+
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 992 &&
+                    !sidebar.contains(e.target) &&
+                    !mobileToggle.contains(e.target) &&
+                    sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                    mobileToggle.innerHTML = '<i class="bi bi-list"></i>';
+                }
+            });
+
+            // Logout Logic
+            document.getElementById('logoutBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('user');
+                localStorage.removeItem('username');
+                window.location.href = 'login.html';
+            });
+
+            // Compare Page Logic
+            setupEventListeners();
+        });
 
         // Mock retailer data
         const mockRetailers = [
@@ -581,113 +278,90 @@
             { name: 'B&H Photo', icon: 'bi-camera', color: '#000000' }
         ];
 
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            createParticles();
-            setupEventListeners();
-        });
-
-        // Setup event listeners
         function setupEventListeners() {
             document.getElementById('compareForm').addEventListener('submit', handleCompareSubmit);
         }
 
-        // Handle form submission
         function handleCompareSubmit(e) {
             e.preventDefault();
-            
+
             const productName = document.getElementById('productName').value.trim();
             const category = document.getElementById('category').value;
             const brand = document.getElementById('brand').value.trim();
             const priceRange = document.getElementById('priceRange').value;
-            
+
             if (!productName || !category) {
                 showAlert('Please fill in the required fields', 'warning');
                 return;
             }
-            
-            // Show loading spinner
+
             showLoadingSpinner();
-            
-            // Simulate API call
+
             setTimeout(() => {
                 hideLoadingSpinner();
                 displayComparisonResults(productName, category, brand, priceRange);
             }, 2000);
         }
 
-        // Display comparison results
         function displayComparisonResults(productName, category, brand, priceRange) {
             const resultsContainer = document.getElementById('resultsContainer');
             const comparisonResults = document.getElementById('comparisonResults');
-            
-            // Clear previous results
+
             resultsContainer.innerHTML = '';
-            
-            // Generate mock comparison data
+
             const comparisonData = generateMockComparisonData(productName, category, brand, priceRange);
-            
-            // Sort by price (lowest first)
             comparisonData.sort((a, b) => a.price - b.price);
-            
-            // Create comparison cards
+
             comparisonData.forEach((item, index) => {
                 const card = createComparisonCard(item, index === 0);
                 resultsContainer.appendChild(card);
             });
-            
-            // Show results section
+
             comparisonResults.style.display = 'block';
-            
-            // Scroll to results
             comparisonResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            
+
             showAlert(`Found ${comparisonData.length} deals for ${productName}`, 'info');
         }
 
-        // Generate mock comparison data
         function generateMockComparisonData(productName, category, brand, priceRange) {
             const basePrice = Math.floor(Math.random() * 1500) + 500;
             const results = [];
-            
+
             mockRetailers.forEach(retailer => {
-                const priceVariation = Math.floor(Math.random() * 200) - 100;
-                const currentPrice = basePrice + priceVariation;
-                const originalPrice = currentPrice + Math.floor(Math.random() * 200) + 50;
-                const discount = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+                const variation = Math.floor(Math.random() * 200) - 100;
+                const price = basePrice + variation;
+                const original = price + Math.floor(Math.random() * 200) + 50;
+                const discount = Math.round(((original - price) / original) * 100);
                 const rating = (Math.random() * 2 + 3).toFixed(1);
-                const availability = Math.random() > 0.2 ? 'In Stock' : 'Out of Stock';
-                
+
                 results.push({
                     retailer: retailer.name,
                     icon: retailer.icon,
                     color: retailer.color,
                     productName: productName,
-                    price: currentPrice,
-                    originalPrice: originalPrice,
+                    price: price,
+                    originalPrice: original,
                     discount: discount,
                     rating: rating,
-                    availability: availability,
-                    shipping: Math.random() > 0.5 ? 'Free Shipping' : `$${Math.floor(Math.random() * 20) + 5} Shipping`,
-                    returnPolicy: Math.random() > 0.3 ? '30-Day Returns' : '14-Day Returns'
+                    availability: Math.random() > 0.2 ? 'In Stock' : 'Out of Stock',
+                    shipping: Math.random() > 0.5 ? 'Free Shipping' : '$15 Shipping'
                 });
             });
-            
+
             return results;
         }
 
-        // Create comparison card
         function createComparisonCard(data, isBestDeal) {
             const col = document.createElement('div');
             col.className = 'col-lg-4 col-md-6 mb-4';
-            
+
             col.innerHTML = `
-                <div class="comparison-card ${isBestDeal ? 'border-2 border-success' : ''}">
+                <div class="comparison-card ${isBestDeal ? 'border-success' : ''}" style="${isBestDeal ? 'border-width: 2px;' : ''}">
                     ${isBestDeal ? '<div class="text-center mb-2"><span class="badge bg-success">BEST DEAL</span></div>' : ''}
                     
                     <div class="text-center">
-                        <div class="retailer-logo mx-auto" style="background: ${data.color}20; border-color: ${data.color};">
-                            <i class="bi ${data.icon}" style="color: ${data.color};"></i>
+                        <div class="retailer-logo" style="color: ${data.color}">
+                            <i class="bi ${data.icon}"></i>
                         </div>
                         <h3>${data.retailer}</h3>
                     </div>
@@ -696,89 +370,61 @@
                         <h5>${data.productName}</h5>
                         <div class="price-tag">$${data.price}</div>
                         <div class="original-price">$${data.originalPrice}</div>
-                        <div class="discount-badge">${data.discount}% OFF</div>
+                        <div class="badge bg-danger">${data.discount}% OFF</div>
                     </div>
                     
-                    <div class="mb-3">
-                        <div class="rating mb-2">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-half"></i>
-                            <span class="ms-2">${data.rating} (234 reviews)</span>
+                    <div class="mb-3 text-center">
+                        <div class="rating text-warning mb-2">
+                            ${'★'.repeat(Math.floor(data.rating))}${'☆'.repeat(5 - Math.floor(data.rating))}
+                            <span class="ms-2 text-muted">(${data.rating})</span>
                         </div>
                     </div>
                     
-                    <div class="mb-3">
-                        <small class="d-block mb-1">
-                            <i class="bi bi-truck"></i> ${data.shipping}
-                        </small>
-                        <small class="d-block mb-1">
-                            <i class="bi bi-arrow-clockwise"></i> ${data.returnPolicy}
-                        </small>
-                        <small class="d-block">
-                            <i class="bi bi-check-circle"></i> 
-                            <span class="${data.availability === 'In Stock' ? 'text-success' : 'text-danger'}">${data.availability}</span>
-                        </small>
+                    <div class="mb-3 small text-muted">
+                        <div class="d-flex justify-content-between">
+                            <span><i class="bi bi-truck"></i> ${data.shipping}</span>
+                            <span class="${data.availability === 'In Stock' ? 'text-success' : 'text-danger'}">
+                                ${data.availability}
+                            </span>
+                        </div>
                     </div>
                     
                     <div class="d-grid gap-2">
-                        <button class="btn btn-primary" onclick="visitRetailer('${data.retailer}')">
-                            <i class="bi bi-cart-plus me-2"></i> Buy Now
-                        </button>
-                        <button class="btn btn-outline-light btn-sm" onclick="viewDetails('${data.retailer}')">
-                            <i class="bi bi-info-circle me-1"></i> View Details
+                        <button class="btn btn-primary" onclick="visitRetailer('${data.retailer}')" style="background-color: var(--accent-color); border: none;">
+                            Buy Now
                         </button>
                     </div>
                 </div>
             `;
-            
+
             return col;
         }
 
-        // Show loading spinner
         function showLoadingSpinner() {
             document.getElementById('loadingSpinner').style.display = 'block';
             document.getElementById('comparisonResults').style.display = 'none';
         }
 
-        // Hide loading spinner
         function hideLoadingSpinner() {
             document.getElementById('loadingSpinner').style.display = 'none';
         }
 
-        // Show alert message
         function showAlert(message, type) {
             const alertContainer = document.getElementById('alertContainer');
             const alert = document.createElement('div');
             alert.className = `alert alert-${type} alert-dismissible fade show`;
             alert.innerHTML = `
-                <i class="bi bi-info-circle me-2"></i>${message}
+                ${message}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             `;
             alertContainer.appendChild(alert);
-            
-            // Auto-dismiss after 5 seconds
-            setTimeout(() => {
-                alert.remove();
-            }, 5000);
+            setTimeout(() => alert.remove(), 5000);
         }
 
-        // Visit retailer (placeholder function)
         function visitRetailer(retailer) {
-            showAlert(`Redirecting to ${retailer}...`, 'info');
-            // In a real app, this would redirect to the retailer's product page
-            setTimeout(() => {
-                alert(`This would redirect to ${retailer}'s checkout page. Backend integration needed.`);
-            }, 1000);
-        }
-
-        // View details (placeholder function)
-        function viewDetails(retailer) {
-            showAlert(`Loading details from ${retailer}...`, 'info');
-            // In a real app, this would show more detailed product information
+            alert(`Redirecting to ${retailer}... (Mock Action)`);
         }
     </script>
 </body>
+
 </html>

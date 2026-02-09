@@ -1,850 +1,421 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - Tech Deals Dashboard</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4e+/b6+ZkP4N/OZ3Xe72dqZJG4aWtiAcViiVJCVwSokF1E9U2j6td7Tm2cF0aLys" crossorigin="anonymous">
-    
+    <title>Profile - TechScope</title>
+
     <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4e+/b6+ZkP4N/OZ3Xe72dqZJG4aWtiAcViiVJCVwSokF1E9U2j6td7Tm2cF0aLys" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/dashboard.css">
+
     <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-            --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-            --glass-bg: rgba(255, 255, 255, 0.08);
-            --glass-border: rgba(255, 255, 255, 0.15);
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.85);
-            --text-muted: rgba(255, 255, 255, 0.6);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* Overrides to make Bootstrap play nice with Dashboard theme */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            min-height: 100vh;
-            color: var(--text-primary);
-            overflow-x: hidden;
-            position: relative;
+            background-color: var(--bg-color);
+            color: var(--text-color);
         }
 
-        /* Enhanced Animated Background */
-        .bg-animation {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -2;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(240, 147, 251, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(79, 172, 254, 0.2) 0%, transparent 50%),
-                linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            background-size: 400% 400%;
-            animation: gradientShift 20s ease infinite;
-        }
-
-        /* Floating Particles */
-        .particles {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            overflow: hidden;
-        }
-
-        .particle {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            animation: float 15s infinite ease-in-out;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.1; }
-            50% { transform: translateY(-100px) rotate(180deg); opacity: 0.3; }
-        }
-
-        /* Profile Container */
-        .profile-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 60px 20px 40px;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Profile Header */
-        .profile-header {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.1) 0%, 
-                rgba(255, 255, 255, 0.05) 100%);
-            backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            border-radius: 25px;
-            padding: 50px 40px;
-            margin-bottom: 40px;
-            text-align: center;
-            animation: fadeInDown 0.8s ease-out;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .profile-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--accent-gradient);
-            border-radius: 25px 25px 0 0;
-        }
-
-        .profile-avatar {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            background: var(--secondary-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 25px;
-            font-size: 56px;
-            color: white;
-            border: 5px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 15px 35px rgba(240, 147, 251, 0.3);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .profile-avatar:hover {
-            transform: scale(1.05);
-            box-shadow: 0 20px 40px rgba(240, 147, 251, 0.4);
-        }
-
-        .profile-avatar::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transform: rotate(45deg);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-
-        /* Profile Cards */
-        .profile-card {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.08) 0%, 
-                rgba(255, 255, 255, 0.03) 100%);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 35px;
-            margin-bottom: 30px;
-            animation: fadeInUp 0.6s ease-out;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .profile-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .profile-card:hover::before {
-            opacity: 1;
-        }
-
-        .profile-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.12) 0%, 
-                rgba(255, 255, 255, 0.06) 100%);
-        }
-
-        /* Cart Items */
-        .cart-item {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.06) 0%, 
-                rgba(255, 255, 255, 0.02) 100%);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .cart-item:hover {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.1) 0%, 
-                rgba(255, 255, 255, 0.05) 100%);
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .cart-item img {
-            width: 70px;
-            height: 70px;
-            border-radius: 12px;
-            object-fit: cover;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Form Styles */
-        .form-control, .form-select {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.08) 0%, 
-                rgba(255, 255, 255, 0.04) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: var(--text-primary);
-            border-radius: 12px;
-            padding: 15px 18px;
-            transition: all 0.3s ease;
-            font-size: 15px;
-        }
-
-        .form-control:focus, .form-select:focus {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.12) 0%, 
-                rgba(255, 255, 255, 0.06) 100%);
-            border-color: rgba(255, 255, 255, 0.3);
-            color: var(--text-primary);
-            box-shadow: 0 0 0 0.2rem rgba(79, 172, 254, 0.2);
-            transform: translateY(-2px);
+        .form-control,
+        .form-select,
+        .form-control:focus,
+        .form-select:focus {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            box-shadow: none;
         }
 
         .form-control::placeholder {
             color: var(--text-muted);
-            font-style: italic;
         }
 
-        .form-label {
-            color: var(--text-secondary);
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Button Styles */
-        .btn-primary {
-            background: var(--primary-gradient);
-            border: none;
-            border-radius: 12px;
-            padding: 14px 28px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 14px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .btn-primary:hover::before {
-            left: 100%;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-outline-light {
-            border: 2px solid rgba(255, 255, 255, 0.25);
-            color: var(--text-primary);
-            border-radius: 12px;
-            padding: 12px 24px;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 13px;
-        }
-
-        .btn-outline-light:hover {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.15) 0%, 
-                rgba(255, 255, 255, 0.08) 100%);
-            border-color: rgba(255, 255, 255, 0.4);
-            color: var(--text-primary);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
-        }
-
-        .btn-danger {
-            background: var(--warning-gradient);
-            border: none;
-            border-radius: 10px;
-            padding: 10px 18px;
-            font-size: 13px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-danger:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(250, 112, 154, 0.4);
-        }
-
-        /* Stats */
-        .stat-item {
+        .profile-header {
             text-align: center;
-            padding: 25px 20px;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.06) 0%, 
-                rgba(255, 255, 255, 0.02) 100%);
-            border-radius: 15px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s ease;
+            padding: 2rem;
+            margin-bottom: 2rem;
         }
 
-        .stat-item:hover {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.1) 0%, 
-                rgba(255, 255, 255, 0.05) 100%);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .stat-number {
-            font-size: 36px;
-            font-weight: 700;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 8px;
-        }
-
-        .stat-label {
-            font-size: 13px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-        }
-
-        /* Headings */
-        h1 {
-            font-size: 2.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-        }
-
-        h3 {
-            font-size: 1.6rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 25px;
+        .profile-avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
             display: flex;
             align-items: center;
-            gap: 12px;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 1rem;
+            border: 4px solid var(--sidebar-bg);
+            box-shadow: 0 0 20px rgba(140, 82, 255, 0.3);
         }
 
-        h3 i {
-            color: #4facfe;
-            font-size: 1.3rem;
+        /* Cart Stuff */
+        .cart-item {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
         }
 
-        /* Animations */
-        @keyframes fadeInDown {
-            from { 
-                opacity: 0; 
-                transform: translateY(-30px); 
-            }
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
-            }
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
         }
 
-        @keyframes fadeInUp {
-            from { 
-                opacity: 0; 
-                transform: translateY(30px); 
-            }
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
-            }
-        }
-
-        /* Alert Styles */
-        .alert {
+        /* Stats in profile */
+        .stat-box {
+            background-color: var(--input-bg);
+            padding: 15px;
             border-radius: 12px;
-            border: none;
-            backdrop-filter: blur(15px);
-            font-weight: 500;
+            text-align: center;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
         }
 
-        .alert-success {
-            background: linear-gradient(135deg, 
-                rgba(67, 233, 123, 0.15) 0%, 
-                rgba(56, 249, 215, 0.1) 100%);
-            color: #a5f3d0;
-            border: 1px solid rgba(67, 233, 123, 0.2);
+        .stat-box h4 {
+            color: var(--accent-color);
+            font-size: 1.8rem;
+            margin-bottom: 5px;
         }
 
-        .alert-danger {
-            background: linear-gradient(135deg, 
-                rgba(244, 67, 54, 0.15) 0%, 
-                rgba(239, 154, 154, 0.1) 100%);
-            color: #fca5a5;
-            border: 1px solid rgba(244, 67, 54, 0.2);
-        }
-
-        .alert-info {
-            background: linear-gradient(135deg, 
-                rgba(33, 150, 243, 0.15) 0%, 
-                rgba(144, 202, 249, 0.1) 100%);
-            color: #93c5fd;
-            border: 1px solid rgba(33, 150, 243, 0.2);
-        }
-
-        /* Password Strength Indicator */
-        .password-strength {
-            height: 6px;
-            border-radius: 3px;
-            margin-top: 8px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .strength-weak { 
-            background: linear-gradient(90deg, #f44336, #ff6b6b); 
-            width: 33%; 
-        }
-        
-        .strength-medium { 
-            background: linear-gradient(90deg, #ff9800, #ffc107); 
-            width: 66%; 
-        }
-        
-        .strength-strong { 
-            background: var(--success-gradient); 
-            width: 100%; 
-        }
-
-        /* Form Switch */
-        .form-check-input:checked {
-            background-color: #4facfe;
-            border-color: #4facfe;
-        }
-
-        .form-check-label {
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        /* Badge Styles */
-        .badge {
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 12px;
+        .stat-box p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin: 0;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
-        .badge-success {
-            background: var(--success-gradient);
+        .password-strength {
+            height: 5px;
+            border-radius: 3px;
+            margin-top: 5px;
+            transition: all 0.3s;
         }
 
-        .badge-info {
-            background: var(--accent-gradient);
+        .strength-weak {
+            background-color: #dc3545;
+            width: 33%;
         }
 
-        .badge-primary {
-            background: var(--primary-gradient);
+        .strength-medium {
+            background-color: #ffc107;
+            width: 66%;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .profile-container {
-                padding: 40px 15px 30px;
-            }
-            
-            .profile-header, .profile-card {
-                padding: 25px 20px;
-            }
-            
-            .cart-item {
-                flex-direction: column;
-                text-align: center;
-                gap: 15px;
-            }
-            
-            h1 {
-                font-size: 2.2rem;
-            }
-            
-            h3 {
-                font-size: 1.4rem;
-            }
+        .strength-strong {
+            background-color: #198754;
+            width: 100%;
         }
 
-        /* Scrollbar Styling */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 5px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #764ba2, #667eea);
+        /* Badge overrides */
+        .badge {
+            font-weight: 500;
+            padding: 0.5em 0.8em;
         }
     </style>
 </head>
+
 <body>
-    <div class="bg-animation"></div>
-    <div class="particles" id="particles"></div>
-    
-    <div class="profile-container">
-        <!-- Profile Header -->
-        <div class="profile-header">
-            <div class="profile-avatar">
-                <i class="bi bi-person-circle"></i>
-            </div>
-            <h1 id="profileUsername">Guest User</h1>
-            <p class="lead mb-3">Premium Member</p>
-            <div class="d-flex justify-content-center gap-2 flex-wrap">
-                <span class="badge bg-success">Active</span>
-                <span class="badge bg-info">Since <span id="memberSince">2024</span></span>
-            </div>
-        </div>
 
-        <div class="row g-4">
-            <!-- Left Column - Account Info & Cart -->
-            <div class="col-xl-8 col-lg-7">
-                <!-- Account Information -->
-                <div class="profile-card">
-                    <h3>
-                        <i class="bi bi-person-badge"></i> Account Information
-                    </h3>
-                    
-                    <form id="accountForm">
-                        <div class="row g-3 align-items-center mb-3">
-                            <div class="col-md-3">
-                                <label class="form-label text-md-end">Username</label>
-                            </div>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" id="username" value="Guest User" readonly>
-                            </div>
-                        </div>
-                        
-                        <div class="row g-3 align-items-center mb-3">
-                            <div class="col-md-3">
-                                <label class="form-label text-md-end">Email</label>
-                            </div>
-                            <div class="col-md-9">
-                                <input type="email" class="form-control" id="email" placeholder="your@email.com">
-                            </div>
-                        </div>
-                        
-                        <div class="row g-3 align-items-center mb-3">
-                            <div class="col-md-3">
-                                <label class="form-label text-md-end">First Name</label>
-                            </div>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" id="firstName" placeholder="John">
-                            </div>
-                        </div>
-                        
-                        <div class="row g-3 align-items-center mb-3">
-                            <div class="col-md-3">
-                                <label class="form-label text-md-end">Last Name</label>
-                            </div>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" id="lastName" placeholder="Doe">
-                            </div>
-                        </div>
-                        
-                        <div class="row g-3 align-items-center mb-3">
-                            <div class="col-md-3">
-                                <label class="form-label text-md-end">Phone</label>
-                            </div>
-                            <div class="col-md-9">
-                                <input type="tel" class="form-control" id="phone" placeholder="+91 6351834679">
-                            </div>
-                        </div>
-                        
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-3">
-                                <label class="form-label text-md-end">Address</label>
-                            </div>
-                            <div class="col-md-9">
-                                <textarea class="form-control" id="address" rows="3" placeholder="Your address"></textarea>
-                            </div>
-                        </div>
-                        
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-circle me-2"></i> Update Information
-                            </button>
-                        </div>
-                    </form>
+    <button class="mobile-toggle" id="mobileToggle">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <a href="dashboard.html" class="brand">
+                <i class="bi bi-grid-3x3-gap-fill"></i>
+                TechScope
+            </a>
+
+            <nav class="nav-links">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="bi bi-house-door"></i> Home
+                </a>
+                <a href="dashboard.html#search" class="nav-item">
+                    <i class="bi bi-search"></i> Find Deals
+                </a>
+                <a href="compare.html" class="nav-item">
+                    <i class="bi bi-arrow-left-right"></i> Compare
+                </a>
+                <a href="profile.html" class="nav-item active">
+                    <i class="bi bi-person-circle"></i> Profile
+                </a>
+            </nav>
+
+            <div class="user-profile">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-details">
+                    <div class="user-name" id="displayUsername">Guest</div>
+                    <div class="user-role">Member</div>
                 </div>
+                <a href="#" class="logout-btn" id="logoutBtn"
+                    style="padding: 4px 8px; border: none; background: transparent;">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
+            </div>
+        </aside>
 
-                <!-- Shopping Cart -->
-                <div class="profile-card">
-                    <h3>
-                        <i class="bi bi-cart3"></i> Shopping Cart
-                        <span class="badge bg-primary ms-2" id="cartCount">0</span>
-                    </h3>
-                    
-                    <div id="cartItems">
-                        <!-- Cart items will be populated here -->
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Profile Header -->
+            <div class="dashboard-card profile-header">
+                <div class="profile-avatar-large">
+                    <i class="bi bi-person"></i>
+                </div>
+                <h2 id="profileUsername">Guest User</h2>
+                <p class="text-muted">Premium Member</p>
+                <div>
+                    <span class="badge bg-success">Active</span>
+                    <span class="badge bg-info text-dark">Since <span id="memberSince">2024</span></span>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Left Column -->
+                <div class="col-lg-8">
+                    <!-- Account Info -->
+                    <div class="dashboard-card mb-4">
+                        <h3 class="mb-4"><i class="bi bi-person-badge"></i> Account Information</h3>
+                        <form id="accountForm">
+                            <div class="row mb-3 align-items-center">
+                                <label for="username" class="col-sm-3 col-form-label">Username</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="username" readonly>
+                                </div>
+                            </div>
+                            <div class="row mb-3 align-items-center">
+                                <label for="email" class="col-sm-3 col-form-label">Email</label>
+                                <div class="col-sm-9">
+                                    <input type="email" class="form-control" id="email" placeholder="your@email.com">
+                                </div>
+                            </div>
+                            <div class="row mb-3 align-items-center">
+                                <label for="firstName" class="col-sm-3 col-form-label">First Name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="firstName" placeholder="John">
+                                </div>
+                            </div>
+                            <div class="row mb-3 align-items-center">
+                                <label for="lastName" class="col-sm-3 col-form-label">Last Name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="lastName" placeholder="Doe">
+                                </div>
+                            </div>
+                            <div class="row mb-3 align-items-center">
+                                <label for="phone" class="col-sm-3 col-form-label">Phone</label>
+                                <div class="col-sm-9">
+                                    <input type="tel" class="form-control" id="phone" placeholder="+91 9876543210">
+                                </div>
+                            </div>
+                            <div class="row mb-3 align-items-center">
+                                <label for="address" class="col-sm-3 col-form-label">Address</label>
+                                <div class="col-sm-9">
+                                    <textarea class="form-control" id="address" rows="2"
+                                        placeholder="Your address"></textarea>
+                                </div>
+                            </div>
+                            <div class="mt-4 text-end">
+                                <button type="submit" class="btn btn-primary"
+                                    style="background-color: var(--accent-color); border: none;">
+                                    Update Information
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                    
-                    <div class="mt-4 p-3 border-top border-secondary">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="mb-0">Total: <span id="cartTotal">$0</span></h4>
+
+                    <!-- Shopping Cart -->
+                    <div class="dashboard-card">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3 class="mb-0"><i class="bi bi-cart3"></i> Shopping Cart</h3>
+                            <span class="badge bg-primary rounded-pill" id="cartCount">0</span>
+                        </div>
+
+                        <div id="cartItems">
+                            <!-- Items go here -->
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top"
+                            style="border-color: var(--border-color) !important;">
+                            <h4 class="mb-0">Total: <span id="cartTotal">$0.00</span></h4>
                             <div>
-                                <button class="btn btn-primary btn-sm me-2" onclick="checkout()">
-                                    <i class="bi bi-credit-card me-1"></i> Checkout
-                                </button>
-                                <button class="btn btn-outline-light btn-sm" onclick="clearCart()">
-                                    <i class="bi bi-trash me-1"></i> Clear Cart
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column - Stats & Security -->
-            <div class="col-xl-4 col-lg-5">
-                <!-- User Stats -->
-                <div class="profile-card">
-                    <h3>
-                        <i class="bi bi-graph-up"></i> Your Stats
-                    </h3>
-                    
-                    <div class="row g-3">
-                        <div class="col-6">
-                            <div class="stat-item">
-                                <div class="stat-number" id="statDealsFound">0</div>
-                                <div class="stat-label">Deals Found</div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="stat-item">
-                                <div class="stat-number" id="statSearchesMade">0</div>
-                                <div class="stat-label">Searches Made</div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="stat-item">
-                                <div class="stat-number" id="statAvgSavings">0%</div>
-                                <div class="stat-label">Avg. Savings</div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="stat-item">
-                                <div class="stat-number" id="statCategoriesSearched">0</div>
-                                <div class="stat-label">Categories</div>
+                                <button class="btn btn-outline-danger btn-sm me-2" onclick="clearCart()">Clear</button>
+                                <button class="btn btn-success btn-sm" onclick="checkout()">Checkout</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Password Change -->
-                <div class="profile-card">
-                    <h3>
-                        <i class="bi bi-shield-lock"></i> Security
-                    </h3>
-                    
-                    <form id="passwordForm">
-                        <div class="row g-3 align-items-center mb-3">
-                            <div class="col-md-5">
-                                <label class="form-label text-md-end">Current Password</label>
+                <!-- Right Column -->
+                <div class="col-lg-4">
+                    <!-- Stats -->
+                    <div class="dashboard-card mb-4">
+                        <h3 class="mb-4"><i class="bi bi-graph-up"></i> Your Stats</h3>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <div class="stat-box">
+                                    <h4 id="statDealsFound">0</h4>
+                                    <p>Deals Found</p>
+                                </div>
                             </div>
-                            <div class="col-md-7">
-                                <input type="password" class="form-control" id="currentPassword" required>
+                            <div class="col-6">
+                                <div class="stat-box">
+                                    <h4 id="statSearchesMade">0</h4>
+                                    <p>Searches</p>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="stat-box">
+                                    <h4 id="statAvgSavings">0%</h4>
+                                    <p>Savings</p>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="stat-box">
+                                    <h4 id="statCategoriesSearched">0</h4>
+                                    <p>Categories</p>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="row g-3 align-items-center mb-3">
-                            <div class="col-md-5">
-                                <label class="form-label text-md-end">New Password</label>
+                    </div>
+
+                    <!-- Security -->
+                    <div class="dashboard-card mb-4">
+                        <h3 class="mb-4"><i class="bi bi-shield-lock"></i> Security</h3>
+                        <form id="passwordForm">
+                            <div class="row mb-3 align-items-center">
+                                <label for="currentPassword" class="col-sm-5 col-form-label">Current Password</label>
+                                <div class="col-sm-7">
+                                    <input type="password" class="form-control" id="currentPassword" required>
+                                </div>
                             </div>
-                            <div class="col-md-7">
-                                <input type="password" class="form-control" id="newPassword" required>
-                                <div class="password-strength" id="passwordStrength"></div>
+                            <div class="row mb-3 align-items-center">
+                                <label for="newPassword" class="col-sm-5 col-form-label">New Password</label>
+                                <div class="col-sm-7">
+                                    <input type="password" class="form-control" id="newPassword" required>
+                                    <div id="passwordStrength" class="password-strength"></div>
+                                </div>
+                            </div>
+                            <div class="row mb-3 align-items-center">
+                                <label for="confirmPassword" class="col-sm-5 col-form-label">Confirm Password</label>
+                                <div class="col-sm-7">
+                                    <input type="password" class="form-control" id="confirmPassword" required>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="mt-4 text-end">
+                                <button type="submit" class="btn btn-primary"
+                                    style="background-color: var(--accent-color); border: none;">
+                                    Change Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Preferences -->
+                    <div class="dashboard-card">
+                        <h3 class="mb-4"><i class="bi bi-gear"></i> Preferences</h3>
+                        <div class="mb-3">
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                                <label class="form-check-label">Email Notifications</label>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="pushNotifications">
+                                <label class="form-check-label">Push Notifications</label>
                             </div>
                         </div>
-                        
-                        <div class="row g-3 align-items-center mb-4">
-                            <div class="col-md-5">
-                                <label class="form-label text-md-end">Confirm New Password</label>
-                            </div>
-                            <div class="col-md-7">
-                                <input type="password" class="form-control" id="confirmPassword" required>
-                            </div>
+                        <div class="mb-3">
+                            <label class="form-label">Currency</label>
+                            <select class="form-select" id="currency">
+                                <option value="USD">USD ($)</option>
+                                <option value="EUR">EUR (€)</option>
+                                <option value="GBP">GBP (£)</option>
+                                <option value="INR">INR (₹)</option>
+                            </select>
                         </div>
                         <br>
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="bi bi-key me-2"></i> Change Password
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Preferences -->
-                <div class="profile-card">
-                    <h3>
-                        <i class="bi bi-gear"></i> Preferences
-                    </h3>
-                    
-                    <div class="mb-4">
-                        <label class="form-label d-block mb-3">Notifications</label>
-                        <div class="form-check form-switch mb-2">
-                            <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
-                            <label class="form-check-label" for="emailNotifications">
-                                Email notifications for new deals
-                            </label>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="pushNotifications">
-                            <label class="form-check-label" for="pushNotifications">
-                                Push notifications
-                            </label>
-                        </div>
+                        <button class="btn btn-outline-light w-100" onclick="savePreferences()">
+                            Save Preferences
+                        </button>
                     </div>
-                    
-                    <div class="mb-4">
-                        <label class="form-label">Currency</label>
-                        <select class="form-select" id="currency">
-                            <option value="USD" selected>USD ($)</option>
-                            <option value="EUR">EUR (€)</option>
-                            <option value="GBP">GBP (£)</option>
-                            <option value="INR">INR (₹)</option>
-                        </select>
-                    </div>
-                    
-                    <button class="btn btn-outline-light w-100" onclick="savePreferences()">
-                        <i class="bi bi-save me-2"></i> Save Preferences
-                    </button>
                 </div>
             </div>
-        </div>
+
+        </main>
     </div>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    
-    <script>
-        // Create floating particles
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            const particleCount = 50;
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                
-                // Random size
-                const size = Math.random() * 4 + 2;
-                particle.style.width = size + 'px';
-                particle.style.height = size + 'px';
-                
-                // Random position
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                
-                // Random animation delay and duration
-                particle.style.animationDelay = Math.random() * 15 + 's';
-                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
-                
-                particlesContainer.appendChild(particle);
-            }
-        }
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
 
-        // Initialize profile page
-        document.addEventListener('DOMContentLoaded', function() {
-            createParticles();
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // User Data
+            const username = localStorage.getItem('username') || 'Guest';
+            document.getElementById('displayUsername').textContent = username;
+            document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+
+            // Mobile Menu Logic
+            const mobileToggle = document.getElementById('mobileToggle');
+            const sidebar = document.getElementById('sidebar');
+
+            mobileToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sidebar.classList.toggle('active');
+                mobileToggle.innerHTML = sidebar.classList.contains('active')
+                    ? '<i class="bi bi-x-lg"></i>'
+                    : '<i class="bi bi-list"></i>';
+            });
+
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 992 &&
+                    !sidebar.contains(e.target) &&
+                    !mobileToggle.contains(e.target) &&
+                    sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                    mobileToggle.innerHTML = '<i class="bi bi-list"></i>';
+                }
+            });
+
+            // Logout Logic
+            document.getElementById('logoutBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('user');
+                localStorage.removeItem('username');
+                window.location.href = 'login.html';
+            });
+
+            // Profile Page Specific Logic
             loadUserData();
             loadCartData();
             loadStatsData();
             setupEventListeners();
         });
 
-        // Load user data from localStorage
         function loadUserData() {
             const username = localStorage.getItem('username') || 'Guest User';
             document.getElementById('profileUsername').textContent = username;
             document.getElementById('username').value = username;
-            
-            // Load saved profile data
+
             const savedProfile = localStorage.getItem('userProfile');
             if (savedProfile) {
                 const profile = JSON.parse(savedProfile);
@@ -856,56 +427,56 @@
             }
         }
 
-        // Load cart data
         function loadCartData() {
             const cart = JSON.parse(localStorage.getItem('userCart') || '[]');
             const cartItems = document.getElementById('cartItems');
             const cartCount = document.getElementById('cartCount');
             const cartTotal = document.getElementById('cartTotal');
-            
+
             if (cart.length === 0) {
                 cartItems.innerHTML = `
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle"></i> Your cart is empty. Start searching for tech deals!
+                    <div class="alert alert-info text-center" style="background-color: rgba(13, 202, 240, 0.1); border-color: rgba(13, 202, 240, 0.2); color: #0dcaf0;">
+                        <i class="bi bi-info-circle"></i> Your cart is empty.
                     </div>
                 `;
                 cartCount.textContent = '0';
                 cartTotal.textContent = '$0';
                 return;
             }
-            
+
             let total = 0;
             let html = '';
-            
+
             cart.forEach((item, index) => {
                 const price = parseFloat(item.price.replace('$', ''));
                 total += price;
-                
+
                 html += `
                     <div class="cart-item">
-                        <div class="d-flex align-items-center">
-                            <img src="${item.imageUrl}" alt="${item.title}">
-                            <div class="ms-3">
-                                <h6 class="mb-1">${item.title}</h6>
-                                <small class="text-muted">${item.retailer}</small>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <img src="\${item.imageUrl || 'https://via.placeholder.com/60'}" alt="\${item.title}">
+                                <div class="ms-3">
+                                    <h6 class="mb-1 text-white">\${item.title}</h6>
+                                    <small class="text-muted">\${item.retailer}</small>
+                                </div>
                             </div>
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <span class="me-3">${item.price}</span>
-                            <button class="btn btn-danger btn-sm" onclick="removeFromCart(${index})">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                            <div class="text-end">
+                                <div class="mb-1">\${item.price}</div>
+                                <button class="btn btn-sm btn-outline-danger" onclick="removeFromCart(\${index})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
             });
-            
+
             cartItems.innerHTML = html;
             cartCount.textContent = cart.length;
-            cartTotal.textContent = `$${total.toFixed(2)}`;
+            cartTotal.textContent = `$\${total.toFixed(2)}`;
         }
 
-        // Load stats data
         function loadStatsData() {
             const stats = JSON.parse(localStorage.getItem('techDealStats') || '{}');
             document.getElementById('statDealsFound').textContent = stats.dealsFound || 0;
@@ -914,31 +485,25 @@
             document.getElementById('statCategoriesSearched').textContent = (stats.categoriesSearched || []).length || 0;
         }
 
-        // Setup event listeners
         function setupEventListeners() {
-            // Account form
-            document.getElementById('accountForm').addEventListener('submit', function(e) {
+            document.getElementById('accountForm').addEventListener('submit', function (e) {
                 e.preventDefault();
                 saveAccountInfo();
             });
 
-            // Password form
-            document.getElementById('passwordForm').addEventListener('submit', function(e) {
+            document.getElementById('passwordForm').addEventListener('submit', function (e) {
                 e.preventDefault();
                 changePassword();
             });
 
-            // Password strength checker
             document.getElementById('newPassword').addEventListener('input', checkPasswordStrength);
 
-            // Load preferences
             const preferences = JSON.parse(localStorage.getItem('userPreferences') || '{}');
             document.getElementById('emailNotifications').checked = preferences.emailNotifications !== false;
             document.getElementById('pushNotifications').checked = preferences.pushNotifications === true;
             document.getElementById('currency').value = preferences.currency || 'USD';
         }
 
-        // Save account information
         function saveAccountInfo() {
             const profile = {
                 email: document.getElementById('email').value,
@@ -947,42 +512,35 @@
                 phone: document.getElementById('phone').value,
                 address: document.getElementById('address').value
             };
-            
+
             localStorage.setItem('userProfile', JSON.stringify(profile));
-            showNotification('Account information updated successfully!', 'success');
+            alert('Account information updated successfully!');
         }
 
-        // Change password
         function changePassword() {
-            const currentPassword = document.getElementById('currentPassword').value;
             const newPassword = document.getElementById('newPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-            
+
             if (newPassword !== confirmPassword) {
-                showNotification('New passwords do not match!', 'danger');
+                alert('New passwords do not match!');
                 return;
             }
-            
+
             if (newPassword.length < 6) {
-                showNotification('Password must be at least 6 characters long!', 'danger');
+                alert('Password must be at least 6 characters long!');
                 return;
             }
-            
-            // In a real app, you'd validate current password with server
+
             localStorage.setItem('userPassword', newPassword);
-            
-            // Clear form
             document.getElementById('passwordForm').reset();
             document.getElementById('passwordStrength').className = 'password-strength';
-            
-            showNotification('Password changed successfully!', 'success');
+            alert('Password changed successfully!');
         }
 
-        // Check password strength
         function checkPasswordStrength() {
             const password = document.getElementById('newPassword').value;
             const strengthBar = document.getElementById('passwordStrength');
-            
+
             if (password.length < 6) {
                 strengthBar.className = 'password-strength strength-weak';
             } else if (password.length < 10 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
@@ -992,64 +550,40 @@
             }
         }
 
-        // Remove item from cart
         function removeFromCart(index) {
             const cart = JSON.parse(localStorage.getItem('userCart') || '[]');
             cart.splice(index, 1);
             localStorage.setItem('userCart', JSON.stringify(cart));
             loadCartData();
-            showNotification('Item removed from cart!', 'info');
         }
 
-        // Clear cart
         function clearCart() {
             if (confirm('Are you sure you want to clear your cart?')) {
                 localStorage.setItem('userCart', JSON.stringify([]));
                 loadCartData();
-                showNotification('Cart cleared!', 'info');
             }
         }
 
-        // Checkout
         function checkout() {
             const cart = JSON.parse(localStorage.getItem('userCart') || '[]');
             if (cart.length === 0) {
-                showNotification('Your cart is empty!', 'info');
+                alert('Your cart is empty!');
                 return;
             }
-            
-            showNotification('Redirecting to checkout...', 'success');
-            // In a real app, this would redirect to a checkout page
-            setTimeout(() => {
-                alert('Checkout functionality would be implemented here. This is a demo.');
-            }, 1000);
+            alert('Redirecting to checkout... (Demo)');
         }
 
-        // Save preferences
         function savePreferences() {
             const preferences = {
                 emailNotifications: document.getElementById('emailNotifications').checked,
                 pushNotifications: document.getElementById('pushNotifications').checked,
                 currency: document.getElementById('currency').value
             };
-            
-            localStorage.setItem('userPreferences', JSON.stringify(preferences));
-            showNotification('Preferences saved successfully!', 'success');
-        }
 
-        // Show notification
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `alert alert-${type} position-fixed top-0 start-50 translate-middle-x mt-3`;
-            notification.style.zIndex = '9999';
-            notification.style.minWidth = '300px';
-            notification.innerHTML = `<i class="bi bi-info-circle"></i> ${message}`;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
+            localStorage.setItem('userPreferences', JSON.stringify(preferences));
+            alert('Preferences saved successfully!');
         }
     </script>
 </body>
+
 </html>
