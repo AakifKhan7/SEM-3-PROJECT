@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search - TechScope</title>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/dashboard.css">
+    <style>
+        /* Extra styles for search specific elements */
+        .search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .save-search-btn {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: none; /* Hidden initially */
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .save-search-btn:hover {
+            background-color: var(--card-bg);
+            border-color: var(--accent-color);
+        }
+        .product-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .btn-compare {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            flex: 1;
+            text-align: center;
+        }
+        .btn-compare:hover {
+             background-color: var(--card-bg);
+             border-color: var(--accent-color);
+             color: var(--text-color);
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="mobile-toggle" id="mobileToggle">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <a href="dashboard.html" class="brand">
+                <i class="bi bi-grid-3x3-gap-fill"></i>
+                TechScope
+            </a>
+
+            <nav class="nav-links">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="bi bi-house-door"></i> Home
+                </a>
+                <a href="search.html" class="nav-item active">
+                    <i class="bi bi-search"></i> Find Deals
+                </a>
+                <a href="compare.html" class="nav-item">
+                    <i class="bi bi-arrow-left-right"></i> Compare
+                </a>
+                <a href="profile.html" class="nav-item">
+                    <i class="bi bi-person-circle"></i> Profile
+                </a>
+            </nav>
+
+            <div class="user-profile">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-details">
+                    <div class="user-name" id="displayUsername">Guest</div>
+                    <div class="user-role">Member</div>
+                </div>
+                <a href="#" class="logout-btn" id="logoutBtn"
+                    style="padding: 4px 8px; border: none; background: transparent;">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <div class="header-section">
+                <div>
+                    <h1 class="page-title">Find Products</h1>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Search across multiple platforms instantly</p>
+                </div>
+                <div style="text-align: right; color: var(--text-muted); font-size: 0.8rem;">
+                    <span id="lastLogin"></span>
+                </div>
+            </div>
+
+            <!-- Search Section -->
+            <div class="dashboard-card" id="search">
+                <div class="search-header">
+                     <h3 style="margin:0;">Search</h3>
+                     <button class="save-search-btn" id="saveSearchBtn">
+                        <i class="bi bi-bookmark"></i> Save This Search
+                     </button>
+                </div>
+
+                <div class="search-container">
+                    <div class="search-input-group">
+                        <input type="text" class="custom-search-input" id="deviceSearchInput"
+                            placeholder="Enter device name (e.g., iPhone 15, MacBook Pro...)">
+                        <button class="search-btn" id="searchBtn">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </div>
+
+                    <div class="quick-tags">
+                        <span class="tag" data-device="iphone">iPhone 15</span>
+                        <span class="tag" data-device="macbook">MacBook Pro</span>
+                        <span class="tag" data-device="samsung">Galaxy S24</span>
+                        <span class="tag" data-device="ipad">iPad Air</span>
+                        <span class="tag" data-device="ps5">PlayStation 5</span>
+                        <span class="tag" data-device="xbox">Xbox Series X</span>
+                    </div>
+                </div>
+
+                <!-- Search Results (Hidden by default) -->
+                <div id="searchResults"
+                    style="display: none; margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 2rem;">
+                    <h3 style="margin-bottom: 1rem;">Results</h3>
+                    <div id="dealsList"></div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+      <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" style="background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color);">
+        <div class="toast-header" style="background: rgba(255,255,255,0.05); color: var(--text-color); border-bottom: 1px solid var(--border-color);">
+          <strong class="me-auto" id="toastTitle">Notification</strong>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close" onclick="document.getElementById('liveToast').classList.remove('show')"></button>
+        </div>
+        <div class="toast-body" id="toastMessage">
+          Action successful.
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // API Configuration
+        const API_BASE_URL = 'http://127.0.0.1:8001/api';
+
+        // Helper function for authenticated API calls
+        async function apiCall(endpoint, options = {}) {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = 'login.html';
+                return null;
+            }
+
+            const defaultOptions = {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                ...defaultOptions,
+                ...options,
+                headers: { ...defaultOptions.headers, ...options.headers },
+            });
+
+            if (response.status === 401) {
+                // Token expired
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+                return null;
+            }
+
+            return response;
+        }
+
+        function showToast(title, message) {
+            const toastEl = document.getElementById('liveToast');
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMessage').textContent = message;
+            toastEl.classList.add('show');
+            setTimeout(() => toastEl.classList.remove('show'), 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Check authentication
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Mobile Menu Toggle
+            const mobileToggle = document.getElementById('mobileToggle');
+            const sidebar = document.getElementById('sidebar');
+
+            mobileToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sidebar.classList.toggle('active');
+                mobileToggle.innerHTML = sidebar.classList.contains('active')
+                    ? '<i class="bi bi-x-lg"></i>'
+                    : '<i class="bi bi-list"></i>';
+            });
+
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 992 &&
+                    !sidebar.contains(e.target) &&
+                    !mobileToggle.contains(e.target) &&
+                    sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                    mobileToggle.innerHTML = '<i class="bi bi-list"></i>';
+                }
+            });
+
+            // Fetch and display user info
+            try {
+                const userResponse = await apiCall('/auth/me');
+                if (userResponse && userResponse.ok) {
+                    const userData = await userResponse.json();
+                    const displayName = userData.full_name || userData.email.split('@')[0];
+                    document.getElementById('displayUsername').textContent = displayName;
+                    document.getElementById('userAvatar').textContent = displayName.charAt(0).toUpperCase();
+                } else {
+                     const username = localStorage.getItem('username') || 'Guest';
+                     document.getElementById('displayUsername').textContent = username;
+                     document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+                }
+            } catch (error) {
+                console.error('Failed to fetch user info:', error);
+            }
+
+            // Display current time
+            const now = new Date();
+            document.getElementById('lastLogin').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+
+            // Search Logic
+            const searchBtn = document.getElementById('searchBtn');
+            const searchInput = document.getElementById('deviceSearchInput');
+            const searchResults = document.getElementById('searchResults');
+            const dealsList = document.getElementById('dealsList');
+            const saveSearchBtn = document.getElementById('saveSearchBtn');
+            let currentQuery = '';
+
+            async function performSearch(query) {
+                if (!query || query.length < 3) {
+                    alert('Please enter at least 3 characters to search');
+                    return;
+                }
+                
+                currentQuery = query;
+                
+                // Show loading state
+                searchBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Searching...';
+                searchBtn.disabled = true;
+                saveSearchBtn.style.display = 'none';
+
+                try {
+                    const response = await apiCall(`/products/search?q=${encodeURIComponent(query)}`);
+                    
+                    searchBtn.innerHTML = '<i class="bi bi-search"></i> Search';
+                    searchBtn.disabled = false;
+
+                    if (response.ok) {
+                        const products = await response.json();
+                        searchResults.style.display = 'block';
+                        saveSearchBtn.style.display = 'flex'; // Show save button
+
+                        if (products.length === 0) {
+                            dealsList.innerHTML = `
+                                <div class="dashboard-card" style="text-align: center; padding: 2rem;">
+                                    <i class="bi bi-search" style="font-size: 3rem; color: var(--text-muted);"></i>
+                                    <h4 style="margin-top: 1rem; color: var(--text-muted);">No products found</h4>
+                                    <p style="color: var(--text-muted);">Try searching for a different product name.</p>
+                                </div>
+                            `;
+                            return;
+                        }
+
+                        // Build results HTML
+                        let resultsHTML = '';
+                        products.forEach(product => {
+                            // Get best price from listings
+                            const bestListing = product.listings && product.listings.length > 0 
+                                ? product.listings.reduce((min, l) => l.price < min.price ? l : min, product.listings[0])
+                                : null;
+                            
+                            const price = bestListing ? `₹${bestListing.price.toLocaleString()}` : 'Price N/A';
+                            const originalPrice = bestListing?.original_price 
+                                ? `<span style="text-decoration: line-through; color: var(--text-muted); margin-left: 8px;">₹${bestListing.original_price.toLocaleString()}</span>` 
+                                : '';
+                            const discount = bestListing?.discount_percentage 
+                                ? `<span style="color: #4ade80; margin-left: 8px;">${bestListing.discount_percentage}% off</span>` 
+                                : '';
+                            const icon = product.category?.toLowerCase().includes('phone') ? 'bi-phone' : 'bi-laptop';
+
+                            resultsHTML += `
+                                <div class="dashboard-card" style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                                    <div style="background: #fff; padding: 10px; border-radius: 8px;">
+                                        <i class="bi ${icon}" style="font-size: 2rem; color: #333;"></i>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <h4 style="margin: 0;">${product.name}</h4>
+                                        <p style="color: var(--text-muted); margin: 5px 0;">
+                                            ${product.brand || 'Unknown Brand'} • ${price}${originalPrice}${discount}
+                                        </p>
+                                        ${product.listings && product.listings.length > 1 
+                                            ? `<small style="color: var(--text-muted);">${product.listings.length} listings available</small>` 
+                                            : ''}
+                                        
+                                        <div class="product-actions">
+                                            <a href="productDetails.html?id=${product.id}" class="btn-buy" style="flex:1; text-align:center;">View Details</a>
+                                            <a href="compare.html?product_id=${product.id}" class="btn-compare">Compare Prices</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+
+                        dealsList.innerHTML = resultsHTML;
+
+                    } else {
+                        const errorData = await response.json();
+                        dealsList.innerHTML = `
+                            <div class="dashboard-card" style="text-align: center; padding: 2rem; color: #f87171;">
+                                <i class="bi bi-exclamation-triangle" style="font-size: 3rem;"></i>
+                                <h4 style="margin-top: 1rem;">Search Failed</h4>
+                                <p>${errorData.detail || 'An error occurred while searching.'}</p>
+                            </div>
+                        `;
+                        searchResults.style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Search error:', error);
+                    searchBtn.innerHTML = '<i class="bi bi-search"></i> Search';
+                    searchBtn.disabled = false;
+                    
+                    dealsList.innerHTML = `
+                        <div class="dashboard-card" style="text-align: center; padding: 2rem; color: #f87171;">
+                            <i class="bi bi-wifi-off" style="font-size: 3rem;"></i>
+                            <h4 style="margin-top: 1rem;">Connection Error</h4>
+                            <p>Unable to connect to the server. Please try again later.</p>
+                        </div>
+                    `;
+                    searchResults.style.display = 'block';
+                }
+            }
+
+            // Event Listeners
+            searchBtn.addEventListener('click', () => {
+                performSearch(searchInput.value);
+            });
+
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') performSearch(searchInput.value);
+            });
+
+            // Quick tags
+            document.querySelectorAll('.tag').forEach(tag => {
+                tag.addEventListener('click', () => {
+                    const term = tag.getAttribute('data-device');
+                    searchInput.value = term;
+                    performSearch(term);
+                });
+            });
+
+            // Save Search Logic
+            saveSearchBtn.addEventListener('click', async () => {
+                if(!currentQuery) return;
+
+                const originalText = saveSearchBtn.innerHTML;
+                saveSearchBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
+                saveSearchBtn.disabled = true;
+
+                try {
+                    const response = await apiCall('/users/saved-searches', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            search_query: currentQuery,
+                            filters_json: "{}" // Sending empty json string as placeholder for now
+                        })
+                    });
+
+                    if (response && response.ok) {
+                        showToast('Success', 'Search saved successfully!');
+                    } else {
+                        showToast('Error', 'Failed to save search.');
+                    }
+                } catch (error) {
+                    console.error('Save search error:', error);
+                    showToast('Error', 'An error occurred.');
+                } finally {
+                     saveSearchBtn.innerHTML = originalText;
+                     saveSearchBtn.disabled = false;
+                }
+            });
+
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('refreshToken');
+                localStorage.removeItem('user');
+                localStorage.removeItem('username');
+                window.location.href = 'login.html';
+            });
+        });
+    </script>
+</body>
+</html>

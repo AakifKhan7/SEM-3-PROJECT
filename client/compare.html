@@ -102,7 +102,7 @@
                 <a href="dashboard.html" class="nav-item">
                     <i class="bi bi-house-door"></i> Home
                 </a>
-                <a href="dashboard.html#search" class="nav-item">
+                <a href="search.html" class="nav-item">
                     <i class="bi bi-search"></i> Find Deals
                 </a>
                 <a href="compare.html" class="nav-item active">
@@ -227,7 +227,42 @@
         crossorigin="anonymous"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        // API Configuration
+        const API_BASE_URL = 'http://127.0.0.1:8001/api';
+
+        // Helper function for authenticated API calls
+        async function apiCall(endpoint, options = {}) {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = 'login.html';
+                return null;
+            }
+
+            const defaultOptions = {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                ...defaultOptions,
+                ...options,
+                headers: { ...defaultOptions.headers, ...options.headers },
+            });
+
+            if (response.status === 401) {
+                // Token expired
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+                return null;
+            }
+
+            return response;
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
             // User Data
             const username = localStorage.getItem('username') || 'Guest';
             document.getElementById('displayUsername').textContent = username;
@@ -264,135 +299,165 @@
                 window.location.href = 'login.html';
             });
 
-            // Compare Page Logic
-            setupEventListeners();
+            // Check for product_id in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('product_id');
+
+            if (productId) {
+                // Compare mode
+                document.getElementById('compareForm').closest('.dashboard-card').style.display = 'none'; // Hide search form
+                await loadComparisonData(productId);
+            } else {
+                // Manual Search mode
+                setupEventListeners();
+            }
         });
 
-        // Mock retailer data
-        const mockRetailers = [
-            { name: 'Amazon', icon: 'bi-amazon', color: '#ff9900' },
-            { name: 'Best Buy', icon: 'bi-shop', color: '#0046be' },
-            { name: 'Walmart', icon: 'bi-cart3', color: '#0071ce' },
-            { name: 'Target', icon: 'bi-bullseye', color: '#cc0000' },
-            { name: 'Newegg', icon: 'bi-egg', color: '#f79e1b' },
-            { name: 'B&H Photo', icon: 'bi-camera', color: '#000000' }
-        ];
+        async function loadComparisonData(productId) {
+            showLoadingSpinner();
+            
+            try {
+                // Fetch product details first to get name (optional but good for UI)
+                const productResponse = await apiCall(`/products/${productId}`);
+                let productName = 'Unknown Product';
+                
+                if (productResponse && productResponse.ok) {
+                    const product = await productResponse.json();
+                    productName = product.name;
+                    document.querySelector('.page-title').textContent = `Compare Prices: ${productName}`;
+                }
+
+                // Fetch comparison listings
+                const response = await apiCall('/comparison', {
+                    method: 'POST',
+                    body: JSON.stringify({ product_id: parseInt(productId) })
+                });
+
+                if (response && response.ok) {
+                    const listings = await response.json();
+                    displayComparisonResults(listings, productName);
+                } else {
+                    showAlert('Failed to load comparison data.', 'danger');
+                    hideLoadingSpinner();
+                }
+
+            } catch (error) {
+                console.error('Error loading comparison:', error);
+                showAlert('An error occurred while loading data.', 'danger');
+                hideLoadingSpinner();
+            }
+        }
 
         function setupEventListeners() {
-            document.getElementById('compareForm').addEventListener('submit', handleCompareSubmit);
+            document.getElementById('compareForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                // For now, redirect to search page because manual comparison search isn't fully implemented backend-side for free text
+                // OR we could implement a search here. 
+                // But specifically for this task, the flow is Search -> Compare.
+                alert('Please use the "Find Deals" page to search for a product and click "Compare Prices".');
+                window.location.href = 'search.html';
+            });
         }
 
-        function handleCompareSubmit(e) {
-            e.preventDefault();
-
-            const productName = document.getElementById('productName').value.trim();
-            const category = document.getElementById('category').value;
-            const brand = document.getElementById('brand').value.trim();
-            const priceRange = document.getElementById('priceRange').value;
-
-            if (!productName || !category) {
-                showAlert('Please fill in the required fields', 'warning');
-                return;
-            }
-
-            showLoadingSpinner();
-
-            setTimeout(() => {
-                hideLoadingSpinner();
-                displayComparisonResults(productName, category, brand, priceRange);
-            }, 2000);
-        }
-
-        function displayComparisonResults(productName, category, brand, priceRange) {
+        function displayComparisonResults(listings, productName) {
+            hideLoadingSpinner();
             const resultsContainer = document.getElementById('resultsContainer');
             const comparisonResults = document.getElementById('comparisonResults');
 
             resultsContainer.innerHTML = '';
 
-            const comparisonData = generateMockComparisonData(productName, category, brand, priceRange);
-            comparisonData.sort((a, b) => a.price - b.price);
+            if (listings.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="col-12 text-center">
+                        <p class="text-muted">No price listings found for this product.</p>
+                        <a href="search.html" class="btn btn-primary">Back to Search</a>
+                    </div>
+                `;
+                comparisonResults.style.display = 'block';
+                return;
+            }
 
-            comparisonData.forEach((item, index) => {
-                const card = createComparisonCard(item, index === 0);
+            // Data is already sorted by price from backend
+            listings.forEach((item, index) => {
+                const isBestDeal = index === 0;
+                const card = createComparisonCard(item, isBestDeal, productName);
                 resultsContainer.appendChild(card);
             });
 
             comparisonResults.style.display = 'block';
-            comparisonResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-            showAlert(`Found ${comparisonData.length} deals for ${productName}`, 'info');
         }
 
-        function generateMockComparisonData(productName, category, brand, priceRange) {
-            const basePrice = Math.floor(Math.random() * 1500) + 500;
-            const results = [];
-
-            mockRetailers.forEach(retailer => {
-                const variation = Math.floor(Math.random() * 200) - 100;
-                const price = basePrice + variation;
-                const original = price + Math.floor(Math.random() * 200) + 50;
-                const discount = Math.round(((original - price) / original) * 100);
-                const rating = (Math.random() * 2 + 3).toFixed(1);
-
-                results.push({
-                    retailer: retailer.name,
-                    icon: retailer.icon,
-                    color: retailer.color,
-                    productName: productName,
-                    price: price,
-                    originalPrice: original,
-                    discount: discount,
-                    rating: rating,
-                    availability: Math.random() > 0.2 ? 'In Stock' : 'Out of Stock',
-                    shipping: Math.random() > 0.5 ? 'Free Shipping' : '$15 Shipping'
-                });
-            });
-
-            return results;
-        }
-
-        function createComparisonCard(data, isBestDeal) {
+        function createComparisonCard(data, isBestDeal, productName) {
             const col = document.createElement('div');
             col.className = 'col-lg-4 col-md-6 mb-4';
+            
+            // Platform styling
+            const platformName = data.platform_name || 'Unknown Store';
+            let icon = 'bi-shop';
+            let color = '#333';
+            
+            if (platformName.toLowerCase().includes('amazon')) { icon = 'bi-amazon'; color = '#ff9900'; }
+            else if (platformName.toLowerCase().includes('flipkart')) { icon = 'bi-bag-check'; color = '#2874f0'; }
+            else if (platformName.toLowerCase().includes('croma')) { icon = 'bi-tv'; color = '#00e9bf'; }
+            else if (platformName.toLowerCase().includes('reliance')) { icon = 'bi-lightning-charge'; color = '#e42529'; }
+
+            const price = data.price ? `₹${data.price.toLocaleString()}` : 'N/A';
+            const originalPrice = data.original_price ? `₹${data.original_price.toLocaleString()}` : '';
+            const discount = data.discount_percentage ? `${data.discount_percentage}% OFF` : '';
+            
+            const rating = data.rating ? data.rating.toFixed(1) : 'N/A';
+            const availability = data.availability_status === 'in_stock' ? 'In Stock' : (data.availability_status === 'out_of_stock' ? 'Out of Stock' : data.availability_status);
+            const availClass = data.availability_status === 'in_stock' ? 'text-success' : 'text-danger';
 
             col.innerHTML = `
-                <div class="comparison-card ${isBestDeal ? 'border-success' : ''}" style="${isBestDeal ? 'border-width: 2px;' : ''}">
-                    ${isBestDeal ? '<div class="text-center mb-2"><span class="badge bg-success">BEST DEAL</span></div>' : ''}
+                <div class="comparison-card h-100 ${isBestDeal ? 'best-deal-card' : ''}" style="position: relative; overflow: hidden; border: ${isBestDeal ? '2px solid #28a745' : '1px solid var(--border-color)'}; box-shadow: ${isBestDeal ? '0 4px 15px rgba(40, 167, 69, 0.2)' : 'var(--card-shadow)'};">
+                    ${isBestDeal ? '<div class="badge bg-success" style="position: absolute; top: 10px; right: 10px; font-size: 0.8rem; padding: 0.5em 0.8em;">BEST DEAL</div>' : ''}
                     
-                    <div class="text-center">
-                        <div class="retailer-logo" style="color: ${data.color}">
-                            <i class="bi ${data.icon}"></i>
+                    <div class="card-body d-flex flex-column p-4">
+                        <!-- Retailer Logo Section -->
+                        <div class="text-center mb-3">
+                            <div class="retailer-icon-wrapper mb-2" style="font-size: 2.5rem; color: ${color};">
+                                <i class="bi ${icon}"></i>
+                            </div>
+                            <h4 class="card-title mb-0" style="font-weight: 600; color: var(--text-color);">${platformName}</h4>
                         </div>
-                        <h3>${data.retailer}</h3>
-                    </div>
-                    
-                    <div class="text-center my-3">
-                        <h5>${data.productName}</h5>
-                        <div class="price-tag">$${data.price}</div>
-                        <div class="original-price">$${data.originalPrice}</div>
-                        <div class="badge bg-danger">${data.discount}% OFF</div>
-                    </div>
-                    
-                    <div class="mb-3 text-center">
-                        <div class="rating text-warning mb-2">
-                            ${'★'.repeat(Math.floor(data.rating))}${'☆'.repeat(5 - Math.floor(data.rating))}
-                            <span class="ms-2 text-muted">(${data.rating})</span>
+                        
+                        <hr style="border-color: var(--border-color); opacity: 0.5;">
+
+                        <!-- Product Info -->
+                        <div class="text-center mb-4">
+                            <h5 class="product-name text-muted mb-3" style="font-size: 1rem; font-weight: 400;">${productName}</h5>
+                            
+                            <div class="price-section">
+                                <span class="display-4 fw-bold" style="color: var(--text-color); font-size: 2.5rem;">${price}</span>
+                                ${originalPrice ? `<div class="text-muted text-decoration-line-through small mt-1">${originalPrice}</div>` : ''}
+                                ${discount ? `<div class="badge bg-danger mt-2">${discount}</div>` : ''}
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="mb-3 small text-muted">
-                        <div class="d-flex justify-content-between">
-                            <span><i class="bi bi-truck"></i> ${data.shipping}</span>
-                            <span class="${data.availability === 'In Stock' ? 'text-success' : 'text-danger'}">
-                                ${data.availability}
-                            </span>
+                        
+                        <!-- Details Grid -->
+                        <div class="row g-2 mb-4 small text-muted">
+                            <div class="col-6 text-center border-end" style="border-color: var(--border-color) !important;">
+                                <div class="d-flex flex-column align-items-center">
+                                    <i class="bi bi-star-fill text-warning mb-1"></i>
+                                    <span>${rating} ${rating !== 'N/A' ? '/ 5' : ''}</span>
+                                </div>
+                            </div>
+                            <div class="col-6 text-center">
+                                <div class="d-flex flex-column align-items-center">
+                                    <i class="bi bi-box-seam mb-1"></i>
+                                    <span class="${availClass}">${availability}</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="d-grid gap-2">
-                        <button class="btn-buy" onclick="visitRetailer('${data.retailer}')" style="width: 100%;">
-                            Buy Now
-                        </button>
+                        
+                        <!-- Action Button -->
+                        <div class="mt-auto">
+                            <a href="${data.product_url}" target="_blank" class="btn btn-primary w-100 py-2 fw-semibold" 
+                               style="background-color: ${color}; border-color: ${color}; transition: all 0.2s;">
+                                Buy Now <i class="bi bi-box-arrow-up-right ms-2 small"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             `;
@@ -422,7 +487,7 @@
         }
 
         function visitRetailer(retailer) {
-            alert(`Redirecting to ${retailer}... (Mock Action)`);
+             // Deprecated in favor of direct link
         }
     </script>
 </body>
