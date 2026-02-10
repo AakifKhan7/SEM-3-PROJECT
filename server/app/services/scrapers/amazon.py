@@ -251,7 +251,7 @@ class AmazonScraper(BaseScraper):
             rating_elem = soup.select_one('#acrPopover .a-icon-alt')
             if rating_elem:
                 rating_text = rating_elem.get_text(strip=True)
-                product_data.seller_rating = self._parse_rating(rating_text)
+                product_data.rating = self._parse_rating(rating_text)
             
             seller_selectors = [
                 '#sellerProfileTriggerId',

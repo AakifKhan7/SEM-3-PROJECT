@@ -61,6 +61,10 @@ class ScrapedProductData:
         self.seller_rating: Optional[Decimal] = None
         self.seller_name: Optional[str] = None
         
+        # Product Rating
+        self.rating: Optional[Decimal] = None
+        self.rating_count: Optional[int] = None
+        
         # Delivery info
         self.delivery_time: Optional[str] = None
         self.delivery_charges: Optional[Decimal] = None
@@ -89,6 +93,8 @@ class ScrapedProductData:
             "availability_status": self.availability_status,
             "seller_rating": float(self.seller_rating) if self.seller_rating else None,
             "seller_name": self.seller_name,
+            "rating": float(self.rating) if self.rating else None,
+            "rating_count": self.rating_count,
             "delivery_time": self.delivery_time,
             "delivery_charges": float(self.delivery_charges) if self.delivery_charges else None,
             "offers": json.dumps(self.offers) if self.offers else None,
