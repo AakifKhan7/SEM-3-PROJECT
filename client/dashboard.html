@@ -25,16 +25,16 @@
     <div class="dashboard-container">
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
-            <a href="#" class="brand">
+            <a href="dashboard.html" class="brand">
                 <i class="bi bi-grid-3x3-gap-fill"></i>
                 TechScope
             </a>
 
             <nav class="nav-links">
-                <a href="#home" class="nav-item active" onclick="activateNav(this)">
+                <a href="dashboard.html" class="nav-item active" onclick="activateNav(this)">
                     <i class="bi bi-house-door"></i> Home
                 </a>
-                <a href="#search" class="nav-item" onclick="activateNav(this)">
+                <a href="search.html" class="nav-item">
                     <i class="bi bi-search"></i> Find Deals
                 </a>
                 <a href="compare.html" class="nav-item">
@@ -108,7 +108,12 @@
                     <div class="search-input-group">
                         <input type="text" class="custom-search-input" id="deviceSearchInput"
                             placeholder="Enter device name (e.g., iPhone 15, MacBook Pro...)">
-                        <button class="search-btn" id="searchBtn">
+                        <select class="form-select" id="sortSelect" style="max-width: 150px; margin-right: 10px; padding: 10px; border-radius: 5px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color);">
+                        <option value="relevance">Sort By: Relevance</option>
+                        <option value="price_low">Price: Low to High</option>
+                        <option value="price_high">Price: High to Low</option>
+                    </select>
+                    <button class="search-btn" id="searchBtn">
                             <i class="bi bi-search"></i> Search
                         </button>
                     </div>
@@ -158,14 +163,48 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // User Data
-            const username = localStorage.getItem('username') || 'Guest';
-            document.getElementById('displayUsername').textContent = username;
-            document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+        // API Configuration
+        const API_BASE_URL = 'http://127.0.0.1:8001/api';
 
-            const now = new Date();
-            document.getElementById('lastLogin').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        // Helper function for authenticated API calls
+        async function apiCall(endpoint, options = {}) {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = 'login.html';
+                return null;
+            }
+
+            const defaultOptions = {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                ...defaultOptions,
+                ...options,
+                headers: { ...defaultOptions.headers, ...options.headers },
+            });
+
+            if (response.status === 401) {
+                // Token expired, try to refresh or redirect to login
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+                return null;
+            }
+
+            return response;
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Check authentication and load user data
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
 
             // Mobile Menu Toggle
             const mobileToggle = document.getElementById('mobileToggle');
@@ -202,50 +241,124 @@
                 }
             }
 
-            // Search Logic Simulation
+            // Fetch and display user info
+            try {
+                const userResponse = await apiCall('/auth/me');
+                if (userResponse && userResponse.ok) {
+                    const userData = await userResponse.json();
+                    const displayName = userData.full_name || userData.email.split('@')[0];
+                    document.getElementById('displayUsername').textContent = displayName;
+                    document.getElementById('userAvatar').textContent = displayName.charAt(0).toUpperCase();
+                    localStorage.setItem('username', displayName);
+                } else {
+                    // Fallback to stored username
+                    const username = localStorage.getItem('username') || 'Guest';
+                    document.getElementById('displayUsername').textContent = username;
+                    document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+                }
+            } catch (error) {
+                console.error('Failed to fetch user info:', error);
+                const username = localStorage.getItem('username') || 'Guest';
+                document.getElementById('displayUsername').textContent = username;
+                document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+            }
+
+            // Display current time
+            const now = new Date();
+            document.getElementById('lastLogin').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            // Fetch and display dashboard stats using individual API endpoints
+            // As per API mapping guide: GET /api/users/saved-searches and GET /api/users/alerts
+            let savedSearchesCount = 0;
+            let alertsCount = 0;
+            let savedSearches = [];
+            let alerts = [];
+
+            try {
+                // Fetch saved searches
+                const savedSearchesResponse = await apiCall('/users/saved-searches');
+                if (savedSearchesResponse && savedSearchesResponse.ok) {
+                    savedSearches = await savedSearchesResponse.json();
+                    savedSearchesCount = savedSearches.length;
+                }
+            } catch (error) {
+                console.error('Failed to fetch saved searches:', error);
+            }
+
+            try {
+                // Fetch price alerts
+                const alertsResponse = await apiCall('/users/alerts');
+                if (alertsResponse && alertsResponse.ok) {
+                    alerts = await alertsResponse.json();
+                    alertsCount = alerts.filter(a => a.is_active).length;
+                }
+            } catch (error) {
+                console.error('Failed to fetch alerts:', error);
+            }
+
+            // Update dashboard stats
+            document.getElementById('searchesMade').textContent = savedSearchesCount;
+            document.getElementById('dealsFound').textContent = alertsCount;
+            document.getElementById('favoriteCategories').textContent = savedSearches.length > 0 ? savedSearches.length : 0;
+            document.getElementById('avgSavings').textContent = '15%'; // Placeholder - can be calculated from real data
+
+            // Search Logic with Real API
             const searchBtn = document.getElementById('searchBtn');
             const searchInput = document.getElementById('deviceSearchInput');
             const searchResults = document.getElementById('searchResults');
             const dealsList = document.getElementById('dealsList');
+            const sortSelect = document.getElementById('sortSelect');
+            
+            let currentProducts = []; // Store fetched products for sorting
 
-            function performSearch(query) {
-                if (!query) return;
+            async function performSearch(query) {
+                if (!query || query.length < 3) {
+                    alert('Please enter at least 3 characters to search');
+                    return;
+                }
 
-                // Simulate searching
+                // Show loading state
                 searchBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Searching...';
+                searchBtn.disabled = true;
 
-                setTimeout(() => {
+                try {
+                    const response = await apiCall(`/products/search?q=${encodeURIComponent(query)}`);
+                    
                     searchBtn.innerHTML = '<i class="bi bi-search"></i> Search';
-                    searchResults.style.display = 'block';
+                    searchBtn.disabled = false;
 
-                    // Mock Results
+                    if (response.ok) {
+                        currentProducts = await response.json();
+                        searchResults.style.display = 'block';
+                        renderProducts();
+
+
+
+                    } else {
+                        const errorData = await response.json();
+                        dealsList.innerHTML = `
+                            <div class="dashboard-card" style="text-align: center; padding: 2rem; color: #f87171;">
+                                <i class="bi bi-exclamation-triangle" style="font-size: 3rem;"></i>
+                                <h4 style="margin-top: 1rem;">Search Failed</h4>
+                                <p>${errorData.detail || 'An error occurred while searching.'}</p>
+                            </div>
+                        `;
+                        searchResults.style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Search error:', error);
+                    searchBtn.innerHTML = '<i class="bi bi-search"></i> Search';
+                    searchBtn.disabled = false;
+                    
                     dealsList.innerHTML = `
-                        <div class="dashboard-card" style="display: flex; gap: 1rem; align-items: center;">
-                            <div style="background: #fff; padding: 10px; border-radius: 8px;">
-                                <i class="bi bi-phone" style="font-size: 2rem; color: #333;"></i>
-                            </div>
-                            <div style="flex: 1;">
-                                <h4 style="margin: 0;">${query} - Best Deal</h4>
-                                <p style="color: var(--text-muted); margin: 5px 0;">Amazon • $999.00</p>
-                            </div>
-                            <a href="productDetails.html?name=${encodeURIComponent(query)}" class="btn-buy">View Deal</a>
-                        </div>
-                        <div class="dashboard-card" style="display: flex; gap: 1rem; align-items: center;">
-                            <div style="background: #fff; padding: 10px; border-radius: 8px;">
-                                <i class="bi bi-laptop" style="font-size: 2rem; color: #333;"></i>
-                            </div>
-                            <div style="flex: 1;">
-                                <h4 style="margin: 0;">${query} - Refurbished</h4>
-                                <p style="color: var(--text-muted); margin: 5px 0;">BestBuy • $850.00</p>
-                            </div>
-                            <a href="productDetails.html?name=${encodeURIComponent(query)}" class="btn-buy">View Deal</a>
+                        <div class="dashboard-card" style="text-align: center; padding: 2rem; color: #f87171;">
+                            <i class="bi bi-wifi-off" style="font-size: 3rem;"></i>
+                            <h4 style="margin-top: 1rem;">Connection Error</h4>
+                            <p>Unable to connect to the server. Please try again later.</p>
                         </div>
                     `;
-
-                    // Update stats
-                    document.getElementById('searchesMade').textContent = parseInt(document.getElementById('searchesMade').textContent) + 1;
-                    document.getElementById('dealsFound').textContent = parseInt(document.getElementById('dealsFound').textContent) + 25;
-                }, 1000);
+                    searchResults.style.display = 'block';
+                }
             }
 
             searchBtn.addEventListener('click', () => {
@@ -265,10 +378,156 @@
                 });
             });
 
+            function getBestListing(product) {
+                 if (!product.listings || product.listings.length === 0) return null;
+                 return product.listings.reduce((min, l) => l.price < min.price ? l : min, product.listings[0]);
+            }
+
+            function getMinPrice(product) {
+                const best = getBestListing(product);
+                return best ? best.price : Infinity;
+            }
+
+            function renderProducts() {
+                if (currentProducts.length === 0) {
+                    dealsList.innerHTML = `
+                        <div class="dashboard-card" style="text-align: center; padding: 2rem;">
+                            <i class="bi bi-search" style="font-size: 3rem; color: var(--text-muted);"></i>
+                            <h4 style="margin-top: 1rem; color: var(--text-muted);">No products found</h4>
+                            <p style="color: var(--text-muted);">Try searching for a different product name.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Apply Sorting
+                const sortValue = sortSelect.value;
+                let sortedProducts = [...currentProducts];
+
+                if (sortValue === 'price_low') {
+                    sortedProducts.sort((a, b) => getMinPrice(a) - getMinPrice(b));
+                } else if (sortValue === 'price_high') {
+                    sortedProducts.sort((a, b) => getMinPrice(b) - getMinPrice(a));
+                }
+
+                let resultsHTML = '';
+                sortedProducts.forEach(product => {
+                    const bestListing = getBestListing(product);
+                    
+                    const price = bestListing ? `₹${bestListing.price.toLocaleString()}` : 'Price N/A';
+                    const originalPrice = bestListing?.original_price 
+                        ? `<span style="text-decoration: line-through; color: var(--text-muted); margin-left: 8px;">₹${bestListing.original_price.toLocaleString()}</span>` 
+                        : '';
+                    const discount = bestListing?.discount_percentage 
+                        ? `<span style="color: #4ade80; margin-left: 8px;">${Math.round(bestListing.discount_percentage)}% off</span>` 
+                        : '';
+                    const icon = product.category?.toLowerCase().includes('phone') ? 'bi-phone' : 'bi-laptop';
+
+                    resultsHTML += `
+                        <div class="dashboard-card" style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                            <div style="background: #fff; padding: 10px; border-radius: 8px;">
+                                <i class="bi ${icon}" style="font-size: 2rem; color: #333;"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <h4 style="margin: 0;">${product.name}</h4>
+                                <p style="color: var(--text-muted); margin: 5px 0;">
+                                    ${product.brand || 'Unknown Brand'} • ${price}${originalPrice}${discount}
+                                </p>
+                                ${product.listings && product.listings.length > 1 
+                                    ? `<small style="color: var(--text-muted);">${product.listings.length} listings available</small>` 
+                                    : ''}
+                            </div>
+                            <a href="productDetails.html?id=${product.id}" class="btn-buy">View Deal</a>
+                        </div>
+                    `;
+                });
+
+                dealsList.innerHTML = resultsHTML;
+
+                // Update stats
+                document.getElementById('dealsFound').textContent = sortedProducts.length;
+            }
+            
+            sortSelect.addEventListener('change', renderProducts);
+
+            // Sort logic
+            function getBestListing(product) {
+                 if (!product.listings || product.listings.length === 0) return null;
+                 return product.listings.reduce((min, l) => l.price < min.price ? l : min, product.listings[0]);
+            }
+
+            function getMinPrice(product) {
+                const best = getBestListing(product);
+                return best ? best.price : Infinity;
+            }
+
+            function renderProducts() {
+                if (currentProducts.length === 0) {
+                    dealsList.innerHTML = `
+                        <div class="dashboard-card" style="text-align: center; padding: 2rem;">
+                            <i class="bi bi-search" style="font-size: 3rem; color: var(--text-muted);"></i>
+                            <h4 style="margin-top: 1rem; color: var(--text-muted);">No products found</h4>
+                            <p style="color: var(--text-muted);">Try searching for a different product name.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Apply Sorting
+                const sortValue = sortSelect.value;
+                let sortedProducts = [...currentProducts];
+
+                if (sortValue === 'price_low') {
+                    sortedProducts.sort((a, b) => getMinPrice(a) - getMinPrice(b));
+                } else if (sortValue === 'price_high') {
+                    sortedProducts.sort((a, b) => getMinPrice(b) - getMinPrice(a));
+                }
+
+                let resultsHTML = '';
+                sortedProducts.forEach(product => {
+                    const bestListing = getBestListing(product);
+                    
+                    const price = bestListing ? `₹${bestListing.price.toLocaleString()}` : 'Price N/A';
+                    const originalPrice = bestListing?.original_price 
+                        ? `<span style="text-decoration: line-through; color: var(--text-muted); margin-left: 8px;">₹${bestListing.original_price.toLocaleString()}</span>` 
+                        : '';
+                    const discount = bestListing?.discount_percentage 
+                        ? `<span style="color: #4ade80; margin-left: 8px;">${Math.round(bestListing.discount_percentage)}% off</span>` 
+                        : '';
+                    const icon = product.category?.toLowerCase().includes('phone') ? 'bi-phone' : 'bi-laptop';
+
+                    resultsHTML += `
+                        <div class="dashboard-card" style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                            <div style="background: #fff; padding: 10px; border-radius: 8px;">
+                                <i class="bi ${icon}" style="font-size: 2rem; color: #333;"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <h4 style="margin: 0;">${product.name}</h4>
+                                <p style="color: var(--text-muted); margin: 5px 0;">
+                                    ${product.brand || 'Unknown Brand'} • ${price}${originalPrice}${discount}
+                                </p>
+                                ${product.listings && product.listings.length > 1 
+                                    ? `<small style="color: var(--text-muted);">${product.listings.length} listings available</small>` 
+                                    : ''}
+                            </div>
+                            <a href="productDetails.html?id=${product.id}" class="btn-buy">View Deal</a>
+                        </div>
+                    `;
+                });
+
+                dealsList.innerHTML = resultsHTML;
+
+                // Update stats
+                document.getElementById('dealsFound').textContent = sortedProducts.length;
+            }
+            
+            sortSelect.addEventListener('change', renderProducts);
+
             // Logout
             document.getElementById('logoutBtn').addEventListener('click', (e) => {
                 e.preventDefault();
                 localStorage.removeItem('authToken');
+                localStorage.removeItem('refreshToken');
                 localStorage.removeItem('user');
                 localStorage.removeItem('username');
                 window.location.href = 'login.html';
