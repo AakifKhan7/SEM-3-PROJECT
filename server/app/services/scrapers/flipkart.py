@@ -601,6 +601,46 @@ class FlipkartScraper(BaseScraper):
             logger.error(f"Error extracting product data from Flipkart page: {e}")
             return None
     
+    def _extract_product_data_from_product_page(self, soup, url):
+        """Extract data when landing directly on a product page"""
+        try:
+            # Title
+            title_elem = soup.select_one('h1.CEn5rD > span.LMizgS, span.B_NuCI, h1.YH7t_4')
+            name = title_elem.text.strip() if title_elem else "Unknown Product"
+            
+            # Price
+            price_elem = soup.select_one('div.hZ3P6w.bnqy13, div.Nx9bqj.CxhGGd, div._30jeq3._16Jk6d')
+            current_price = self._parse_price(price_elem.text) if price_elem else None
+            
+            # Original Price
+            org_price_elem = soup.select_one('div.kRYCnD, div._3I9_wc._2p6lqe')
+            original_price = self._parse_price(org_price_elem.text) if org_price_elem else current_price
+            
+            # Rating
+            rating_elem = soup.select_one('div.MKiFS6, div.XQDdHH, div._3LWZlK')
+            rating = float(rating_elem.text.strip()) if rating_elem and rating_elem.text.strip().replace('.','',1).isdigit() else None
+            
+            # Image
+            img_elem = soup.select_one('img.DByuf4, img._396cs4, img.q6DClP')
+            image_url = img_elem.get('src') if img_elem else None
+            
+            if not current_price:
+                return None
+
+            return ScrapedProductData(
+                name=name,
+                current_price=current_price,
+                original_price=original_price or current_price,
+                rating=rating,
+                review_count=0,
+                image_url=image_url,
+                product_url=url,
+                source='Flipkart'
+            )
+        except Exception as e:
+            print(f"Error extracting from product page: {e}")
+            return None
+
     def search_products(self, query: str, max_results: int = 10, fetch_details: bool = True) -> List[ScrapedProductData]:
         """
         Search for products on Flipkart.
@@ -625,7 +665,7 @@ class FlipkartScraper(BaseScraper):
             if self.use_selenium and self.driver:
                 try:
                     WebDriverWait(self.driver, 10).until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, '._1AtVbE, ._2kHMtA, [data-id]'))
+                        EC.presence_of_element_located((By.CSS_SELECTOR, 'div.cPHDOP, div.slAVV4, ._1AtVbE, ._2kHMtA, [data-id]'))
                     )
                     time.sleep(2)
                     self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight/2);")
@@ -636,7 +676,14 @@ class FlipkartScraper(BaseScraper):
             
             soup = BeautifulSoup(html_content, 'html.parser')
             
-            product_containers = soup.select('._1AtVbE, ._2kHMtA, [data-id]')
+            # Check if we were redirected to a product page directly
+            if soup.find('h1', class_='CEn5rD') or soup.find('span', class_='B_NuCI') or soup.find('div', class_='hZ3P6w'):
+                logger.info("Redirected to product page directly.")
+                product_data = self._extract_product_data_from_product_page(soup, self.driver.current_url if self.driver else search_url)
+                if product_data:
+                    return [product_data]
+            
+            product_containers = soup.select('div.cPHDOP, div.slAVV4, ._1AtVbE, ._2kHMtA, [data-id]')
             
             if not product_containers:
                 product_containers = soup.select('._4rR01T, ._2WkVRV')
