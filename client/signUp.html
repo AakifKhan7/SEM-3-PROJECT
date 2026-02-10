@@ -66,7 +66,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <input type="tel" class="custom-input form-control" id="phone" pattern="[0-9]{10}"
+                    <input type="tel" class="custom-input form-control" id="phone" pattern="(\+91)?[0-9]{10}"
                         placeholder="Mobile Number">
                 </div>
 
@@ -108,7 +108,7 @@
         const phone = document.getElementById("phone");
         phone.addEventListener("input", () => {
             if (!phone.validity.valid) {
-                phone.setCustomValidity("Please enter an 11 digit mobile number");
+                phone.setCustomValidity("Please enter a valid 10-digit mobile number (with optional +91 prefix)");
             } else {
                 phone.setCustomValidity("");
             }
@@ -191,7 +191,7 @@
 
                 try {
                     // Call backend API
-                    const response = await fetch('http://localhost:8000/api/auth/signup', {
+                    const response = await fetch('http://127.0.0.1:8001/api/auth/signup', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

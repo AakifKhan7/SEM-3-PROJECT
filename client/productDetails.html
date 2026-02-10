@@ -184,6 +184,9 @@
                         <button class="btn-buy" onclick="scrollToRetailers()" style="width: 100%;">
                             <i class="bi bi-shopping-cart"></i> View All Deals
                         </button>
+                        <a id="comparePageBtn" href="#" class="btn btn-outline-light mt-2" style="width: 100%; display: block; text-align: center; text-decoration: none; border: 1px solid rgba(255,255,255,0.2);">
+                            <i class="bi bi-arrow-left-right"></i> Compare Prices
+                        </a>
                     </div>
                 </div>
             </div>
@@ -251,449 +254,190 @@
         crossorigin="anonymous"></script>
 
     <script>
-        // Product data structure
-        let productData = null;
+        const API_BASE_URL = 'http://127.0.0.1:8001/api';
 
-        // Initialize page
+        async function apiCall(endpoint, options = {}) {
+            const token = localStorage.getItem('authToken');
+            const defaultHeaders = {
+                'Content-Type': 'application/json',
+                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+            };
+
+            const config = {
+                ...options,
+                headers: {
+                    ...defaultHeaders,
+                    ...options.headers
+                }
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+                if (response.status === 401) {
+                    localStorage.removeItem('authToken');
+                    window.location.href = 'login.html';
+                    return null;
+                }
+                return response;
+            } catch (error) {
+                console.error('API Call Error:', error);
+                return null;
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             loadProductDetails();
         });
 
-        function loadProductDetails() {
-            // Get product data from URL parameters or localStorage
+        async function loadProductDetails() {
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
-            const productName = urlParams.get('name');
 
-            // Try to get product data from localStorage first
-            const storedProduct = localStorage.getItem('selectedProduct');
-            if (storedProduct) {
-                productData = JSON.parse(storedProduct);
-                localStorage.removeItem('selectedProduct'); // Clean up
-            } else if (productId || productName) {
-                // Load product based on URL parameters
-                loadProductByIdentifier(productId || productName);
-            } else {
-                // Show sample product for demo
-                loadSampleProduct();
+            if (!productId) {
+                // If no ID, maybe redirect to search or show error
+                document.getElementById('productPageTitle').textContent = 'Product not specified';
+                return;
+            }
+            
+            // Set Compare Button Link
+            const compareBtn = document.getElementById('comparePageBtn');
+            if (compareBtn) {
+                compareBtn.href = `compare.html?product_id=${productId}`;
+            }
+
+            try {
+                const response = await apiCall(`/products/${productId}`);
+                if (response && response.ok) {
+                    const product = await response.json();
+                    displayProductDetails(product);
+                } else {
+                    document.getElementById('productPageTitle').textContent = 'Product not found';
+                }
+            } catch (error) {
+                console.error('Error loading product:', error);
+                document.getElementById('productPageTitle').textContent = 'Error loading product';
             }
         }
 
-        function loadProductByIdentifier(identifier) {
-            // This would normally make an API call to fetch product details
-            // For demo purposes, we'll use mock data
-            const mockProducts = {
-                'iphone': getiPhoneData(),
-                'samsung': getSamsungData(),
-                'macbook': getMacBookData(),
-                'ipad': getiPadData()
-            };
+        function displayProductDetails(product) {
+            // Basic Info
+            document.getElementById('productPageTitle').textContent = product.name;
+            document.getElementById('breadcrumbProductName').textContent = product.name;
+            document.getElementById('productTitle').textContent = product.name;
 
-            const productKey = identifier.toLowerCase();
-            productData = mockProducts[productKey] || getSampleProduct();
-
-            displayProductDetails();
-        }
-
-        function loadSampleProduct() {
-            productData = getSampleProduct();
-            displayProductDetails();
-        }
-
-        function getSampleProduct() {
-            return {
-                id: 'sample-product',
-                name: 'Premium Smartphone',
-                title: 'Premium Smartphone - Latest Model',
-                price: '$899',
-                originalPrice: '$1,199',
-                discount: '25% OFF',
-                rating: 4.5,
-                reviews: 234,
-                image: 'https://via.placeholder.com/400x400?text=Premium+Smartphone',
-                images: [
-                    'https://via.placeholder.com/400x400?text=Premium+Smartphone',
-                    'https://via.placeholder.com/400x400?text=Side+View',
-                    'https://via.placeholder.com/400x400?text=Back+View'
-                ],
-                features: [
-                    'High-quality display with vibrant colors',
-                    'Powerful processor for smooth performance',
-                    'Advanced camera system',
-                    'Long-lasting battery life',
-                    'Premium build quality'
-                ],
-                specifications: {
-                    display: '6.7-inch Super Retina XDR',
-                    processor: 'Latest flagship processor',
-                    storage: '128GB / 256GB / 512GB',
-                    camera: '48MP Main + 12MP Ultra Wide',
-                    battery: 'All-day battery life',
-                    connectivity: '5G, Wi-Fi 6E, Bluetooth 5.3'
-                },
-                retailers: [
-                    {
-                        name: 'TechStore',
-                        price: '$899',
-                        originalPrice: '$1,199',
-                        discount: '25% OFF',
-                        stock: 'In Stock',
-                        url: '#',
-                        rating: 4.7
-                    },
-                    {
-                        name: 'ElectroHub',
-                        price: '$929',
-                        originalPrice: '$1,199',
-                        discount: '23% OFF',
-                        stock: 'Limited Stock',
-                        url: '#',
-                        rating: 4.5
-                    }
-                ]
-            };
-        }
-
-        function getiPhoneData() {
-            return {
-                id: 'iphone-15-pro',
-                name: 'iPhone 15 Pro',
-                title: 'iPhone 15 Pro Max - Latest Model',
-                price: '$1,199',
-                originalPrice: '$1,399',
-                discount: '14% OFF',
-                rating: 4.8,
-                reviews: 1250,
-                image: 'https://via.placeholder.com/400x400?text=iPhone+15+Pro',
-                images: [
-                    'https://via.placeholder.com/400x400?text=iPhone+15+Pro',
-                    'https://via.placeholder.com/400x400?text=iPhone+15+Pro+Side',
-                    'https://via.placeholder.com/400x400?text=iPhone+15+Pro+Back'
-                ],
-                features: [
-                    'A17 Pro chip with 6-core CPU',
-                    'Pro camera system with 3x zoom',
-                    'Titanium design',
-                    'ProMotion display with 120Hz',
-                    'USB-C connectivity'
-                ],
-                specifications: {
-                    display: '6.7-inch Super Retina XDR with ProMotion',
-                    processor: 'A17 Pro chip with 6-core CPU',
-                    storage: '256GB / 512GB / 1TB',
-                    camera: '48MP Main + 12MP Ultra Wide + 12MP Telephoto',
-                    battery: 'Up to 29 hours video playback',
-                    connectivity: '5G, Wi-Fi 6E, Bluetooth 5.3, USB-C'
-                },
-                retailers: [
-                    {
-                        name: 'Apple Store',
-                        price: '$1,199',
-                        originalPrice: '$1,399',
-                        discount: '14% OFF',
-                        stock: 'In Stock',
-                        url: 'https://apple.com',
-                        rating: 4.9
-                    },
-                    {
-                        name: 'Amazon',
-                        price: '$1,149',
-                        originalPrice: '$1,399',
-                        discount: '18% OFF',
-                        stock: 'In Stock',
-                        url: 'https://amazon.com',
-                        rating: 4.7
-                    },
-                    {
-                        name: 'Best Buy',
-                        price: '$1,179',
-                        originalPrice: '$1,399',
-                        discount: '16% OFF',
-                        stock: 'Limited Stock',
-                        url: 'https://bestbuy.com',
-                        rating: 4.6
-                    }
-                ]
-            };
-        }
-
-        function getSamsungData() {
-            return {
-                id: 'samsung-s24-ultra',
-                name: 'Samsung Galaxy S24 Ultra',
-                title: 'Samsung Galaxy S24 Ultra - Just Launched',
-                price: '$1,299',
-                originalPrice: '$1,499',
-                discount: '13% OFF',
-                rating: 4.9,
-                reviews: 890,
-                image: 'https://via.placeholder.com/400x400?text=Galaxy+S24+Ultra',
-                images: [
-                    'https://via.placeholder.com/400x400?text=Galaxy+S24+Ultra',
-                    'https://via.placeholder.com/400x400?text=Galaxy+S24+Ultra+Side',
-                    'https://via.placeholder.com/400x400?text=Galaxy+S24+Ultra+Back'
-                ],
-                features: [
-                    'S Pen included',
-                    '200MP main camera',
-                    '6.8-inch Dynamic AMOLED 2X',
-                    'Snapdragon 8 Gen 3 processor',
-                    '5000mAh battery'
-                ],
-                specifications: {
-                    display: '6.8-inch Dynamic AMOLED 2X, 120Hz',
-                    processor: 'Snapdragon 8 Gen 3 for Galaxy',
-                    storage: '256GB / 512GB / 1TB + microSD',
-                    camera: '200MP Main + 12MP Ultra Wide + 50MP Telephoto + 10MP Telephoto',
-                    battery: '5000mAh with 45W fast charging',
-                    connectivity: '5G, Wi-Fi 7, Bluetooth 5.3, USB-C'
-                },
-                retailers: [
-                    {
-                        name: 'Samsung',
-                        price: '$1,299',
-                        originalPrice: '$1,499',
-                        discount: '13% OFF',
-                        stock: 'In Stock',
-                        url: 'https://samsung.com',
-                        rating: 4.8
-                    },
-                    {
-                        name: 'Best Buy',
-                        price: '$1,249',
-                        originalPrice: '$1,499',
-                        discount: '17% OFF',
-                        stock: 'In Stock',
-                        url: 'https://bestbuy.com',
-                        rating: 4.7
-                    }
-                ]
-            };
-        }
-
-        function getMacBookData() {
-            return {
-                id: 'macbook-pro',
-                name: 'MacBook Pro',
-                title: 'MacBook Pro 14-inch - M3 Pro',
-                price: '$1,999',
-                originalPrice: '$2,199',
-                discount: '9% OFF',
-                rating: 4.8,
-                reviews: 567,
-                image: 'https://via.placeholder.com/400x400?text=MacBook+Pro',
-                images: [
-                    'https://via.placeholder.com/400x400?text=MacBook+Pro',
-                    'https://via.placeholder.com/400x400?text=MacBook+Pro+Open',
-                    'https://via.placeholder.com/400x400?text=MacBook+Pro+Side'
-                ],
-                features: [
-                    'M3 Pro chip',
-                    '14.2-inch Liquid Retina XDR display',
-                    'Up to 18 hours battery life',
-                    'Magic Keyboard with Touch ID',
-                    'Advanced camera and audio system'
-                ],
-                specifications: {
-                    display: '14.2-inch Liquid Retina XDR, 120Hz ProMotion',
-                    processor: 'Apple M3 Pro chip (11-core CPU, 14-core GPU)',
-                    storage: '512GB / 1TB / 2TB / 4TB SSD',
-                    camera: '1080p FaceTime HD camera',
-                    battery: 'Up to 18 hours battery life',
-                    connectivity: 'Wi-Fi 6E, Bluetooth 5.3, 3 Thunderbolt 4 ports'
-                },
-                retailers: [
-                    {
-                        name: 'Apple Store',
-                        price: '$1,999',
-                        originalPrice: '$2,199',
-                        discount: '9% OFF',
-                        stock: 'In Stock',
-                        url: 'https://apple.com',
-                        rating: 4.9
-                    },
-                    {
-                        name: 'Amazon',
-                        price: '$1,899',
-                        originalPrice: '$2,199',
-                        discount: '14% OFF',
-                        stock: 'In Stock',
-                        url: 'https://amazon.com',
-                        rating: 4.7
-                    }
-                ]
-            };
-        }
-
-        function getiPadData() {
-            return {
-                id: 'ipad-pro',
-                name: 'iPad Pro',
-                title: 'iPad Pro 12.9-inch - M2 Chip',
-                price: '$1,099',
-                originalPrice: '$1,299',
-                discount: '15% OFF',
-                rating: 4.7,
-                reviews: 445,
-                image: 'https://via.placeholder.com/400x400?text=iPad+Pro',
-                images: [
-                    'https://via.placeholder.com/400x400?text=iPad+Pro',
-                    'https://via.placeholder.com/400x400?text=iPad+Pro+Side',
-                    'https://via.placeholder.com/400x400?text=iPad+Pro+Back'
-                ],
-                features: [
-                    'M2 chip',
-                    '12.9-inch Liquid Retina XDR display',
-                    'ProMotion technology',
-                    'Face ID',
-                    'Support for Apple Pencil and Magic Keyboard'
-                ],
-                specifications: {
-                    display: '12.9-inch Liquid Retina XDR, ProMotion 120Hz',
-                    processor: 'Apple M2 chip',
-                    storage: '128GB / 256GB / 512GB / 1TB / 2TB',
-                    camera: '12MP Wide + 10MP Ultra Wide',
-                    battery: 'Up to 10 hours battery life',
-                    connectivity: 'Wi-Fi 6E, Bluetooth 5.3, USB-C, Thunderbolt'
-                },
-                retailers: [
-                    {
-                        name: 'Apple Store',
-                        price: '$1,099',
-                        originalPrice: '$1,299',
-                        discount: '15% OFF',
-                        stock: 'In Stock',
-                        url: 'https://apple.com',
-                        rating: 4.8
-                    },
-                    {
-                        name: 'Best Buy',
-                        price: '$1,049',
-                        originalPrice: '$1,299',
-                        discount: '19% OFF',
-                        stock: 'In Stock',
-                        url: 'https://bestbuy.com',
-                        rating: 4.6
-                    }
-                ]
-            };
-        }
-
-        function displayProductDetails() {
-            if (!productData) return;
-
-            // Update basic product info
-            document.getElementById('productPageTitle').textContent = productData.title;
-            document.getElementById('breadcrumbProductName').textContent = productData.name;
-            document.getElementById('productTitle').textContent = productData.title;
-            document.getElementById('currentPrice').textContent = productData.price;
-            document.getElementById('originalPrice').textContent = productData.originalPrice;
-            document.getElementById('discountBadge').textContent = productData.discount;
-
-            // Update rating
-            updateRating(productData.rating, productData.reviews);
-
-            // Update main image
-            document.getElementById('productMainImage').src = productData.image;
-            document.getElementById('productMainImage').alt = productData.name;
-
-            // Update image gallery
-            updateImageGallery(productData.images);
-
-            // Update features
-            updateFeatures(productData.features);
-
-            // Update specifications
-            updateSpecifications(productData.specifications);
-
-            // Update retailers
-            updateRetailers(productData.retailers);
-        }
-
-        function updateRating(rating, reviews) {
-            const fullStars = Math.floor(rating);
-            const hasHalfStar = rating % 1 !== 0;
-            let starsHTML = '';
-
-            for (let i = 0; i < fullStars; i++) {
-                starsHTML += '<i class="bi bi-star-fill"></i>';
-            }
-            if (hasHalfStar) {
-                starsHTML += '<i class="bi bi-star-half"></i>';
-            }
-            const emptyStars = 5 - Math.ceil(rating);
-            for (let i = 0; i < emptyStars; i++) {
-                starsHTML += '<i class="bi bi-star"></i>';
-            }
-
-            document.getElementById('productRating').innerHTML = starsHTML;
-            document.getElementById('ratingText').textContent = `${rating} out of 5 (${reviews} reviews)`;
-        }
-
-        function updateImageGallery(images) {
+            // Image
+            const mainImage = document.getElementById('productMainImage');
+            mainImage.src = product.image_url || 'https://via.placeholder.com/400x400?text=No+Image';
+            mainImage.alt = product.name;
+            
+            // Clear gallery (we only have one image for now)
             const gallery = document.getElementById('imageGallery');
             gallery.innerHTML = '';
-
-            images.forEach((image, index) => {
+            // Add main image as thumbnail
+            if (product.image_url) {
                 const thumbnail = document.createElement('img');
-                thumbnail.src = image;
-                thumbnail.alt = `Product view ${index + 1}`;
+                thumbnail.src = product.image_url;
                 thumbnail.className = 'thumbnail';
-                thumbnail.onclick = () => {
-                    document.getElementById('productMainImage').src = image;
-                };
+                thumbnail.onclick = () => mainImage.src = product.image_url;
                 gallery.appendChild(thumbnail);
-            });
-        }
+            }
 
-        function updateFeatures(features) {
+            // Description / Features
             const featuresList = document.getElementById('featuresList');
             featuresList.innerHTML = '';
+            if (product.description) {
+                const descLines = product.description.split('\n').filter(line => line.trim());
+                descLines.forEach(line => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<i class="bi bi-check-circle-fill"></i> ${line}`;
+                    featuresList.appendChild(li);
+                });
+            } else {
+                featuresList.innerHTML = '<li>No description available</li>';
+            }
 
-            features.forEach(feature => {
-                const li = document.createElement('li');
-                li.innerHTML = `<i class="bi bi-check-circle-fill"></i> ${feature}`;
-                featuresList.appendChild(li);
-            });
+            // Specs (we might not have structured specs in basic schema, so use description or placeholders)
+            // For now, let's just show category/brand in specs
+            document.getElementById('specDisplay').textContent = product.category || 'N/A';
+            document.getElementById('specProcessor').textContent = product.brand || 'N/A';
+            document.getElementById('specStorage').textContent = 'N/A'; // Not in basic schema
+            
+            // Listings / Price
+            if (product.listings && product.listings.length > 0) {
+                // Find best price
+                const prices = product.listings.map(l => l.price);
+                const bestPrice = Math.min(...prices);
+                const bestListing = product.listings.find(l => l.price === bestPrice);
+
+                document.getElementById('currentPrice').textContent = `₹${bestPrice.toLocaleString()}`;
+                
+                if (bestListing.original_price) {
+                     document.getElementById('originalPrice').textContent = `₹${bestListing.original_price.toLocaleString()}`;
+                } else {
+                     document.getElementById('originalPrice').textContent = '';
+                }
+
+                if (bestListing.discount_percentage) {
+                    document.getElementById('discountBadge').textContent = `${Math.round(bestListing.discount_percentage)}% OFF`;
+                    document.getElementById('discountBadge').style.display = 'inline-block';
+                } else {
+                    document.getElementById('discountBadge').style.display = 'none';
+                }
+
+                // Rating (from best listing)
+                if (bestListing.rating) {
+                     updateRating(bestListing.rating, 0);
+                } else {
+                     updateRating(0, 0);
+                }
+
+                renderRetailers(product.listings);
+
+            } else {
+                document.getElementById('currentPrice').textContent = 'Unavailable';
+                document.getElementById('originalPrice').textContent = '';
+                document.getElementById('discountBadge').style.display = 'none';
+                document.getElementById('retailersList').innerHTML = '<p class="text-white">No active listings found.</p>';
+            }
         }
 
-        function updateSpecifications(specs) {
-            document.getElementById('specDisplay').textContent = specs.display;
-            document.getElementById('specProcessor').textContent = specs.processor;
-            document.getElementById('specStorage').textContent = specs.storage;
-            document.getElementById('specCamera').textContent = specs.camera;
-            document.getElementById('specBattery').textContent = specs.battery;
-            document.getElementById('specConnectivity').textContent = specs.connectivity;
-        }
-
-        function updateRetailers(retailers) {
+        function renderRetailers(listings) {
             const retailersList = document.getElementById('retailersList');
             retailersList.innerHTML = '';
 
-            retailers.forEach(retailer => {
+            listings.forEach(listing => {
                 const retailerCard = document.createElement('div');
                 retailerCard.className = 'retailer-card';
+                
+                // Determine platform name
+                let platformName = listing.platform_name;
+                if (!platformName) {
+                    if (listing.product_url.includes('amazon')) platformName = 'Amazon';
+                    else if (listing.product_url.includes('flipkart')) platformName = 'Flipkart';
+                    else platformName = 'Unknown Store';
+                }
+
                 retailerCard.innerHTML = `
                     <div class="row align-items-center">
                         <div class="col-md-4">
-                            <div class="retailer-name">${retailer.name}</div>
-                            <div class="retailer-price">${retailer.price}</div>
-                            <div class="retailer-stock ${retailer.stock === 'Out of Stock' ? 'out-of-stock' : ''}">
-                                <i class="bi bi-check-circle-fill"></i> ${retailer.stock}
+                            <div class="retailer-name">${platformName}</div>
+                            <div class="retailer-price">₹${listing.price.toLocaleString()}</div>
+                            <div class="retailer-stock ${listing.availability_status === 'out_of_stock' ? 'out-of-stock' : ''}">
+                                <i class="bi bi-check-circle-fill"></i> ${listing.availability_status ? listing.availability_status.replace('_', ' ') : 'In Stock'}
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="text-white">
-                                <small>Was: ${retailer.originalPrice}</small><br>
-                                <strong>${retailer.discount}</strong>
+                                ${listing.original_price ? `<small>Was: ₹${listing.original_price.toLocaleString()}</small><br>` : ''}
+                                ${listing.discount_percentage ? `<strong>${Math.round(listing.discount_percentage)}% OFF</strong>` : ''}
                             </div>
                             <div class="stars mt-1">
-                                ${generateStars(retailer.rating)}
-                                <small class="text-white-50">(${retailer.rating})</small>
+                                ${generateStars(listing.rating || 0)}
+                                <small class="text-white-50">(${listing.rating || 'N/A'})</small>
                             </div>
                         </div>
                         <div class="col-md-4 text-end">
-                            <a href="${retailer.url}" target="_blank" class="btn-buy">
+                            <a href="${listing.product_url}" target="_blank" class="btn-buy">
                                 <i class="bi bi-cart-plus"></i> Buy Now
                             </a>
                         </div>
@@ -703,23 +447,28 @@
             });
         }
 
+        function updateRating(rating, reviews) {
+            document.getElementById('productRating').innerHTML = generateStars(rating);
+            document.getElementById('ratingText').textContent = `${rating} out of 5`;
+        }
+
         function generateStars(rating) {
             const fullStars = Math.floor(rating);
-            const hasHalfStar = rating % 1 !== 0;
+            const hasHalfStar = rating % 1 !== 0; // approximate
             let starsHTML = '';
 
             for (let i = 0; i < fullStars; i++) {
                 starsHTML += '<i class="bi bi-star-fill text-warning"></i>';
             }
-            if (hasHalfStar) {
-                starsHTML += '<i class="bi bi-star-half text-warning"></i>';
+            if (hasHalfStar) { // Simplified logic
+                 // validation usually needed for 0.5 step
             }
-            const emptyStars = 5 - Math.ceil(rating);
-            for (let i = 0; i < emptyStars; i++) {
-                starsHTML += '<i class="bi bi-star text-warning"></i>';
-            }
-
-            return starsHTML;
+             // Fill rest with empty? Or just show filled. 
+             // Logic from before was fine.
+             const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+             // ... simplifying for safety in replacement
+             
+             return starsHTML + (hasHalfStar ? '<i class="bi bi-star-half text-warning"></i>' : '') + '<i class="bi bi-star text-warning"></i>'.repeat(Math.max(0, 5 - Math.ceil(rating)));
         }
 
         function scrollToRetailers() {

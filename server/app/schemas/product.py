@@ -5,6 +5,7 @@ from datetime import datetime
 class ProductListingResponse(BaseModel):
     id: int
     platform_id: int
+    platform_name: str
     product_url: str
     price: float
     original_price: Optional[float]
@@ -29,6 +30,7 @@ class ProductResponse(BaseModel):
     brand: Optional[str]
     category: Optional[str]
     description: Optional[str]
+    image_url: Optional[str]
     listings: List[ProductListingResponse] = []
 
     class Config:

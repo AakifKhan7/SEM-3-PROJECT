@@ -9,5 +9,6 @@ class Product(BaseModel):
     brand = Column(String(100), nullable=True)
     category = Column(String(100), nullable=True)
     description = Column(Text, nullable=True)
+    image_url = Column(String(500), nullable=True)
 
     listings = relationship("ProductListing", back_populates="product")

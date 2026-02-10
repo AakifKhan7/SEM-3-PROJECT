@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.database import get_db
 from app.models.product import Product
@@ -28,6 +28,7 @@ def get_best_deal(
 
     listings: List[ProductListing] = (
         db.query(ProductListing)
+        .options(joinedload(ProductListing.platform))
         .filter(ProductListing.product_id == product_id)
         .all()
     )
@@ -53,6 +54,7 @@ def compare_listings(
     """
     listings: List[ProductListing] = (
         db.query(ProductListing)
+        .options(joinedload(ProductListing.platform))
         .filter(ProductListing.product_id == payload.product_id)
         .all()
     )
