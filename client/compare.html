@@ -192,8 +192,8 @@
                     </div>
                     <br>
                     <div class="text-center mt-4">
-                        <button type="submit" class="btn btn-primary"
-                            style="background-color: var(--accent-color); border: none; padding: 10px 30px;">
+                        <button type="submit" class="btn btn-primary btn-lg"
+                            style="background-color: var(--accent-color); border: none; padding: 10px 30px; color: white;">
                             <i class="bi bi-arrow-left-right me-2"></i> Compare Prices
                         </button>
                     </div>
@@ -319,12 +319,12 @@
 
         async function loadComparisonData(productId) {
             showLoadingSpinner();
-            
+
             try {
                 // Fetch product details first to get name (optional but good for UI)
                 const productResponse = await apiCall(`/products/${productId}`);
                 let productName = 'Unknown Product';
-                
+
                 if (productResponse && productResponse.ok) {
                     const product = await productResponse.json();
                     productName = product.name;
@@ -390,13 +390,13 @@
 
         function createComparisonCard(data, isBestDeal, productName) {
             const col = document.createElement('div');
-            col.className = 'col-lg-4 col-md-6 mb-4';
-            
+            col.className = 'col-lg-4 col-md-6 col-sm-6 mb-4';
+
             // Platform styling
             const platformName = data.platform_name || 'Unknown Store';
             let icon = 'bi-shop';
             let color = '#333';
-            
+
             if (platformName.toLowerCase().includes('amazon')) { icon = 'bi-amazon'; color = '#ff9900'; }
             else if (platformName.toLowerCase().includes('flipkart')) { icon = 'bi-bag-check'; color = '#2874f0'; }
             else if (platformName.toLowerCase().includes('croma')) { icon = 'bi-tv'; color = '#00e9bf'; }
@@ -405,7 +405,7 @@
             const price = data.price ? `₹${data.price.toLocaleString()}` : 'N/A';
             const originalPrice = data.original_price ? `₹${data.original_price.toLocaleString()}` : '';
             const discount = data.discount_percentage ? `${data.discount_percentage}% OFF` : '';
-            
+
             const rating = data.rating ? data.rating.toFixed(1) : 'N/A';
             const availability = data.availability_status === 'in_stock' ? 'In Stock' : (data.availability_status === 'out_of_stock' ? 'Out of Stock' : data.availability_status);
             const availClass = data.availability_status === 'in_stock' ? 'text-success' : 'text-danger';
@@ -488,7 +488,7 @@
         }
 
         function visitRetailer(retailer) {
-             // Deprecated in favor of direct link
+            // Deprecated in favor of direct link
         }
     </script>
 </body>

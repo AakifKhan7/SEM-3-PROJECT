@@ -62,7 +62,7 @@
         }
 
         .price-section {
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: rgba(0, 0, 0, 0.05);
             padding: 1.5rem;
             border-radius: 12px;
             margin-bottom: 2rem;
@@ -118,7 +118,7 @@
                     style="padding: 6px 16px; font-size: 0.9rem; text-decoration: none;">Dashboard</a>
                 <a href="#" onclick="history.back()" class="btn-buy"
                     style="padding: 6px 16px; font-size: 0.9rem; text-decoration: none;">Search Results</a>
-                <span class="text-white ms-2" style="font-weight: 500;" id="breadcrumbProductName">Product
+                <span class="text-dark ms-2" style="font-weight: 500;" id="breadcrumbProductName">Product
                     Details</span>
             </div>
             <h1 class="header-title" id="productPageTitle">Loading Product Details...</h1>
@@ -163,14 +163,14 @@
                             <span class="original-price" id="originalPrice">$1,299</span>
                             <span class="discount-badge" id="discountBadge">23% OFF</span>
                         </div>
-                        <p class="text-white mb-0 mt-2">
+                        <p class="text-dark mb-0 mt-2">
                             <i class="bi bi-tag-fill text-success"></i>
                             Best price available across all retailers
                         </p>
                     </div>
 
                     <div class="features-section">
-                        <h4 class="text-white mb-3">Key Features</h4>
+                        <h4 class="text-dark mb-3">Key Features</h4>
                         <ul class="feature-list" id="featuresList">
                             <li><i class="bi bi-check-circle-fill"></i> High-quality display with vibrant colors</li>
                             <li><i class="bi bi-check-circle-fill"></i> Powerful processor for smooth performance</li>
@@ -184,7 +184,8 @@
                         <button class="btn-buy" onclick="scrollToRetailers()" style="width: 100%;">
                             <i class="bi bi-shopping-cart"></i> View All Deals
                         </button>
-                        <a id="comparePageBtn" href="#" class="btn btn-outline-light mt-2" style="width: 100%; display: block; text-align: center; text-decoration: none; border: 1px solid rgba(255,255,255,0.2);">
+                        <a id="comparePageBtn" href="#" class="btn btn-outline-dark mt-2"
+                            style="width: 100%; display: block; text-align: center; text-decoration: none;">
                             <i class="bi bi-arrow-left-right"></i> Compare Prices
                         </a>
                     </div>
@@ -196,7 +197,7 @@
         <div class="row mb-4">
             <div class="col-12">
                 <div class="glass-card p-4">
-                    <h3 class="text-white mb-4">Technical Specifications</h3>
+                    <h3 class="text-dark mb-4">Technical Specifications</h3>
                     <div class="specs-table">
                         <table id="specsTable">
                             <tbody>
@@ -235,7 +236,7 @@
         <div class="row" id="retailersSection">
             <div class="col-12">
                 <div class="glass-card p-4">
-                    <h3 class="text-white mb-4">
+                    <h3 class="text-dark mb-4">
                         <i class="bi bi-shop"></i> Available Deals from Retailers
                     </h3>
                     <div id="retailersList">
@@ -298,7 +299,7 @@
                 document.getElementById('productPageTitle').textContent = 'Product not specified';
                 return;
             }
-            
+
             // Set Compare Button Link
             const compareBtn = document.getElementById('comparePageBtn');
             if (compareBtn) {
@@ -329,7 +330,7 @@
             const mainImage = document.getElementById('productMainImage');
             mainImage.src = product.image_url || 'https://via.placeholder.com/400x400?text=No+Image';
             mainImage.alt = product.name;
-            
+
             // Clear gallery (we only have one image for now)
             const gallery = document.getElementById('imageGallery');
             gallery.innerHTML = '';
@@ -361,7 +362,7 @@
             document.getElementById('specDisplay').textContent = product.category || 'N/A';
             document.getElementById('specProcessor').textContent = product.brand || 'N/A';
             document.getElementById('specStorage').textContent = 'N/A'; // Not in basic schema
-            
+
             // Listings / Price
             if (product.listings && product.listings.length > 0) {
                 // Find best price
@@ -370,11 +371,11 @@
                 const bestListing = product.listings.find(l => l.price === bestPrice);
 
                 document.getElementById('currentPrice').textContent = `₹${bestPrice.toLocaleString()}`;
-                
+
                 if (bestListing.original_price) {
-                     document.getElementById('originalPrice').textContent = `₹${bestListing.original_price.toLocaleString()}`;
+                    document.getElementById('originalPrice').textContent = `₹${bestListing.original_price.toLocaleString()}`;
                 } else {
-                     document.getElementById('originalPrice').textContent = '';
+                    document.getElementById('originalPrice').textContent = '';
                 }
 
                 if (bestListing.discount_percentage) {
@@ -386,9 +387,9 @@
 
                 // Rating (from best listing)
                 if (bestListing.rating) {
-                     updateRating(bestListing.rating, 0);
+                    updateRating(bestListing.rating, 0);
                 } else {
-                     updateRating(0, 0);
+                    updateRating(0, 0);
                 }
 
                 renderRetailers(product.listings);
@@ -397,7 +398,7 @@
                 document.getElementById('currentPrice').textContent = 'Unavailable';
                 document.getElementById('originalPrice').textContent = '';
                 document.getElementById('discountBadge').style.display = 'none';
-                document.getElementById('retailersList').innerHTML = '<p class="text-white">No active listings found.</p>';
+                document.getElementById('retailersList').innerHTML = '<p class="text-dark">No active listings found.</p>';
             }
         }
 
@@ -408,7 +409,7 @@
             listings.forEach(listing => {
                 const retailerCard = document.createElement('div');
                 retailerCard.className = 'retailer-card';
-                
+
                 // Determine platform name
                 let platformName = listing.platform_name;
                 if (!platformName) {
@@ -419,25 +420,25 @@
 
                 retailerCard.innerHTML = `
                     <div class="row align-items-center">
-                        <div class="col-md-4">
+                        <div class="col-12 col-md-4">
                             <div class="retailer-name">${platformName}</div>
                             <div class="retailer-price">₹${listing.price.toLocaleString()}</div>
                             <div class="retailer-stock ${listing.availability_status === 'out_of_stock' ? 'out-of-stock' : ''}">
                                 <i class="bi bi-check-circle-fill"></i> ${listing.availability_status ? listing.availability_status.replace('_', ' ') : 'In Stock'}
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="text-white">
+                        <div class="col-12 col-md-4 my-2 my-md-0">
+                            <div class="text-dark">
                                 ${listing.original_price ? `<small>Was: ₹${listing.original_price.toLocaleString()}</small><br>` : ''}
                                 ${listing.discount_percentage ? `<strong>${Math.round(listing.discount_percentage)}% OFF</strong>` : ''}
                             </div>
                             <div class="stars mt-1">
                                 ${generateStars(listing.rating || 0)}
-                                <small class="text-white-50">(${listing.rating || 'N/A'})</small>
+                                <small class="text-muted">(${listing.rating || 'N/A'})</small>
                             </div>
                         </div>
-                        <div class="col-md-4 text-end">
-                            <a href="${listing.product_url}" target="_blank" class="btn-buy">
+                        <div class="col-12 col-md-4 text-md-end text-start">
+                            <a href="${listing.product_url}" target="_blank" class="btn-buy d-inline-block w-auto">
                                 <i class="bi bi-cart-plus"></i> Buy Now
                             </a>
                         </div>
@@ -461,14 +462,14 @@
                 starsHTML += '<i class="bi bi-star-fill text-warning"></i>';
             }
             if (hasHalfStar) { // Simplified logic
-                 // validation usually needed for 0.5 step
+                // validation usually needed for 0.5 step
             }
-             // Fill rest with empty? Or just show filled. 
-             // Logic from before was fine.
-             const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-             // ... simplifying for safety in replacement
-             
-             return starsHTML + (hasHalfStar ? '<i class="bi bi-star-half text-warning"></i>' : '') + '<i class="bi bi-star text-warning"></i>'.repeat(Math.max(0, 5 - Math.ceil(rating)));
+            // Fill rest with empty? Or just show filled. 
+            // Logic from before was fine.
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            // ... simplifying for safety in replacement
+
+            return starsHTML + (hasHalfStar ? '<i class="bi bi-star-half text-warning"></i>' : '') + '<i class="bi bi-star text-warning"></i>'.repeat(Math.max(0, 5 - Math.ceil(rating)));
         }
 
         function scrollToRetailers() {
