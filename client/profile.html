@@ -63,7 +63,7 @@
 
         /* Cart Stuff */
         .cart-item {
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: rgba(0, 0, 0, 0.05);
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 10px;
@@ -85,7 +85,8 @@
             text-align: center;
             margin-bottom: 15px;
             border: 1px solid var(--border-color);
-            height: 100%; /* Ensure uniform height */
+            height: 100%;
+            /* Ensure uniform height */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -137,7 +138,7 @@
             .profile-header {
                 padding: 1.5rem;
             }
-            
+
             .stat-box h4 {
                 font-size: 1.5rem;
             }
@@ -155,12 +156,12 @@
                 justify-content: space-between;
                 align-items: center;
             }
-            
+
             .cart-item .d-flex.align-items-center {
                 width: 100%;
             }
         }
-        
+
         @media (max-width: 576px) {
             .profile-avatar-large {
                 width: 100px;
@@ -235,52 +236,51 @@
                     <div class="dashboard-card mb-4">
                         <h3 class="mb-4"><i class="bi bi-person-badge"></i> Account Information</h3>
                         <form id="accountForm">
-                            <div class="row mb-3 align-items-center">
+                            <div class="row mb-4 align-items-center">
                                 <label for="username" class="col-sm-3 col-form-label">Username</label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control" id="username" readonly>
                                 </div>
                             </div>
-                            <br>
-                            <div class="row mb-3 align-items-center">
+
+                            <div class="row mb-4 align-items-center">
                                 <label for="email" class="col-sm-3 col-form-label">Email</label>
                                 <div class="col-sm-9">
                                     <input type="email" class="form-control" id="email" placeholder="your@email.com">
                                 </div>
                             </div>
-                            <br>
-                            <div class="row mb-3 align-items-center">
+
+                            <div class="row mb-4 align-items-center">
                                 <label for="firstName" class="col-sm-3 col-form-label">First Name</label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control" id="firstName" placeholder="John">
                                 </div>
                             </div>
-                            <br>
-                            <div class="row mb-3 align-items-center">
+
+                            <div class="row mb-4 align-items-center">
                                 <label for="lastName" class="col-sm-3 col-form-label">Last Name</label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control" id="lastName" placeholder="Doe">
                                 </div>
                             </div>
-                            <br>
-                            <div class="row mb-3 align-items-center">
+
+                            <div class="row mb-4 align-items-center">
                                 <label for="phone" class="col-sm-3 col-form-label">Phone</label>
                                 <div class="col-sm-9">
                                     <input type="tel" class="form-control" id="phone" placeholder="+91 9876543210">
                                 </div>
                             </div>
-                            <br>
-                            <div class="row mb-3 align-items-center">
+
+                            <div class="row mb-4 align-items-center">
                                 <label for="address" class="col-sm-3 col-form-label">Address</label>
                                 <div class="col-sm-9">
                                     <textarea class="form-control" id="address" rows="2"
                                         placeholder="Your address"></textarea>
                                 </div>
                             </div>
-                            <br>
-                            <div class="mt-4 text-end">
-                                <button type="submit" class="btn btn-primary"
-                                    style="background-color: var(--accent-color); border: none;">
+                            <div class="mt-4 text-end" style="margin-top: 10px !important;">
+                                <button type="submit" class="btn btn-primary btn-lg"
+                                    style="background-color: var(--accent-color); border: none; color: white;">
                                     Update Information
                                 </button>
                             </div>
@@ -339,31 +339,31 @@
                     <div class="dashboard-card mb-4">
                         <h3 class="mb-4"><i class="bi bi-shield-lock"></i> Security</h3>
                         <form id="passwordForm">
-                            <div class="row mb-3 align-items-center">
-                                <label for="currentPassword" class="col-sm-5 col-form-label">Current Password</label><br>
+                            <div class="row mb-4 align-items-center">
+                                <label for="currentPassword" class="col-sm-5 col-form-label">Current Password</label>
                                 <div class="col-sm-7">
                                     <input type="password" class="form-control" id="currentPassword" required>
                                 </div>
                             </div>
-                            <br>
-                            <div class="row mb-3 align-items-center">
-                                <label for="newPassword" class="col-sm-5 col-form-label">New Password</label><br>
+
+                            <div class="row mb-4 align-items-center">
+                                <label for="newPassword" class="col-sm-5 col-form-label">New Password</label>
                                 <div class="col-sm-7">
                                     <input type="password" class="form-control" id="newPassword" required>
                                     <div id="passwordStrength" class="password-strength"></div>
                                 </div>
                             </div>
-                            <br>
-                            <div class="row mb-3 align-items-center">
-                                <label for="confirmPassword" class="col-sm-5 col-form-label">Confirm Password</label><br>
+
+                            <div class="row mb-4 align-items-center">
+                                <label for="confirmPassword" class="col-sm-5 col-form-label">Confirm Password</label>
                                 <div class="col-sm-7">
                                     <input type="password" class="form-control" id="confirmPassword" required>
                                 </div>
                             </div>
-                            <br>
-                            <div class="mt-4 text-end">
-                                <button type="submit" class="btn btn-primary"
-                                    style="background-color: var(--accent-color); border: none;">
+
+                            <div class="mt-5 text-end" style="margin-top: 10px !important;">
+                                <button type="submit" class="btn btn-primary btn-lg"
+                                    style="background-color: var(--accent-color); border: none; color: white;">
                                     Change Password
                                 </button>
                             </div>
@@ -393,7 +393,7 @@
                             </select>
                         </div>
                         <br>
-                        <button class="btn btn-outline-light w-100" onclick="savePreferences()">
+                        <button class="btn btn-outline-dark btn-lg w-100" onclick="savePreferences()">
                             Save Preferences
                         </button>
                     </div>
@@ -481,20 +481,20 @@
                 if (!response || !response.ok) return;
 
                 const user = await response.json();
-                
+
                 // Update UI
                 const displayName = `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'User';
                 document.getElementById('displayUsername').textContent = displayName;
                 document.getElementById('profileUsername').textContent = displayName;
                 document.getElementById('userAvatar').textContent = displayName.charAt(0).toUpperCase();
-                
+
                 // Form Fields
                 document.getElementById('username').value = displayName;
                 if (user.phone) document.getElementById('phone').value = user.phone;
                 if (user.first_name) document.getElementById('firstName').value = user.first_name;
                 if (user.last_name) document.getElementById('lastName').value = user.last_name;
                 // Add read-only indication or placeholder for email/address if needed
-                
+
                 // Member Since
                 if (user.createdAt) {
                     const date = new Date(user.createdAt);
@@ -579,7 +579,7 @@
                                 <i class="bi ${data.icon} text-white"></i>
                             </div>
                             <div>
-                                <h6 class="mb-1 text-white text-break">${data.title}</h6>
+                                <h6 class="mb-1 text-dark text-break">${data.title}</h6>
                                 <small class="text-muted">${data.subtitle}</small>
                             </div>
                         </div>
@@ -597,7 +597,7 @@
         async function deleteItem(type, id) {
             if (!confirm('Are you sure you want to delete this item?')) return;
 
-            const endpoint = type === 'search' 
+            const endpoint = type === 'search'
                 ? `${API_BASE_URL}/api/users/saved-searches/${id}`
                 : `${API_BASE_URL}/api/users/alerts/${id}`;
 
@@ -607,12 +607,12 @@
                     // Remove from DOM
                     const el = document.getElementById(`${type}-${id}`);
                     if (el) el.remove();
-                    
+
                     // Update count
                     const counter = document.getElementById('cartCount');
                     const currentCount = parseInt(counter.textContent) || 0;
                     counter.textContent = Math.max(0, currentCount - 1);
-                    
+
                     // Refresh stats
                     loadStatsData();
                 } else {
@@ -628,12 +628,12 @@
             try {
                 const response = await authenticatedFetch(`${API_BASE_URL}/api/users/dashboard`);
                 if (!response || !response.ok) return;
-                
+
                 const data = await response.json();
-                
+
                 document.getElementById('statDealsFound').textContent = data.active_alerts_count || 0;
-                document.getElementById('statDealsFound').nextElementSibling.textContent = "Active Alerts"; 
-                
+                document.getElementById('statDealsFound').nextElementSibling.textContent = "Active Alerts";
+
                 document.getElementById('statSearchesMade').textContent = data.saved_searches_count || 0;
                 document.getElementById('statSearchesMade').nextElementSibling.textContent = "Saved Searches";
 

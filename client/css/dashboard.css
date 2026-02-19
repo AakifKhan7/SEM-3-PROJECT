@@ -1,13 +1,13 @@
 :root {
-    --bg-color: #2d2b3d;
-    --sidebar-bg: #1f1d2b;
-    --card-bg: #1f1d2b;
-    --text-color: #ffffff;
-    --text-muted: #a0a0a0;
-    --accent-color: #8c52ff;
-    --accent-hover: #7b42f0;
-    --border-color: #3f3d53;
-    --input-bg: #2d2b3d;
+    --bg-color: #ffffff;
+    --sidebar-bg: #000000;
+    --card-bg: #ffffff;
+    --text-color: #000000;
+    --text-muted: #666666;
+    --accent-color: #000000;
+    --accent-hover: #333333;
+    --border-color: #e0e0e0;
+    --input-bg: #ffffff;
 }
 
 * {
@@ -57,14 +57,15 @@ body {
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-    background-color: var(--border-color);
+    background-color: #333;
     border-radius: 20px;
 }
 
 .brand {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--text-color);
+    font-weight: 700;
+    color: #ffffff;
     margin-bottom: 3rem;
     display: flex;
     align-items: center;
@@ -73,7 +74,7 @@ body {
 }
 
 .brand i {
-    color: var(--accent-color);
+    color: #ffffff;
 }
 
 .nav-links {
@@ -88,7 +89,7 @@ body {
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    color: var(--text-muted);
+    color: #a0a0a0;
     text-decoration: none;
     border-radius: 12px;
     transition: all 0.2s;
@@ -97,8 +98,8 @@ body {
 
 .nav-item:hover,
 .nav-item.active {
-    background-color: rgba(140, 82, 255, 0.1);
-    color: var(--accent-color);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
 }
 
 .nav-item i {
@@ -108,7 +109,7 @@ body {
 .user-profile {
     margin-top: auto;
     padding-top: 1.5rem;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid #333;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -117,7 +118,7 @@ body {
 .user-avatar {
     width: 40px;
     height: 40px;
-    background-color: var(--accent-color);
+    background-color: #333;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -133,6 +134,7 @@ body {
 
 .user-name {
     font-weight: 600;
+    color: #ffffff;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -140,7 +142,11 @@ body {
 
 .user-role {
     font-size: 0.8rem;
-    color: var(--text-muted);
+
+    .user-role {
+        font-size: 0.8rem;
+        color: #a0a0a0;
+    }
 }
 
 /* Main Content */
@@ -206,7 +212,7 @@ body {
 .stat-value {
     font-size: 2.5rem;
     font-weight: 700;
-    color: white;
+    color: var(--text-color);
     margin: 0.5rem 0;
 }
 
@@ -231,13 +237,14 @@ body {
     display: flex;
     gap: 10px;
     margin-bottom: 1.5rem;
+    flex-wrap: wrap;
 }
 
 .custom-search-input {
     flex: 1;
-    background-color: var(--input-bg);
+    background-color: #000000;
     border: 1px solid var(--border-color);
-    color: white;
+    color: #ffffff;
     padding: 12px 20px;
     border-radius: 12px;
     font-size: 1rem;
@@ -246,6 +253,13 @@ body {
 .custom-search-input:focus {
     outline: none;
     border-color: var(--accent-color);
+}
+
+.glass-card {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .search-btn {
@@ -315,7 +329,7 @@ body {
     display: none;
     background: none;
     border: none;
-    color: white;
+    color: var(--text-color);
     font-size: 1.5rem;
     cursor: pointer;
     position: fixed;
@@ -346,5 +360,68 @@ body {
 
     .mobile-toggle {
         display: block;
+    }
+}
+
+/* Responsive Product Result Card */
+.product-result-card {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 576px) {
+    .product-result-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .product-result-card>div:first-child {
+        width: 100%;
+        text-align: center;
+    }
+
+    .product-result-card .btn-buy,
+    .product-result-card .product-actions {
+        width: 100%;
+        margin-top: 1rem;
+        display: block;
+        text-align: center;
+    }
+
+    .product-result-card .product-actions {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Force stats grid to stack on mobile */
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Stack tables on mobile for readability */
+    .specs-table th,
+    .specs-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .specs-table th {
+        color: var(--text-muted);
+        margin-top: 10px;
+    }
+
+    /* Reset text alignment on mobile for stacked elements */
+    .text-end {
+        text-align: left !important;
+    }
+
+    .retailer-card .col-md-4 {
+        margin-bottom: 10px;
+    }
+
+    .retailer-card .text-end {
+        text-align: left !important;
     }
 }

@@ -1,15 +1,16 @@
 :root {
-    --bg-color: #2d2b3d;
-    --form-bg: #1f1d2b;
-    --input-bg: #2d2b3d;
-    --text-color: #ffffff;
-    --text-muted: #a0a0a0;
-    --accent-color: #8c52ff;
-    --accent-hover: #7b42f0;
-    --input-border: #3f3d53;
+    --bg-color: #ffffff;
+    --form-bg: #ffffff;
+    --input-bg: #ffffff;
+    --text-color: #000000;
+    --text-muted: #666666;
+    --accent-color: #000000;
+    --accent-hover: #333333;
+    --input-border: #000000;
 }
 
-body, html {
+body,
+html {
     height: 100%;
     margin: 0;
     font-family: 'Inter', sans-serif;
@@ -42,7 +43,9 @@ body, html {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(45, 43, 61, 0.3), rgba(45, 43, 61, 0.8));
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.8));
+    z-index: 1;
     z-index: 1;
 }
 
@@ -122,8 +125,9 @@ body, html {
     .branding-section {
         flex: 1.2;
     }
+
     .form-section {
-        width: 45%; 
+        width: 45%;
     }
 }
 
@@ -148,7 +152,7 @@ body, html {
     background-color: var(--input-bg);
     border: 1px solid var(--input-border);
     border-radius: 8px;
-    color: white;
+    color: var(--text-color);
     padding: 12px 16px;
     height: auto;
     margin-bottom: 20px;
@@ -157,7 +161,7 @@ body, html {
 .custom-input:focus {
     background-color: var(--input-bg);
     border-color: var(--accent-color);
-    color: white;
+    color: var(--text-color);
     box-shadow: none;
 }
 
@@ -224,7 +228,8 @@ body, html {
     font-size: 0.85rem;
 }
 
-.divider::before, .divider::after {
+.divider::before,
+.divider::after {
     content: '';
     flex: 1;
     border-bottom: 1px solid var(--input-border);
@@ -243,7 +248,7 @@ body, html {
     flex: 1;
     background-color: transparent;
     border: 1px solid var(--input-border);
-    color: white;
+    color: var(--text-color);
     padding: 10px;
     border-radius: 8px;
     display: flex;
@@ -255,8 +260,8 @@ body, html {
 }
 
 .social-btn:hover {
-    border-color: white;
-    color: white;
+    border-color: var(--accent-color);
+    color: var(--accent-color);
 }
 
 .password-container {
@@ -276,11 +281,13 @@ body, html {
     .branding-section {
         display: none;
     }
+
     .form-section {
         width: 100%;
         max-width: none;
         padding: 40px 20px;
     }
+
     .input-row {
         flex-direction: column;
         gap: 0;
@@ -294,6 +301,7 @@ body, html {
     margin-top: 10px;
     display: none;
 }
+
 .success-message {
     color: #51cf66;
     font-size: 0.9rem;
