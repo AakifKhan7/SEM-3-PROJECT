@@ -4,7 +4,10 @@ Combines discount, price, and rating into a single ranking.
 """
 
 from typing import List, Dict, Any
+from sqlalchemy.orm import Session
+from app.models.product import Product
 from app.models.product_listings import ProductListing
+from app.models.platform import Platform
 
 
 def rank_listings(listings: List[ProductListing]) -> List[Dict[str, Any]]:
@@ -60,3 +63,62 @@ def rank_listings(listings: List[ProductListing]) -> List[Dict[str, Any]]:
     scored.sort(key=lambda x: x["score"], reverse=True)
     
     return scored
+
+
+def compare_by_keyword(query: str, db: Session) -> List[ProductListing]:
+    """
+    Search for products by keyword and return ranked listings across platforms.
+    
+    This function:
+    1. Searches the database for products matching the keyword
+    2. Fetches all listings for those products from Amazon and Flipkart
+    3. Ranks them using the composite scoring algorithm
+    4. Returns the ranked listings (best deals first)
+    
+    Args:
+        query: Search keyword (e.g., "iPhone 15 Pro")
+        db: Database session
+    
+    Returns:
+        List of ProductListing objects ranked by composite score
+    """
+    # Search for products matching the keyword
+    products = db.query(Product).filter(Product.name.ilike(f"%{query}%")).all()
+    
+    if not products:
+        return []
+    
+    # Extract product IDs
+    product_ids = [p.id for p in products]
+    
+    # Get all listings for these products from Amazon and Flipkart
+    amazon_platform = db.query(Platform).filter(Platform.name == "Amazon").first()
+    flipkart_platform = db.query(Platform).filter(Platform.name == "Flipkart").first()
+    
+    platform_ids = []
+    if amazon_platform:
+        platform_ids.append(amazon_platform.id)
+    if flipkart_platform:
+        platform_ids.append(flipkart_platform.id)
+    
+    if not platform_ids:
+        return []
+    
+    # Query listings for matching products from Amazon and Flipkart only
+    listings = (
+        db.query(ProductListing)
+        .filter(
+            ProductListing.product_id.in_(product_ids),
+            ProductListing.platform_id.in_(platform_ids)
+        )
+        .all()
+    )
+    
+    if not listings:
+        return []
+    
+    # Rank listings using composite score
+    ranked = rank_listings(listings)
+    
+    # Return the listing objects sorted by score
+    return [item["listing"] for item in ranked]

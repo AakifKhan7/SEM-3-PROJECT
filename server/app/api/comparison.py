@@ -7,10 +7,42 @@ from app.database import get_db
 from app.models.product import Product
 from app.models.product_listings import ProductListing
 from app.schemas.product import ProductListingResponse
-from app.services.comparison_service import rank_listings
+from app.services.comparison_service import rank_listings, compare_by_keyword
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/api/comparison", tags=["Comparison"])
+
+
+@router.get("/search", response_model=List[ProductListingResponse])
+def compare_products_by_keyword(
+    q: str = Query(..., min_length=3, description="Search keyword for products"),
+    db: Session = Depends(get_db),
+):
+    """
+    Compare products across platforms (Amazon and Flipkart) by search keyword.
+    
+    This endpoint:
+    1. Searches for products matching the keyword in the database
+    2. Fetches listings from Amazon and Flipkart for matching products
+    3. Ranks them using composite scoring (discount 40%, price 40%, rating 20%)
+    4. Returns ranked listings with best deals first
+    
+    Args:
+        q: Search keyword (minimum 3 characters)
+        db: Database session
+    
+    Returns:
+        List of ranked ProductListings from Amazon and Flipkart
+    """
+    listings = compare_by_keyword(q, db)
+    
+    if not listings:
+        raise HTTPException(
+            status_code=404, 
+            detail=f"No products found for keyword '{q}'. Try searching on the Find Deals page first to populate the database."
+        )
+    
+    return listings
 
 
 @router.get("/{product_id}", response_model=List[ProductListingResponse])

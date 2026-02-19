@@ -350,13 +350,41 @@
         }
 
         function setupEventListeners() {
-            document.getElementById('compareForm').addEventListener('submit', (e) => {
+            document.getElementById('compareForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                // For now, redirect to search page because manual comparison search isn't fully implemented backend-side for free text
-                // OR we could implement a search here. 
-                // But specifically for this task, the flow is Search -> Compare.
-                alert('Please use the "Find Deals" page to search for a product and click "Compare Prices".');
-                window.location.href = 'search.html';
+                
+                // Get form values
+                const productName = document.getElementById('productName').value.trim();
+                const category = document.getElementById('category').value;
+                
+                if (!productName) {
+                    showAlert('Please enter a product name', 'warning');
+                    return;
+                }
+                
+                // Show loading
+                showLoadingSpinner();
+                
+                try {
+                    // Call the comparison search endpoint
+                    const response = await apiCall(`/comparison/search?q=${encodeURIComponent(productName)}`);
+                    
+                    if (response && response.ok) {
+                        const listings = await response.json();
+                        displayComparisonResults(listings, productName);
+                    } else if (response && response.status === 404) {
+                        const error = await response.json();
+                        showAlert(error.detail || 'No products found. Try searching on the Find Deals page first.', 'info');
+                        hideLoadingSpinner();
+                    } else {
+                        showAlert('Failed to fetch comparison data. Please try again.', 'danger');
+                        hideLoadingSpinner();
+                    }
+                } catch (error) {
+                    console.error('Comparison error:', error);
+                    showAlert('An error occurred. Please try again.', 'danger');
+                    hideLoadingSpinner();
+                }
             });
         }
 
