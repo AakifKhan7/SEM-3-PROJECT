@@ -332,10 +332,7 @@
                 }
 
                 // Fetch comparison listings
-                const response = await apiCall('/comparison', {
-                    method: 'POST',
-                    body: JSON.stringify({ product_id: parseInt(productId) })
-                });
+                const response = await apiCall(`/comparison/${productId}`);
 
                 if (response && response.ok) {
                     const listings = await response.json();

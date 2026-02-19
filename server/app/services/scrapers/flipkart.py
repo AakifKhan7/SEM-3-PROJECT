@@ -439,11 +439,11 @@ class FlipkartScraper(BaseScraper):
                     try:
                         rating_val = Decimal(rating_match.group(1))
                         if 0 < rating_val <= 5:
-                            product_data.seller_rating = rating_val
+                            product_data.rating = rating_val
                     except:
                         pass
             
-            if not product_data.seller_rating:
+            if not product_data.rating:
                 page_text = soup.get_text()
                 rating_patterns = [
                     r'(\d+\.?\d*)\s*(?:out of|/)\s*5',
@@ -460,12 +460,12 @@ class FlipkartScraper(BaseScraper):
                         try:
                             rating_val = Decimal(rating_match.group(1))
                             if 0 < rating_val <= 5:
-                                product_data.seller_rating = rating_val
+                                product_data.rating = rating_val
                                 break
                         except:
                             pass
             
-            if not product_data.seller_rating:
+            if not product_data.rating:
                 rating_section = soup.select_one('h1 ~ div, h1 + div, h1 ~ span')
                 if rating_section:
                     rating_text = rating_section.get_text()
@@ -474,11 +474,11 @@ class FlipkartScraper(BaseScraper):
                         try:
                             rating_val = Decimal(rating_match.group(1))
                             if 0 < rating_val <= 5:
-                                product_data.seller_rating = rating_val
+                                product_data.rating = rating_val
                         except:
                             pass
             
-            if not product_data.seller_rating:
+            if not product_data.rating:
                 all_divs = soup.select('div, span')
                 for elem in all_divs:
                     elem_text = elem.get_text(strip=True)
@@ -487,7 +487,7 @@ class FlipkartScraper(BaseScraper):
                         try:
                             rating_val = Decimal(rating_match.group(1))
                             if 0 < rating_val <= 5:
-                                product_data.seller_rating = rating_val
+                                product_data.rating = rating_val
                                 break
                         except:
                             pass
