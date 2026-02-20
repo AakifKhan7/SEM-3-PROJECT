@@ -37,6 +37,7 @@ class ProductListing(BaseModel):
     price_history = relationship("PriceHistory", back_populates="listing")
 
     availability_status = Column(String(50), nullable=True)
+    delivery_time = Column(String(255), nullable=True)
 
     @property
     def platform_name(self):

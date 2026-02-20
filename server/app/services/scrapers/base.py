@@ -85,7 +85,7 @@ class ScrapedProductData:
             "image_url": self.image_url,
             "unique_identifier": self.unique_identifier,
             "platform_product_id": self.platform_product_id,
-            "platform_url": self.platform_url,
+            "platform_url": self.platform_url.split('?')[0] if self.platform_url else None,
             "current_price": float(self.current_price) if self.current_price else None,
             "original_price": float(self.original_price) if self.original_price else None,
             "discount_percentage": float(self.discount_percentage) if self.discount_percentage else None,

@@ -3,11 +3,13 @@ Comparison service: rank product listings by composite score.
 Combines discount, price, and rating into a single ranking.
 """
 
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional, Tuple
 from sqlalchemy.orm import Session
+from difflib import SequenceMatcher
 from app.models.product import Product
 from app.models.product_listings import ProductListing
 from app.models.platform import Platform
+from app.services.scraping_service import search_and_sync_products
 
 
 def rank_listings(listings: List[ProductListing]) -> List[Dict[str, Any]]:
@@ -122,3 +124,109 @@ def compare_by_keyword(query: str, db: Session) -> List[ProductListing]:
     
     # Return the listing objects sorted by score
     return [item["listing"] for item in ranked]
+
+
+def compare_products_cross_platform(query: str, db: Session) -> Dict[str, Any]:
+    """
+    Compare products across platforms using fresh scraped data.
+    """
+    # 1. Scrape/Sync fresh data
+    products = search_and_sync_products(query, db)
+    
+    if not products:
+        return {
+            "amazon": None,
+            "flipkart": None,
+            "comparison": None
+        }
+
+    # 2. Gather listings by platform
+    amazon_listings = []
+    flipkart_listings = []
+    
+    for product in products:
+        if not product.listings:
+            continue
+            
+        for listing in product.listings:
+            # Ensure platform is loaded
+            p_name = listing.platform.name if listing.platform else ""
+            if not p_name and listing.platform_id:
+                # Fallback if relationship not loaded
+                plat = db.query(Platform).get(listing.platform_id)
+                if plat:
+                    p_name = plat.name
+            
+            if p_name == "Amazon":
+                amazon_listings.append(listing)
+            elif p_name == "Flipkart":
+                flipkart_listings.append(listing)
+                
+    # 3. Find the single best matching product for the query on each platform
+    def get_best_match(listings, search_query):
+        if not listings:
+            return None, 0.0
+            
+        best_listing = None
+        best_score = -1.0
+        
+        for listing in listings:
+            # Use product name for matching
+            name = listing.product.name if listing.product else ""
+            
+            # Similarity score
+            score = SequenceMatcher(None, search_query.lower(), name.lower()).ratio()
+            
+            # Boost logic
+            if search_query.lower() in name.lower():
+                score += 0.2
+            
+            if score > best_score:
+                best_score = score
+                best_listing = listing
+        
+        return best_listing, best_score
+
+    best_amazon, a_score = get_best_match(amazon_listings, query)
+    best_flipkart, f_score = get_best_match(flipkart_listings, query)
+    
+    # 4. Create comparison object
+    comparison = {}
+    if best_amazon and best_flipkart:
+        # Calculate price difference
+        price_a = best_amazon.price or 0
+        price_f = best_flipkart.price or 0
+        
+        if price_a > 0 and price_f > 0:
+            diff = price_a - price_f
+            if diff > 0:
+                comparison["cheaper"] = "Flipkart"
+                comparison["price_diff"] = diff
+                comparison["savings_pct"] = (diff / price_a) * 100
+                comparison["message"] = f"Flipkart is cheaper by ₹{diff:.2f}"
+            elif diff < 0:
+                comparison["cheaper"] = "Amazon"
+                comparison["price_diff"] = abs(diff)
+                comparison["savings_pct"] = (abs(diff) / price_f) * 100
+                comparison["message"] = f"Amazon is cheaper by ₹{abs(diff):.2f}"
+            else:
+                comparison["cheaper"] = "Equal"
+                comparison["price_diff"] = 0
+                comparison["message"] = "Prices are equal"
+        
+        # Rating comparison
+        rating_a = best_amazon.rating or 0
+        rating_f = best_flipkart.rating or 0
+        
+        if rating_a > rating_f:
+             comparison["better_rated"] = "Amazon"
+        elif rating_f > rating_a:
+             comparison["better_rated"] = "Flipkart"
+        else:
+             comparison["better_rated"] = "Equal"
+
+    return {
+        "amazon": best_amazon,
+        "flipkart": best_flipkart,
+        "comparison": comparison
+    }

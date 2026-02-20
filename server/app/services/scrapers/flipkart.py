@@ -246,7 +246,7 @@ class FlipkartScraper(BaseScraper):
         """Extract product data from BeautifulSoup object."""
         try:
             product_data = ScrapedProductData()
-            product_data.platform_url = product_url
+            product_data.platform_url = product_url.split('?')[0] if product_url else None
             
             # Extract product ID
             product_id = self._extract_product_id_from_url(product_url)
@@ -677,19 +677,38 @@ class FlipkartScraper(BaseScraper):
             soup = BeautifulSoup(html_content, 'html.parser')
             
             # Check if we were redirected to a product page directly
-            if soup.find('h1', class_='CEn5rD') or soup.find('span', class_='B_NuCI') or soup.find('div', class_='hZ3P6w'):
+            if soup.find('h1', class_='CEn5rD') or soup.find('span', class_='B_NuCI'):
                 logger.info("Redirected to product page directly.")
                 product_data = self._extract_product_data_from_product_page(soup, self.driver.current_url if self.driver else search_url)
                 if product_data:
                     return [product_data]
             
-            product_containers = soup.select('div.cPHDOP, div.slAVV4, ._1AtVbE, ._2kHMtA, [data-id]')
+            # Reliable approach: Find title elements or product links first, then walk up to their container
+            title_elems = soup.select('._4rR01T, ._2WkVRV, .RG5Slk, .KzDlHZ, .wjcEIp')
+            if not title_elems:
+                # Fallback: find any link that looks like a product link
+                link_elems = soup.select('a[href*="/p/"]')
+                # Filter out obvious non-product links (like generic category links if they somehow have /p/)
+                title_elems = [a for a in link_elems if a.get_text(strip=True)]
             
-            if not product_containers:
-                product_containers = soup.select('._4rR01T, ._2WkVRV')
-                product_containers = [elem.find_parent('div', class_=lambda x: x and ('_1AtVbE' in x or '_2kHMtA' in x)) 
-                                    for elem in product_containers if elem]
-                product_containers = [c for c in product_containers if c]
+            product_containers = []
+            seen_containers = set()
+            
+            for elem in title_elems:
+                # Walk up to find a suitable outer container
+                container = elem.find_parent('div', class_=lambda x: x and any(c in x for c in ['_1AtVbE', '_2kHMtA', 'cPHDOP', 'slAVV4', 'jIjQ8S', 'col-12-12', 'Vba09Z']))
+                # If no specific class parent found, just go up 3-4 levels
+                if not container:
+                    curr = elem
+                    for _ in range(4):
+                        if curr.parent and curr.parent.name == 'div':
+                            curr = curr.parent
+                    container = curr
+                
+                if container and container not in seen_containers:
+                    seen_containers.add(container)
+                    product_containers.append(container)
+
             
             logger.info(f"Found {len(product_containers)} product containers")
             
@@ -766,24 +785,40 @@ class FlipkartScraper(BaseScraper):
                             continue
                         
                         product_data = ScrapedProductData()
-                        product_data.platform_url = product_url
+                        product_data.platform_url = product_url.split('?')[0] if product_url else None
                         
-                        name_elem = container.select_one('._4rR01T, ._2WkVRV, .s1Q9rs')
+                        name_elem = container.select_one('._4rR01T, ._2WkVRV, .s1Q9rs, .KzDlHZ, .wjcEIp, .RG5Slk')
                         if name_elem:
                             product_data.name = name_elem.get_text(strip=True)
+                        elif elem.name != 'a':
+                            # If we couldn't find it inside, maybe 'elem' itself is the title!
+                            product_data.name = elem.get_text(strip=True)
                         
-                        price_elem = container.select_one('._30jeq3, ._1_WHN1')
+                        price_elem = container.select_one('._30jeq3, ._1_WHN1, .Nx9bqj, .yRaY8j')
                         if price_elem:
                             price_text = price_elem.get_text(strip=True)
                             product_data.current_price = self._parse_price(price_text)
+                        
+                        if not product_data.current_price:
+                            # Fallback to regex on raw text since Flipkart randomizes class names constantly
+                            text = container.get_text(separator=' ', strip=True)
+                            from re import findall
+                            prices = findall(r'₹[0-9,]+', text)
+                            if prices:
+                                product_data.current_price = self._parse_price(prices[0])
+                                if len(prices) > 1:
+                                    product_data.original_price = self._parse_price(prices[1])
                         
                         product_id = self._extract_product_id_from_url(product_url)
                         if product_id:
                             product_data.platform_product_id = product_id
                             product_data.unique_identifier = f"FLIPKART_{product_id}"
                         
+                        logger.info(f"DEBUG LOOP: name={product_data.name}, price={product_data.current_price}, pid={product_id}")
                         if product_data.name:
                             results.append(product_data)
+                        else:
+                            logger.info("DEBUG LOOP: Name missing!")
                     except Exception as e:
                         logger.warning(f"Error processing search result: {e}")
                         continue

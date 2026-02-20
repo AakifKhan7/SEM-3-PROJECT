@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
@@ -34,15 +34,34 @@ def compare_products_by_keyword(
     Returns:
         List of ranked ProductListings from Amazon and Flipkart
     """
-    listings = compare_by_keyword(q, db)
+    from app.services.comparison_service import compare_products_cross_platform
     
-    if not listings:
+    result = compare_products_cross_platform(q, db)
+    
+    if not result or (not result["amazon"] and not result["flipkart"]):
         raise HTTPException(
             status_code=404, 
             detail=f"No products found for keyword '{q}'. Try searching on the Find Deals page first to populate the database."
         )
     
-    return listings
+    # Extract listings from the result dictionary
+    listings = []
+    if result.get("amazon"):
+        listings.append(result["amazon"])
+    if result.get("flipkart"):
+        listings.append(result["flipkart"])
+        
+    if not listings:
+        return []
+
+    # Rank by composite score (discount, price, rating)
+    from app.services.comparison_service import rank_listings
+    ranked = rank_listings(listings)
+    
+    # Extract only the listing objects from the ranked result
+    ranked_listings = [item["listing"] for item in ranked]
+    
+    return ranked_listings
 
 
 @router.get("/{product_id}", response_model=List[ProductListingResponse])
