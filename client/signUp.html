@@ -85,7 +85,8 @@
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="terms" required>
                         <label class="form-check-label" for="terms">
-                            I agree to the <a href="#">Terms & Conditions</a>
+                            I agree to the <a href="#" id="openTnC" style="color: #c0392b; font-weight: 600;">Terms
+                                &amp; Conditions</a>
                         </label>
                     </div>
                 </div>
@@ -301,6 +302,148 @@
 
         });
     </script>
+    <!-- ── Terms & Conditions Modal ── -->
+    <div id="tncModal"
+        style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.55); backdrop-filter:blur(4px); overflow-y:auto; padding:2rem 1rem;">
+        <div
+            style="max-width:680px; margin:auto; background:#fff; border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,0.25); overflow:hidden;">
+
+            <!-- Modal Header -->
+            <div
+                style="background:#000; color:#fff; padding:1.25rem 1.75rem; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h2 style="margin:0; font-size:1.2rem; font-weight:700;"><i class="bi bi-file-text-fill me-2"
+                            style="color:#e74c3c;"></i>Terms &amp; Conditions</h2>
+                    <p style="margin:0; font-size:0.75rem; color:#aaa; margin-top:3px;">TechScope &mdash; Effective 20
+                        Feb 2026</p>
+                </div>
+                <button id="closeTnC"
+                    style="background:none; border:none; color:#fff; font-size:1.4rem; cursor:pointer; line-height:1;"
+                    aria-label="Close">&times;</button>
+            </div>
+
+            <!-- Scrollable Body -->
+            <div
+                style="padding:1.75rem; max-height:65vh; overflow-y:auto; font-size:0.88rem; color:#333; line-height:1.7;">
+
+                <p>Welcome to <strong>TechScope</strong>. By creating an account or using our platform, you agree to the
+                    following Terms &amp; Conditions. Please read them carefully.</p>
+
+                <h3 style="font-size:0.95rem; font-weight:700; margin-top:1.25rem; color:#000;">1. About TechScope</h3>
+                <p>TechScope is a price comparison and deal aggregation platform designed to help consumers compare
+                    prices of tech products — including smartphones, laptops, headphones, and other electronics — across
+                    multiple online retailers. We do not sell products directly.</p>
+
+                <h3 style="font-size:0.95rem; font-weight:700; margin-top:1.25rem; color:#000;">2. Eligibility</h3>
+                <p>You must be at least <strong>13 years of age</strong> to register and use TechScope. By signing up,
+                    you confirm that all information you provide is accurate and up-to-date.</p>
+
+                <h3 style="font-size:0.95rem; font-weight:700; margin-top:1.25rem; color:#000;">3. Account
+                    Responsibilities</h3>
+                <ul style="padding-left:1.25rem;">
+                    <li>You are responsible for maintaining the confidentiality of your login credentials.</li>
+                    <li>You agree not to share your account with any other person.</li>
+                    <li>You must notify us immediately if you suspect any unauthorized access to your account.</li>
+                    <li>TechScope is not liable for any loss resulting from unauthorized use of your account.</li>
+                </ul>
+
+                <h3 style="font-size:0.95rem; font-weight:700; margin-top:1.25rem; color:#000;">4. Use of the Platform
+                </h3>
+                <p>You agree to use TechScope only for lawful purposes. You must not:</p>
+                <ul style="padding-left:1.25rem;">
+                    <li>Attempt to scrape, harvest, or mirror our data without written permission.</li>
+                    <li>Use automated bots or scripts to interact with the platform.</li>
+                    <li>Attempt to compromise the security or integrity of our systems.</li>
+                    <li>Post or transmit any harmful, misleading, or abusive content.</li>
+                </ul>
+
+                <h3 style="font-size:0.95rem; font-weight:700; margin-top:1.25rem; color:#000;">5. Price &amp; Product
+                    Data</h3>
+                <p>Product prices and availability displayed on TechScope are sourced from third-party retailers and may
+                    change without notice. We strive for accuracy but do not guarantee that prices are current or
+                    error-free. Always verify the final price on the retailer's website before purchasing.</p>
+
+                <h3 style="font-size:0.95rem; font-weight:700; margin-top:1.25rem; color:#000;">6. Price Alerts</h3>
+                <p>The price alert feature notifies you when a product's price drops below your set threshold. Alert
+                    delivery depends on system availability and third-party data refresh rates. TechScope is not liable
+                    for missed alerts or price discrepancies.</p>
+
+                <h3 style="font-size:0.95rem; font-weight:700; margin-top:1.25rem; color:#000;">7. Intellectual Property
+                </h3>
+                <p>All content, branding, logos, and code associated with TechScope are the intellectual property of
+                    TechScope and its contributors. You may not reproduce, modify, or distribute any part of the
+                    platform without explicit written permission.</p>
+
+                <h3 style="font-size:0.95rem; font-weight:700; margin-top:1.25rem; color:#000;">8. Privacy Policy</h3>
+                <p>We collect personal data (name, email, and usage data) solely to provide and improve our services. We
+                    do not sell your personal data to third parties. Data is stored securely and handled in accordance
+                    with applicable data protection laws.</p>
+
+                <h3 style="font-size:0.95rem; font-weight:700; margin-top:1.25rem; color:#000;">9. Limitation of
+                    Liability</h3>
+                <p>TechScope is provided "as is" without warranties of any kind. We are not liable for any direct,
+                    indirect, incidental, or consequential damages arising from your use of the platform, including
+                    losses resulting from purchasing decisions made based on our data.</p>
+
+                <h3 style="font-size:0.95rem; font-weight:700; margin-top:1.25rem; color:#000;">10. Modifications to
+                    Terms</h3>
+                <p>We reserve the right to update these Terms &amp; Conditions at any time. Continued use of TechScope
+                    after changes are posted constitutes acceptance of the revised terms. We will notify registered
+                    users of significant changes via email.</p>
+
+                <h3 style="font-size:0.95rem; font-weight:700; margin-top:1.25rem; color:#000;">11. Termination</h3>
+                <p>TechScope reserves the right to suspend or terminate your account at any time if you violate these
+                    terms, without prior notice or liability.</p>
+
+                <h3 style="font-size:0.95rem; font-weight:700; margin-top:1.25rem; color:#000;">12. Contact Us</h3>
+                <p>For questions or concerns regarding these Terms &amp; Conditions, please contact us at:<br>
+                    <strong><i class="bi bi-envelope me-1"></i>kothariparthiv26@gmail.com</strong><br>
+                    <strong><i class="bi bi-phone me-1"></i>+91 6351834679</strong>
+                </p>
+
+                <p style="margin-top:1.5rem; font-size:0.8rem; color:#888;">Last updated: 20 February 2026
+                    &nbsp;&bull;&nbsp; TechScope &copy; 2026</p>
+            </div>
+
+            <!-- Modal Footer -->
+            <div
+                style="padding:1rem 1.75rem; border-top:1px solid #eee; display:flex; justify-content:flex-end; gap:0.75rem;">
+                <button id="declineTnC"
+                    style="padding:9px 20px; border:1px solid #ccc; border-radius:8px; background:#f5f5f5; font-size:0.85rem; cursor:pointer; font-weight:600; color:#555;">Decline</button>
+                <button id="acceptTnC"
+                    style="padding:9px 20px; border:none; border-radius:8px; background:#000; color:#fff; font-size:0.85rem; cursor:pointer; font-weight:600;">I
+                    Agree</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // T&C Modal logic
+        const tnc = document.getElementById('tncModal');
+        document.getElementById('openTnC').addEventListener('click', function (e) {
+            e.preventDefault();
+            tnc.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        });
+        function closeTnC() {
+            tnc.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        document.getElementById('closeTnC').addEventListener('click', closeTnC);
+        document.getElementById('declineTnC').addEventListener('click', function () {
+            document.getElementById('terms').checked = false;
+            closeTnC();
+        });
+        document.getElementById('acceptTnC').addEventListener('click', function () {
+            document.getElementById('terms').checked = true;
+            closeTnC();
+        });
+        // Close on backdrop click
+        tnc.addEventListener('click', function (e) {
+            if (e.target === tnc) closeTnC();
+        });
+    </script>
+
 </body>
 
 </html>
