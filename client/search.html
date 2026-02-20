@@ -182,7 +182,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // API Configuration
-        const API_BASE_URL = 'http://127.0.0.1:8001/api';
+        const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
         // Helper function for authenticated API calls
         async function apiCall(endpoint, options = {}) {
@@ -205,7 +205,7 @@
                 headers: { ...defaultOptions.headers, ...options.headers },
             });
 
-            if (response.status === 401) {
+            if (response.status === 401 || response.status === 403) {
                 // Token expired
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('user');

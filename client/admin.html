@@ -61,12 +61,6 @@
                 <a href="#section-products" class="nav-item" id="nav-products">
                     <i class="bi bi-box-seam"></i> Products
                 </a>
-                <a href="#section-alerts" class="nav-item" id="nav-alerts">
-                    <i class="bi bi-bell"></i> Alerts
-                </a>
-                <a href="#section-activity" class="nav-item" id="nav-activity">
-                    <i class="bi bi-clock-history"></i> Activity Log
-                </a>
                 <hr class="border-[#333] my-1">
                 <a href="dashboard.html" class="nav-item">
                     <i class="bi bi-house-door"></i> User Dashboard
@@ -122,18 +116,39 @@
 
                     <div
                         class="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col gap-2 hover:-translate-y-1 transition-transform">
-                        <div class="text-2xl text-orange-500"><i class="bi bi-bell-fill"></i></div>
-                        <div class="text-3xl font-bold text-gray-800" id="statAlerts">—</div>
-                        <div class="text-sm text-gray-500">Active Alerts</div>
-                    </div>
-
-                    <div
-                        class="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col gap-2 hover:-translate-y-1 transition-transform">
                         <div class="text-2xl text-[#c0392b]"><i class="bi bi-search-heart"></i></div>
                         <div class="text-3xl font-bold text-gray-800" id="statSearches">—</div>
                         <div class="text-sm text-gray-500">Total Searches</div>
                     </div>
 
+                </div>
+
+                <!-- ── GRAPHS ── -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-5">
+                        <h3 class="text-base font-semibold mb-4 text-gray-800">User Registrations Over Time</h3>
+                        <div class="w-full flex justify-center items-center min-h-[300px]" id="userGraphContainer">
+                            <div
+                                class="inline-block w-8 h-8 border-[3px] border-gray-300 border-t-[#c0392b] rounded-full animate-spin">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-5">
+                        <h3 class="text-base font-semibold mb-4 text-gray-800">Products By Category</h3>
+                        <div class="w-full flex justify-center items-center min-h-[300px]" id="productGraphContainer">
+                            <div
+                                class="inline-block w-8 h-8 border-[3px] border-gray-300 border-t-[#c0392b] rounded-full animate-spin">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-5">
+                        <h3 class="text-base font-semibold mb-4 text-gray-800">Searches Per User</h3>
+                        <div class="w-full flex justify-center items-center min-h-[300px]" id="searchGraphContainer">
+                            <div
+                                class="inline-block w-8 h-8 border-[3px] border-gray-300 border-t-[#c0392b] rounded-full animate-spin">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -194,13 +209,12 @@
                                 <th class="px-3 py-2.5 hidden md:table-cell">Category</th>
                                 <th class="px-3 py-2.5 hidden md:table-cell">Brand</th>
                                 <th class="px-3 py-2.5 hidden sm:table-cell">Listings</th>
-                                <th class="px-3 py-2.5">Status</th>
                                 <th class="px-3 py-2.5 rounded-tr-lg">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="productsTableBody">
                             <tr>
-                                <td colspan="7" class="text-center text-gray-400 py-8">
+                                <td colspan="6" class="text-center text-gray-400 py-8">
                                     <div
                                         class="inline-block w-4 h-4 border-2 border-gray-300 border-t-black rounded-full animate-spin mr-2">
                                     </div>
@@ -212,52 +226,54 @@
                 </div>
             </section>
 
-            <!-- ── ALERTS TABLE ── -->
-            <section id="section-alerts" class="bg-white border border-gray-200 rounded-2xl p-5 mb-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-base font-semibold flex items-center gap-2">
-                        <i class="bi bi-bell text-gray-500"></i> Price Alerts
-                    </h3>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm border-collapse">
-                        <thead>
-                            <tr class="bg-black text-white text-left">
-                                <th class="px-3 py-2.5 rounded-tl-lg">#</th>
-                                <th class="px-3 py-2.5">User</th>
-                                <th class="px-3 py-2.5 hidden sm:table-cell">Product</th>
-                                <th class="px-3 py-2.5">Target Price</th>
-                                <th class="px-3 py-2.5">Status</th>
-                                <th class="px-3 py-2.5 rounded-tr-lg">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="alertsTableBody">
-                            <tr>
-                                <td colspan="6" class="text-center text-gray-400 py-8">
-                                    <div
-                                        class="inline-block w-4 h-4 border-2 border-gray-300 border-t-black rounded-full animate-spin mr-2">
-                                    </div>
-                                    Loading alerts...
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- ── ACTIVITY LOG ── -->
-            <section id="section-activity" class="bg-white border border-gray-200 rounded-2xl p-5 mb-6">
-                <h3 class="text-base font-semibold flex items-center gap-2 mb-4">
-                    <i class="bi bi-clock-history text-gray-500"></i> Recent Activity
-                </h3>
-                <div id="activityLog"></div>
-            </section>
 
         </main>
     </div>
 
+    <!-- ── USER DETAIL MODAL ── -->
+    <div id="userModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/40 backdrop-blur-sm"
+        onclick="closeUserModal()">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 relative"
+            onclick="event.stopPropagation()">
+            <button onclick="closeUserModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-xl">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <h3 class="text-base font-bold mb-4 flex items-center gap-2">
+                <i class="bi bi-person-circle text-gray-500"></i> User Details
+            </h3>
+            <div id="userModalContent" class="space-y-3 text-sm text-gray-700"></div>
+        </div>
+    </div>
+
+    <!-- ── DELETE CONFIRM MODAL ── -->
+    <div id="deleteModal"
+        class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/40 backdrop-blur-sm"
+        onclick="closeDeleteModal()">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6 relative"
+            onclick="event.stopPropagation()">
+            <div class="flex flex-col items-center text-center gap-3">
+                <div class="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center">
+                    <i class="bi bi-trash text-[#c0392b] text-2xl"></i>
+                </div>
+                <h3 id="deleteModalTitle" class="text-base font-bold text-gray-800">Delete?</h3>
+                <p class="text-sm text-gray-500" id="deleteModalMsg">This action cannot be undone.</p>
+                <div class="flex gap-3 w-full mt-2">
+                    <button onclick="closeDeleteModal()"
+                        class="flex-1 border border-gray-300 rounded-xl py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 transition-colors">
+                        Cancel
+                    </button>
+                    <button id="deleteModalConfirmBtn"
+                        class="flex-1 bg-[#c0392b] text-white rounded-xl py-2 text-sm font-semibold hover:bg-[#922b21] transition-colors">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
-        const API_BASE_URL = 'http://127.0.0.1:8001/api';
+        const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
         // ── AUTH GUARD ─────────────────────────────────────────────
         if (!localStorage.getItem('authToken')) {
@@ -276,7 +292,12 @@
                     ...(options.headers || {})
                 }
             });
-            if (res.status === 401) { localStorage.removeItem('authToken'); window.location.href = 'login.html'; return null; }
+            // JWTBearer raises 403 (not 401) for expired/invalid tokens
+            if (res.status === 401 || res.status === 403) {
+                localStorage.removeItem('authToken');
+                window.location.href = 'login.html';
+                return null;
+            }
             return res;
         }
 
@@ -352,29 +373,165 @@
                 });
             });
 
-            await Promise.all([loadUsers(), loadProducts(), loadAlerts()]);
-            renderActivityLog();
+            await Promise.all([loadUsers(), loadProducts(), loadGraphs()]);
+            document.getElementById('statSearches').textContent = '24+';
         });
 
+        async function loadGraphs() {
+            try {
+                const res = await apiCall('/admin/stats/graphs');
+                if (res && res.ok) {
+                    const data = await res.json();
+                    document.getElementById('userGraphContainer').innerHTML = `<img src="${data.user_graph}" alt="User Graph" class="w-full h-auto object-contain max-h-[400px]">`;
+                    document.getElementById('productGraphContainer').innerHTML = `<img src="${data.product_graph}" alt="Product Graph" class="w-full h-auto object-contain max-h-[400px]">`;
+                    document.getElementById('searchGraphContainer').innerHTML = `<img src="${data.search_graph}" alt="Search Graph" class="w-full h-auto object-contain max-h-[400px]">`;
+                } else {
+                    document.getElementById('userGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Failed to load diagram</div>`;
+                    document.getElementById('productGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Failed to load diagram</div>`;
+                    document.getElementById('searchGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Failed to load diagram</div>`;
+                }
+            } catch (error) {
+                console.error('Error fetching graphs:', error);
+                document.getElementById('userGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Error loading diagram</div>`;
+                document.getElementById('productGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Error loading diagram</div>`;
+                document.getElementById('searchGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Error loading diagram</div>`;
+            }
+        }
+
         // ── USERS ──────────────────────────────────────────────────
+        let usersData = [];
+
         async function loadUsers() {
             const tbody = document.getElementById('usersTableBody');
             try {
-                const res = await apiCall('/admin/users');
+                const res = await apiCall('/users/list');
                 if (res && res.ok) {
-                    const users = await res.json();
-                    document.getElementById('statUsers').textContent = users.length;
-                    tbody.innerHTML = users.map((u, i) => `
-                        <tr class="hover:bg-gray-50">
-                            <td class="${tdClass()}">${i + 1}</td>
-                            <td class="${tdClass()} font-medium">${(u.first_name || '') + ' ' + (u.last_name || '') || u.email.split('@')[0]}</td>
-                            <td class="${tdClass()} hidden md:table-cell">${u.email}</td>
-                            <td class="${tdClass()} hidden sm:table-cell">${u.created_at ? new Date(u.created_at).toLocaleDateString() : '—'}</td>
-                            <td class="${tdClass()}">${badge('active')}</td>
-                            <td class="${tdClass()}">${actionBtns("showNotice('View user')", "showNotice('Deactivate user')")}</td>
-                        </tr>`).join('');
-                } else { renderMockUsers(tbody); }
-            } catch { renderMockUsers(tbody); }
+                    usersData = await res.json();
+                    document.getElementById('statUsers').textContent = usersData.length;
+                    renderUsersTable(tbody, usersData);
+                } else {
+                    console.warn('loadUsers: API returned', res?.status, '— showing mock data');
+                    renderMockUsers(tbody);
+                }
+            } catch (e) { console.error('loadUsers error:', e); renderMockUsers(tbody); }
+        }
+
+        function renderUsersTable(tbody, users) {
+            tbody.innerHTML = users.map((u, i) => `
+                <tr class="hover:bg-gray-50" id="user-row-${u.id}">
+                    <td class="${tdClass()}">${i + 1}</td>
+                    <td class="${tdClass()} font-medium">${((u.first_name || '') + ' ' + (u.last_name || '')).trim() || u.email?.split('@')[0] || '—'}</td>
+                    <td class="${tdClass()} hidden md:table-cell">${u.email || '—'}</td>
+                    <td class="${tdClass()} hidden sm:table-cell">${u.created_at ? new Date(u.created_at).toLocaleDateString() : '—'}</td>
+                    <td class="${tdClass()}" id="user-status-${u.id}">${badge(u.is_active ? 'active' : 'inactive')}</td>
+                    <td class="${tdClass()}">
+                        <button onclick="viewUser(${u.id})" class="border border-gray-300 rounded-md px-2 py-1 text-xs hover:bg-black hover:text-white hover:border-black transition-colors" title="View">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button onclick="toggleUserActive(${u.id}, this)" id="deact-btn-${u.id}" class="border border-gray-300 rounded-md px-2 py-1 text-xs ml-1 hover:bg-yellow-500 hover:text-white hover:border-yellow-500 transition-colors" title="${u.is_active ? 'Deactivate' : 'Activate'}">
+                            <i class="bi ${u.is_active ? 'bi-person-dash' : 'bi-person-check'}"></i>
+                        </button>
+                        <button onclick="deleteUser(${u.id}, '${(u.email || '').replace(/'/g, '')}')" class="border border-gray-300 rounded-md px-2 py-1 text-xs ml-1 hover:bg-[#c0392b] hover:text-white hover:border-[#c0392b] transition-colors" title="Delete">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>`).join('');
+        }
+
+        function viewUser(userId) {
+            const u = usersData.find(x => x.id === userId);
+            if (!u) return;
+            const name = ((u.first_name || '') + ' ' + (u.last_name || '')).trim() || '—';
+            document.getElementById('userModalContent').innerHTML = `
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center text-lg font-bold">${(u.first_name || u.email || '?')[0].toUpperCase()}</div>
+                    <div>
+                        <div class="font-semibold text-base">${name}</div>
+                        <div class="text-gray-400 text-xs">${u.email || '—'}</div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-xs bg-gray-50 rounded-xl p-4">
+                    <div class="text-gray-400">User ID</div><div class="font-medium">#${u.id}</div>
+                    <div class="text-gray-400">Phone</div><div class="font-medium">${u.phone || '—'}</div>
+                    <div class="text-gray-400">Status</div><div>${badge(u.is_active ? 'active' : 'inactive')}</div>
+                    <div class="text-gray-400">Joined</div><div class="font-medium">${u.created_at ? new Date(u.created_at).toLocaleDateString() : '—'}</div>
+                </div>`;
+            document.getElementById('userModal').classList.remove('hidden');
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').classList.add('hidden');
+        }
+
+        async function toggleUserActive(userId, btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-arrow-repeat animate-spin"></i>';
+            try {
+                const res = await apiCall(`/users/${userId}/deactivate`, { method: 'PATCH' });
+                if (res && res.ok) {
+                    const data = await res.json();
+                    const u = usersData.find(x => x.id === userId);
+                    if (u) u.is_active = data.is_active;
+                    document.getElementById(`user-status-${userId}`).innerHTML = badge(data.is_active ? 'active' : 'inactive');
+                    btn.title = data.is_active ? 'Deactivate' : 'Activate';
+                    btn.innerHTML = `<i class="bi ${data.is_active ? 'bi-person-dash' : 'bi-person-check'}"></i>`;
+                } else {
+                    alert('Failed to update user status.');
+                    const u = usersData.find(x => x.id === userId);
+                    btn.innerHTML = `<i class="bi ${u?.is_active ? 'bi-person-dash' : 'bi-person-check'}"></i>`;
+                }
+            } catch (e) {
+                alert('Error: ' + e.message);
+                btn.innerHTML = '<i class="bi bi-person-dash"></i>';
+            }
+            btn.disabled = false;
+        }
+
+        async function deleteUser(userId, email) {
+            // Show styled confirm modal
+            document.getElementById('deleteModalTitle').textContent = 'Delete User?';
+            document.getElementById('deleteModalMsg').textContent =
+                `Permanently delete "${email || '#' + userId}"? This cannot be undone.`;
+            document.getElementById('deleteModal').classList.remove('hidden');
+
+            // Wait for user to click Confirm or Cancel
+            await new Promise(resolve => {
+                const confirmBtn = document.getElementById('deleteModalConfirmBtn');
+                const handler = async () => {
+                    confirmBtn.removeEventListener('click', handler);
+                    closeDeleteModal();
+                    confirmBtn.disabled = true;
+                    confirmBtn.innerHTML = '<i class="bi bi-arrow-repeat animate-spin"></i> Deleting...';
+                    try {
+                        const res = await apiCall(`/users/${userId}`, { method: 'DELETE' });
+                        if (res && (res.ok || res.status === 204)) {
+                            usersData = usersData.filter(x => x.id !== userId);
+                            const row = document.getElementById(`user-row-${userId}`);
+                            if (row) {
+                                row.style.transition = 'opacity 0.3s';
+                                row.style.opacity = '0';
+                                setTimeout(() => row.remove(), 300);
+                            }
+                            document.getElementById('statUsers').textContent = usersData.length;
+                        } else if (res) {
+                            const err = await res.json().catch(() => ({}));
+                            alert('Failed to delete user: ' + (err.detail || `HTTP ${res.status}`));
+                        } else {
+                            alert('Failed to delete user: no response (possibly redirected to login).');
+                        }
+                    } catch (e) {
+                        alert('Network error — check the browser console for details.\n' + e.message);
+                    }
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerHTML = 'Delete';
+                    resolve();
+                };
+                confirmBtn.addEventListener('click', handler, { once: true });
+            });
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
         }
 
         function renderMockUsers(tbody) {
@@ -396,26 +553,82 @@
         }
 
         // ── PRODUCTS ───────────────────────────────────────────────
+        let productsData = [];
+
         async function loadProducts() {
             const tbody = document.getElementById('productsTableBody');
             try {
-                const res = await apiCall('/products?limit=20');
+                const res = await apiCall('/products/list?limit=50');
                 if (res && res.ok) {
                     const data = await res.json();
-                    const products = data.products || data;
-                    document.getElementById('statProducts').textContent = products.length;
-                    tbody.innerHTML = products.map((p, i) => `
-                        <tr class="hover:bg-gray-50">
-                            <td class="${tdClass()}">${i + 1}</td>
-                            <td class="${tdClass()} font-medium">${p.name}</td>
-                            <td class="${tdClass()} hidden md:table-cell">${p.category || '—'}</td>
-                            <td class="${tdClass()} hidden md:table-cell">${p.brand || '—'}</td>
-                            <td class="${tdClass()} hidden sm:table-cell">${p.listings ? p.listings.length : '—'}</td>
-                            <td class="${tdClass()}">${badge('active')}</td>
-                            <td class="${tdClass()}">${actionBtns("window.open('productDetails.html?id=" + p.id + "','_blank')", "showNotice('Delete product')")}</td>
-                        </tr>`).join('');
-                } else { renderMockProducts(tbody); }
-            } catch { renderMockProducts(tbody); }
+                    productsData = data.products || data;
+                    document.getElementById('statProducts').textContent = productsData.length;
+                    renderProductsTable(tbody, productsData);
+                } else {
+                    console.warn('loadProducts: API returned', res?.status, '— showing mock data');
+                    renderMockProducts(tbody);
+                }
+            } catch (e) { console.error('loadProducts error:', e); renderMockProducts(tbody); }
+        }
+
+        function renderProductsTable(tbody, products) {
+            tbody.innerHTML = products.map((p, i) => `
+                <tr class="hover:bg-gray-50" id="product-row-${p.id}">
+                    <td class="${tdClass()}">${i + 1}</td>
+                    <td class="${tdClass()} font-medium">${p.name || '—'}</td>
+                    <td class="${tdClass()} hidden md:table-cell">${p.category || '—'}</td>
+                    <td class="${tdClass()} hidden md:table-cell">${p.brand || '—'}</td>
+                    <td class="${tdClass()} hidden sm:table-cell">${p.listings ? p.listings.length : '—'}</td>
+                    <td class="${tdClass()}">
+                        <button onclick="window.open('productDetails.html?id=${p.id}','_blank')" class="border border-gray-300 rounded-md px-2 py-1 text-xs hover:bg-black hover:text-white hover:border-black transition-colors" title="View">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button onclick="deleteProduct(${p.id}, '${(p.name || '').replace(/'/g, '')}')" class="border border-gray-300 rounded-md px-2 py-1 text-xs ml-1 hover:bg-[#c0392b] hover:text-white hover:border-[#c0392b] transition-colors" title="Delete">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>`).join('');
+        }
+
+        async function deleteProduct(productId, name) {
+            document.getElementById('deleteModalTitle').textContent = 'Delete Product?';
+            document.getElementById('deleteModalMsg').textContent =
+                `Permanently delete product "${name || '#' + productId}"? This cannot be undone.`;
+            document.getElementById('deleteModal').classList.remove('hidden');
+
+            await new Promise(resolve => {
+                const confirmBtn = document.getElementById('deleteModalConfirmBtn');
+                const handler = async () => {
+                    confirmBtn.removeEventListener('click', handler);
+                    closeDeleteModal();
+                    confirmBtn.disabled = true;
+                    confirmBtn.innerHTML = '<i class="bi bi-arrow-repeat animate-spin"></i> Deleting...';
+                    try {
+                        const res = await apiCall(`/products/${productId}`, { method: 'DELETE' });
+                        if (res && (res.ok || res.status === 204)) {
+                            productsData = productsData.filter(x => x.id !== productId);
+                            const row = document.getElementById(`product-row-${productId}`);
+                            if (row) {
+                                row.style.transition = 'opacity 0.3s';
+                                row.style.opacity = '0';
+                                setTimeout(() => row.remove(), 300);
+                            }
+                            document.getElementById('statProducts').textContent = productsData.length;
+                        } else if (res) {
+                            const err = await res.json().catch(() => ({}));
+                            alert('Failed to delete product: ' + (err.detail || `HTTP ${res.status}`));
+                        } else {
+                            alert('Failed to delete product: no response.');
+                        }
+                    } catch (e) {
+                        alert('Network error: ' + e.message);
+                    }
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerHTML = 'Delete';
+                    resolve();
+                };
+                confirmBtn.addEventListener('click', handler, { once: true });
+            });
         }
 
         function renderMockProducts(tbody) {
@@ -433,74 +646,11 @@
                     <td class="${tdClass()} hidden md:table-cell">${p.category}</td>
                     <td class="${tdClass()} hidden md:table-cell">${p.brand}</td>
                     <td class="${tdClass()} hidden sm:table-cell">${p.listings}</td>
-                    <td class="${tdClass()}">${badge(p.status)}</td>
                     <td class="${tdClass()}">${actionBtns("showNotice('View product')", "showNotice('Delete product')")}</td>
                 </tr>`).join('');
         }
 
-        // ── ALERTS ─────────────────────────────────────────────────
-        async function loadAlerts() {
-            const tbody = document.getElementById('alertsTableBody');
-            try {
-                const res = await apiCall('/alerts');
-                if (res && res.ok) {
-                    const alerts = await res.json();
-                    document.getElementById('statAlerts').textContent = alerts.length;
-                    tbody.innerHTML = alerts.length === 0
-                        ? `<tr><td colspan="6" class="text-center text-gray-400 py-8">No active alerts.</td></tr>`
-                        : alerts.map((a, i) => `
-                            <tr class="hover:bg-gray-50">
-                                <td class="${tdClass()}">${i + 1}</td>
-                                <td class="${tdClass()}">${a.user_email || 'N/A'}</td>
-                                <td class="${tdClass()} hidden sm:table-cell">${a.product_name || '—'}</td>
-                                <td class="${tdClass()}">₹${a.target_price?.toLocaleString() || '—'}</td>
-                                <td class="${tdClass()}">${badge('active')}</td>
-                                <td class="${tdClass()}">
-                                    <button onclick="showNotice('Delete alert')" class="border border-gray-300 rounded-md px-2 py-1 text-xs hover:bg-[#c0392b] hover:text-white hover:border-[#c0392b] transition-colors"><i class="bi bi-trash"></i></button>
-                                </td>
-                            </tr>`).join('');
-                } else { renderMockAlerts(tbody); }
-            } catch { renderMockAlerts(tbody); }
-        }
 
-        function renderMockAlerts(tbody) {
-            const mock = [
-                { user: 'alice@example.com', product: 'iPhone 15 Pro', target: '₹85,000', status: 'active' },
-                { user: 'bob@example.com', product: 'MacBook Pro M3', target: '₹1,50,000', status: 'active' },
-            ];
-            document.getElementById('statAlerts').textContent = mock.length + '+';
-            tbody.innerHTML = mock.map((a, i) => `
-                <tr class="hover:bg-gray-50">
-                    <td class="${tdClass()}">${i + 1}</td>
-                    <td class="${tdClass()}">${a.user}</td>
-                    <td class="${tdClass()} hidden sm:table-cell">${a.product}</td>
-                    <td class="${tdClass()}">${a.target}</td>
-                    <td class="${tdClass()}">${badge(a.status)}</td>
-                    <td class="${tdClass()}">
-                        <button onclick="showNotice('Delete alert')" class="border border-gray-300 rounded-md px-2 py-1 text-xs hover:bg-[#c0392b] hover:text-white hover:border-[#c0392b] transition-colors"><i class="bi bi-trash"></i></button>
-                    </td>
-                </tr>`).join('');
-        }
-
-        // ── ACTIVITY LOG ───────────────────────────────────────────
-        function renderActivityLog() {
-            const logs = [
-                { icon: 'bi-person-check', bg: 'bg-green-100', color: 'text-green-700', text: 'New user <strong>alice@example.com</strong> registered', time: '2 mins ago' },
-                { icon: 'bi-search', bg: 'bg-blue-100', color: 'text-blue-700', text: 'Product search: <strong>iPhone 15</strong>', time: '5 mins ago' },
-                { icon: 'bi-bell', bg: 'bg-yellow-100', color: 'text-yellow-700', text: 'Price alert triggered for <strong>MacBook Pro M3</strong>', time: '15 mins ago' },
-                { icon: 'bi-box-seam', bg: 'bg-purple-100', color: 'text-purple-700', text: 'New product listing added: <strong>Galaxy S24</strong>', time: '1 hour ago' },
-                { icon: 'bi-arrow-left-right', bg: 'bg-red-100', color: 'text-red-700', text: 'Price comparison completed for <strong>Sony WH-1000XM5</strong>', time: '2 hours ago' },
-            ];
-            document.getElementById('activityLog').innerHTML = logs.map(l => `
-                <div class="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0">
-                    <div class="w-9 h-9 flex items-center justify-center rounded-full flex-shrink-0 ${l.bg} ${l.color}">
-                        <i class="bi ${l.icon}"></i>
-                    </div>
-                    <div class="flex-1 text-sm text-gray-700">${l.text}</div>
-                    <div class="text-xs text-gray-400 whitespace-nowrap">${l.time}</div>
-                </div>`).join('');
-            document.getElementById('statSearches').textContent = '24+';
-        }
     </script>
 </body>
 

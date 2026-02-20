@@ -255,7 +255,7 @@
         crossorigin="anonymous"></script>
 
     <script>
-        const API_BASE_URL = 'http://127.0.0.1:8001/api';
+        const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
         async function apiCall(endpoint, options = {}) {
             const token = localStorage.getItem('authToken');
@@ -274,7 +274,7 @@
 
             try {
                 const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-                if (response.status === 401) {
+                if (response.status === 401 || response.status === 403) {
                     localStorage.removeItem('authToken');
                     window.location.href = 'login.html';
                     return null;
@@ -282,7 +282,7 @@
                 return response;
             } catch (error) {
                 console.error('API Call Error:', error);
-                return null;
+                throw error; // Re-throw instead of swallowing as null!
             }
         }
 
@@ -477,6 +477,7 @@
                 behavior: 'smooth'
             });
         }
+
     </script>
 </body>
 
