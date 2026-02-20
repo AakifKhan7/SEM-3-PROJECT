@@ -70,13 +70,6 @@
                     <a href="#" class="form-check-label text-decoration-none" id="forgotPassword">Forgot Password</a>
                 </div>
 
-                <div class="form-check mb-4"
-                    style="border: 1px solid #ccc; border-radius: 8px; padding: 10px 14px; background: #f8f8f8;">
-                    <input class="form-check-input" type="checkbox" id="isAdmin">
-                    <label class="form-check-label fw-semibold" for="isAdmin" style="color: #333; font-size: 0.95rem;">
-                        <i class="bi bi-shield-lock-fill me-1" style="color: #c0392b;"></i> Are you an Admin?
-                    </label>
-                </div>
 
                 <div class="error-message" id="errorMessage"></div>
                 <div class="success-message" id="successMessage"></div>
@@ -182,16 +175,12 @@
                             localStorage.removeItem('savedEmail');
                         }
 
-                        // Store admin status
-                        const isAdmin = document.getElementById('isAdmin').checked;
-                        localStorage.setItem('isAdmin', isAdmin ? 'true' : 'false');
-
                         // Show success message
                         showSuccess('Login successful! Redirecting...');
 
-                        // Redirect based on admin status
+                        // Redirect to dashboard
                         setTimeout(function () {
-                            window.location.href = isAdmin ? 'admin.html' : 'dashboard.html';
+                            window.location.href = 'dashboard.html';
                         }, 1000);
                     } else {
                         // Show error message from backend

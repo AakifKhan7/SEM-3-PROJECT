@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechScope — Best Tech Deals</title>
+    <meta name="description" content="Compare tech prices across retailers instantly. Save more with TechScope.">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } } }</script>
+    <style>
+        html {
+            scroll-behavior: smooth
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        .fi {
+            animation: fadeUp .6s ease both
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity .6s, transform .6s
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: none
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-900 font-sans overflow-x-hidden">
+
+    <!-- NAV -->
+    <nav id="nav"
+        class="fixed top-0 inset-x-0 z-50 flex justify-between items-center px-[6%] py-4 bg-white/90 backdrop-blur-md border-b border-gray-200 transition-colors">
+        <a href="index.html" class="flex items-center gap-2 font-black text-lg text-gray-900 no-underline">
+            <i class="bi bi-grid-3x3-gap-fill text-red-500 text-xl"></i> TechScope
+        </a>
+        <div class="hidden md:flex items-center gap-6">
+            <a href="#features"
+                class="text-gray-500 hover:text-gray-900 text-sm font-medium no-underline transition-colors">Features</a>
+            <a href="#how-it-works"
+                class="text-gray-500 hover:text-gray-900 text-sm font-medium no-underline transition-colors">How It
+                Works</a>
+            <a href="#testimonials"
+                class="text-gray-500 hover:text-gray-900 text-sm font-medium no-underline transition-colors">Reviews</a>
+            <a href="login.html"
+                class="text-gray-500 hover:text-gray-900 text-sm font-medium no-underline transition-colors">Log In</a>
+            <a href="signUp.html"
+                class="bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-2 rounded-lg no-underline transition-colors">Get
+                Started</a>
+        </div>
+        <button id="hamburger" class="md:hidden text-2xl text-gray-700 bg-transparent border-0 cursor-pointer"><i
+                class="bi bi-list"></i></button>
+        <div id="mobileMenu"
+            class="hidden absolute top-full left-0 right-0 bg-white border-b border-gray-200 flex-col px-[6%] py-5 gap-4 shadow-sm">
+            <a href="#features" class="text-gray-600 text-sm no-underline">Features</a>
+            <a href="#how-it-works" class="text-gray-600 text-sm no-underline">How It Works</a>
+            <a href="#testimonials" class="text-gray-600 text-sm no-underline">Reviews</a>
+            <a href="login.html" class="text-gray-600 text-sm no-underline">Log In</a>
+            <a href="signUp.html"
+                class="text-sm font-bold text-white bg-red-600 px-4 py-2 rounded-lg no-underline text-center">Get
+                Started</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section
+        class="min-h-screen flex flex-col justify-center items-center text-center px-[6%] pt-28 pb-20 relative overflow-hidden bg-white">
+        <div
+            class="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_30%,rgba(231,76,60,0.07),transparent)] pointer-events-none">
+        </div>
+        <div
+            class="inline-flex items-center gap-2 bg-red-50 border border-red-200 text-red-600 text-xs font-semibold px-3 py-1.5 rounded-full mb-6 fi">
+            <i class="bi bi-lightning-charge-fill"></i> Real-time price comparison</div>
+        <h1 class="text-5xl md:text-7xl font-black tracking-tight leading-none max-w-3xl text-gray-900 fi"
+            style="animation-delay:.1s">Stop Overpaying for <span class="text-red-500">Tech.</span></h1>
+        <p class="text-gray-500 text-lg max-w-lg mt-5 leading-relaxed fi" style="animation-delay:.2s">TechScope scans
+            hundreds of retailers in real-time so you always get the best deal on smartphones, laptops, headphones, and
+            more.</p>
+        <a href="search.html"
+            class="w-full max-w-xl mt-8 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold text-base py-4 rounded-2xl no-underline transition-all hover:-translate-y-0.5 shadow-md fi"
+            style="animation-delay:.25s">
+            <i class="bi bi-search"></i> Search Deals
+        </a>
+        <div class="flex gap-3 flex-wrap justify-center mt-5 fi" style="animation-delay:.3s">
+            <a href="signUp.html"
+                class="bg-gray-900 hover:bg-gray-700 text-white font-bold px-6 py-3 rounded-xl no-underline text-sm flex items-center gap-2 transition-all hover:-translate-y-0.5"><i
+                    class="bi bi-person-plus"></i> Create Free Account</a>
+            <a href="#how-it-works"
+                class="border border-gray-300 hover:border-gray-500 text-gray-700 font-semibold px-6 py-3 rounded-xl no-underline text-sm flex items-center gap-2 transition-all hover:-translate-y-0.5"><i
+                    class="bi bi-play-circle"></i> How It Works</a>
+        </div>
+        <p class="text-gray-400 text-xs mt-10 fi" style="animation-delay:.35s">Prices compared from <b
+                class="text-gray-500">Amazon · Flipkart · Croma · Reliance Digital · Vijay Sales</b></p>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" class="px-[6%] py-24 bg-gray-50">
+        <div class="text-center mb-14 reveal">
+            <span class="text-red-500 text-xs font-bold tracking-widest uppercase">What We Offer</span>
+            <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight mt-2 text-gray-900">Shop smarter, every time
+            </h2>
+            <p class="text-gray-500 mt-3 max-w-md mx-auto text-sm">A powerful set of tools built for tech shoppers who
+                demand the lowest price.</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div
+                class="bg-white border border-gray-200 rounded-2xl p-7 hover:border-red-400 hover:-translate-y-1 transition-all shadow-sm reveal">
+                <div class="w-11 h-11 bg-red-50 rounded-xl flex items-center justify-center text-red-500 text-xl mb-4">
+                    <i class="bi bi-graph-down-arrow"></i></div>
+                <h3 class="font-bold mb-2 text-gray-900">Live Price Comparison</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Compare prices across 20+ retailers instantly. Always
+                    fresh, never outdated.</p>
+            </div>
+            <div
+                class="bg-white border border-gray-200 rounded-2xl p-7 hover:border-red-400 hover:-translate-y-1 transition-all shadow-sm reveal">
+                <div class="w-11 h-11 bg-red-50 rounded-xl flex items-center justify-center text-red-500 text-xl mb-4">
+                    <i class="bi bi-bell-fill"></i></div>
+                <h3 class="font-bold mb-2 text-gray-900">Price Drop Alerts</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Set a target price and get notified the moment any
+                    retailer hits it.</p>
+            </div>
+            <div
+                class="bg-white border border-gray-200 rounded-2xl p-7 hover:border-red-400 hover:-translate-y-1 transition-all shadow-sm reveal">
+                <div class="w-11 h-11 bg-red-50 rounded-xl flex items-center justify-center text-red-500 text-xl mb-4">
+                    <i class="bi bi-arrow-left-right"></i></div>
+                <h3 class="font-bold mb-2 text-gray-900">Side-by-Side Compare</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Compare specs and prices of up to 4 products at once.
+                    Decide in minutes.</p>
+            </div>
+            <div
+                class="bg-white border border-gray-200 rounded-2xl p-7 hover:border-red-400 hover:-translate-y-1 transition-all shadow-sm reveal">
+                <div class="w-11 h-11 bg-red-50 rounded-xl flex items-center justify-center text-red-500 text-xl mb-4">
+                    <i class="bi bi-clock-history"></i></div>
+                <h3 class="font-bold mb-2 text-gray-900">Price History</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">See how prices changed over time to know if now is
+                    truly the right time to buy.</p>
+            </div>
+            <div
+                class="bg-white border border-gray-200 rounded-2xl p-7 hover:border-red-400 hover:-translate-y-1 transition-all shadow-sm reveal">
+                <div class="w-11 h-11 bg-red-50 rounded-xl flex items-center justify-center text-red-500 text-xl mb-4">
+                    <i class="bi bi-bookmark-star"></i></div>
+                <h3 class="font-bold mb-2 text-gray-900">Saved Searches</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Save searches, revisit them instantly, and keep tabs on
+                    products you care about.</p>
+            </div>
+            <div
+                class="bg-white border border-gray-200 rounded-2xl p-7 hover:border-red-400 hover:-translate-y-1 transition-all shadow-sm reveal">
+                <div class="w-11 h-11 bg-red-50 rounded-xl flex items-center justify-center text-red-500 text-xl mb-4">
+                    <i class="bi bi-shield-check"></i></div>
+                <h3 class="font-bold mb-2 text-gray-900">Safe &amp; Private</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">We never handle payments or sell your data. We just
+                    help you find the best deal.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how-it-works" class="px-[6%] py-24 bg-white">
+        <div class="text-center mb-14 reveal">
+            <span class="text-red-500 text-xs font-bold tracking-widest uppercase">Simple as 1-2-3</span>
+            <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight mt-2 text-gray-900">Find your deal in minutes
+            </h2>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="flex flex-col gap-3 reveal">
+                <div
+                    class="w-11 h-11 bg-red-600 rounded-full flex items-center justify-center font-black text-lg text-white flex-shrink-0">
+                    1</div>
+                <h3 class="font-bold text-gray-900">Search any product</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Type any tech product name. From budget phones to
+                    flagship laptops — all indexed.</p>
+            </div>
+            <div class="flex flex-col gap-3 reveal">
+                <div
+                    class="w-11 h-11 bg-red-600 rounded-full flex items-center justify-center font-black text-lg text-white flex-shrink-0">
+                    2</div>
+                <h3 class="font-bold text-gray-900">Compare all listings</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Every listing side by side, sorted by price, rating, or
+                    retailer — you choose.</p>
+            </div>
+            <div class="flex flex-col gap-3 reveal">
+                <div
+                    class="w-11 h-11 bg-red-600 rounded-full flex items-center justify-center font-black text-lg text-white flex-shrink-0">
+                    3</div>
+                <h3 class="font-bold text-gray-900">Buy at the best price</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Click through to the retailer. We never take a cut —
+                    your savings are fully yours.</p>
+            </div>
+            <div class="flex flex-col gap-3 reveal">
+                <div
+                    class="w-11 h-11 bg-red-600 rounded-full flex items-center justify-center font-black text-lg text-white flex-shrink-0">
+                    4</div>
+                <h3 class="font-bold text-gray-900">Set alerts &amp; relax</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">Not ready yet? Set a price alert and we'll ping you
+                    when the price drops.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="bg-red-600 px-[6%] py-20">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div class="reveal">
+                <div class="text-5xl font-black tracking-tight text-white">50K+</div>
+                <div class="text-red-200 text-sm mt-1">Products Tracked</div>
+            </div>
+            <div class="reveal">
+                <div class="text-5xl font-black tracking-tight text-white">20+</div>
+                <div class="text-red-200 text-sm mt-1">Retailers Compared</div>
+            </div>
+            <div class="reveal">
+                <div class="text-5xl font-black tracking-tight text-white">₹2Cr+</div>
+                <div class="text-red-200 text-sm mt-1">Saved by Users</div>
+            </div>
+            <div class="reveal">
+                <div class="text-5xl font-black tracking-tight text-white">10K+</div>
+                <div class="text-red-200 text-sm mt-1">Happy Shoppers</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section id="testimonials" class="px-[6%] py-24 bg-gray-50">
+        <div class="text-center mb-14 reveal">
+            <span class="text-red-500 text-xs font-bold tracking-widest uppercase">Real Users, Real Savings</span>
+            <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight mt-2 text-gray-900">People love TechScope</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div class="bg-white border border-gray-200 rounded-2xl p-7 shadow-sm reveal">
+                <div class="text-yellow-400 mb-3 text-sm">★★★★★</div>
+                <p class="text-gray-600 text-sm leading-relaxed">"Saved ₹8,000 on a MacBook Pro. I set an alert, forgot
+                    about it, and got the notification three weeks later. Bought it instantly!"</p>
+                <div class="flex items-center gap-3 mt-5">
+                    <div
+                        class="w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold text-white flex-shrink-0">
+                        R</div>
+                    <div>
+                        <div class="text-sm font-semibold text-gray-900">Rahul Mehta</div>
+                        <div class="text-xs text-gray-400">Software Engineer, Bangalore</div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white border border-gray-200 rounded-2xl p-7 shadow-sm reveal">
+                <div class="text-yellow-400 mb-3 text-sm">★★★★★</div>
+                <p class="text-gray-600 text-sm leading-relaxed">"The side-by-side comparison is brilliant. I was
+                    debating between two phones for a week — TechScope made it a 5-minute decision."</p>
+                <div class="flex items-center gap-3 mt-5">
+                    <div
+                        class="w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold text-white flex-shrink-0">
+                        P</div>
+                    <div>
+                        <div class="text-sm font-semibold text-gray-900">Priya Sharma</div>
+                        <div class="text-xs text-gray-400">UX Designer, Mumbai</div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white border border-gray-200 rounded-2xl p-7 shadow-sm reveal">
+                <div class="text-yellow-400 mb-3 text-sm">★★★★☆</div>
+                <p class="text-gray-600 text-sm leading-relaxed">"Simple, fast, and actually useful. Every tech purchase
+                    I make now starts with TechScope. It's become a habit."</p>
+                <div class="flex items-center gap-3 mt-5">
+                    <div
+                        class="w-9 h-9 bg-red-600 rounded-full flex items-center justify-center font-bold text-white flex-shrink-0">
+                        A</div>
+                    <div>
+                        <div class="text-sm font-semibold text-gray-900">Arjun Patel</div>
+                        <div class="text-xs text-gray-400">Student, Ahmedabad</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="px-[6%] py-28 text-center bg-white border-t border-gray-100">
+        <span class="text-red-500 text-xs font-bold tracking-widest uppercase reveal">Start Saving Today</span>
+        <h2 class="text-4xl md:text-6xl font-black tracking-tight mt-3 text-gray-900 reveal">Ready to shop smarter?</h2>
+        <p class="text-gray-500 mt-4 text-lg reveal">Free forever. No credit card required.</p>
+        <div class="flex gap-3 flex-wrap justify-center mt-8 reveal">
+            <a href="signUp.html"
+                class="bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-3.5 rounded-xl no-underline text-sm flex items-center gap-2 transition-all hover:-translate-y-0.5 shadow"><i
+                    class="bi bi-rocket-takeoff"></i> Get Started — It's Free</a>
+            <a href="login.html"
+                class="border border-gray-300 hover:border-gray-500 text-gray-700 font-semibold px-8 py-3.5 rounded-xl no-underline text-sm flex items-center gap-2 transition-all hover:-translate-y-0.5"><i
+                    class="bi bi-box-arrow-in-right"></i> Log In</a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-50 border-t border-gray-200 px-[6%] pt-14 pb-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-10 mb-10">
+            <div class="col-span-2 md:col-span-1">
+                <a href="index.html"
+                    class="flex items-center gap-2 font-black text-lg text-gray-900 no-underline mb-3"><i
+                        class="bi bi-grid-3x3-gap-fill text-red-500"></i> TechScope</a>
+                <p class="text-gray-500 text-sm leading-relaxed">Your intelligent tech price companion across India's
+                    top retailers.</p>
+            </div>
+            <div>
+                <h4 class="text-gray-400 text-xs font-bold tracking-wider uppercase mb-4">Product</h4>
+                <a href="#features"
+                    class="block text-gray-500 hover:text-gray-900 text-sm mb-2 no-underline transition-colors">Features</a>
+                <a href="#how-it-works"
+                    class="block text-gray-500 hover:text-gray-900 text-sm mb-2 no-underline transition-colors">How It
+                    Works</a>
+                <a href="signUp.html"
+                    class="block text-gray-500 hover:text-gray-900 text-sm mb-2 no-underline transition-colors">Sign
+                    Up</a>
+                <a href="login.html"
+                    class="block text-gray-500 hover:text-gray-900 text-sm mb-2 no-underline transition-colors">Log
+                    In</a>
+            </div>
+            <div>
+                <h4 class="text-gray-400 text-xs font-bold tracking-wider uppercase mb-4">Pages</h4>
+                <a href="dashboard.html"
+                    class="block text-gray-500 hover:text-gray-900 text-sm mb-2 no-underline transition-colors">Dashboard</a>
+                <a href="search.html"
+                    class="block text-gray-500 hover:text-gray-900 text-sm mb-2 no-underline transition-colors">Search</a>
+                <a href="compare.html"
+                    class="block text-gray-500 hover:text-gray-900 text-sm mb-2 no-underline transition-colors">Compare</a>
+                <a href="profile.html"
+                    class="block text-gray-500 hover:text-gray-900 text-sm mb-2 no-underline transition-colors">Profile</a>
+            </div>
+            <div>
+                <h4 class="text-gray-400 text-xs font-bold tracking-wider uppercase mb-4">Contact</h4>
+                <a href="mailto:kothariparthiv26@gmail.com"
+                    class="block text-gray-500 hover:text-gray-900 text-sm mb-2 no-underline transition-colors"><i
+                        class="bi bi-envelope me-1"></i> kothariparthiv26@gmail.com</a>
+                <a href="tel:+916351834679"
+                    class="block text-gray-500 hover:text-gray-900 text-sm mb-2 no-underline transition-colors"><i
+                        class="bi bi-phone me-1"></i> +91 6351834679</a>
+                <span class="block text-gray-500 text-sm"><i class="bi bi-geo-alt me-1"></i> India</span>
+            </div>
+        </div>
+        <div
+            class="flex flex-col sm:flex-row justify-between items-center gap-2 pt-6 border-t border-gray-200 text-xs text-gray-400">
+            <span>&copy; 2026 TechScope. All rights reserved.</span>
+            <span>Built with <i class="bi bi-heart-fill text-red-500"></i> for smart shoppers.</span>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile nav toggle
+        document.getElementById('hamburger').addEventListener('click', () => {
+            const m = document.getElementById('mobileMenu');
+            m.classList.toggle('hidden');
+            m.classList.toggle('flex');
+        });
+        document.querySelectorAll('#mobileMenu a').forEach(a => a.addEventListener('click', () => {
+            document.getElementById('mobileMenu').classList.add('hidden');
+            document.getElementById('mobileMenu').classList.remove('flex');
+        }));
+
+        // Nav shadow on scroll
+        window.addEventListener('scroll', () => {
+            document.getElementById('nav').style.boxShadow = window.scrollY > 20 ? '0 1px 12px rgba(0,0,0,0.08)' : 'none';
+        });
+
+        // Scroll reveal
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 80); obs.unobserve(e.target); } });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    </script>
+</body>
+
+</html>
