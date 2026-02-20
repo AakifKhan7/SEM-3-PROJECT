@@ -46,7 +46,7 @@ html {
     height: 100%;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.8));
     z-index: 1;
-    z-index: 1;
+    /* z-index is kind of a priority index*/
 }
 
 .brand-content {
@@ -62,26 +62,7 @@ html {
     font-size: 2rem;
     font-weight: 700;
     letter-spacing: 2px;
-}
-
-.back-link {
-    position: absolute;
-    top: 40px;
-    right: 40px;
-    color: white;
-    text-decoration: none;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    backdrop-filter: blur(5px);
-    transition: background 0.3s;
-    z-index: 3;
-}
-
-.back-link:hover {
-    background: rgba(255, 255, 255, 0.3);
-    color: white;
+    font-style: italic;
 }
 
 .brand-tagline h1 {

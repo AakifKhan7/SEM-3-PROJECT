@@ -34,11 +34,11 @@
                     <div class="brand-tagline">
                         <h1>Saving your time,<br>Bringing you the best deals!!</h1>
                     </div>
-                    <div class="brand-slider-dots">
+                    <!-- <div class="brand-slider-dots">
                         <div class="dot active"></div>
                         <div class="dot"></div>
                         <div class="dot"></div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -81,13 +81,21 @@
                     <i class="bi bi-eye password-toggle" id="toggleConfirmPassword"></i>
                 </div>
 
-                <div class="mb-4">
+                <div class="mb-3">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="terms" required>
                         <label class="form-check-label" for="terms">
                             I agree to the <a href="#">Terms & Conditions</a>
                         </label>
                     </div>
+                </div>
+
+                <div class="form-check mb-4"
+                    style="border: 1px solid #ccc; border-radius: 8px; padding: 10px 14px; background: #f8f8f8;">
+                    <input class="form-check-input" type="checkbox" id="isAdmin">
+                    <label class="form-check-label fw-semibold" for="isAdmin" style="color: #333; font-size: 0.95rem;">
+                        <i class="bi bi-shield-lock-fill me-1" style="color: #c0392b;"></i> Are you an Admin?
+                    </label>
                 </div>
 
                 <div class="error-message" id="errorMessage"></div>
@@ -227,15 +235,19 @@
                         const username = firstName || data.email.split('@')[0];
                         localStorage.setItem('username', username);
 
+                        // Store admin status
+                        const isAdmin = document.getElementById('isAdmin').checked;
+                        localStorage.setItem('isAdmin', isAdmin ? 'true' : 'false');
+
                         // Show success message
                         showSuccess('Account created successfully! Redirecting...');
 
                         // Reset form
                         form.reset();
 
-                        // Redirect after 2 seconds
+                        // Redirect based on admin status
                         setTimeout(function () {
-                            window.location.href = 'dashboard.html';
+                            window.location.href = isAdmin ? 'admin.html' : 'dashboard.html';
                         }, 2000);
                     } else {
                         // Show error message from backend
