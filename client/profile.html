@@ -26,18 +26,146 @@
             color: var(--text-color);
         }
 
+        /* ── Inputs & selects ──────────────────────────── */
         .form-control,
-        .form-select,
+        .form-select {
+            background-color: var(--input-bg);
+            border: 1.5px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-color);
+            padding: 0.65rem 0.9rem;
+            font-size: 0.92rem;
+            transition: border-color 0.18s, box-shadow 0.18s;
+        }
+
         .form-control:focus,
         .form-select:focus {
             background-color: var(--input-bg);
-            border: 1px solid var(--border-color);
+            border-color: #c0392b;
             color: var(--text-color);
-            box-shadow: none;
+            box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1);
+            outline: none;
+        }
+
+        .form-control[readonly] {
+            opacity: 0.65;
+            cursor: not-allowed;
         }
 
         .form-control::placeholder {
             color: var(--text-muted);
+        }
+
+        /* ── Profile form labels ───────────────────────── */
+        #accountForm .col-form-label,
+        #passwordForm .col-form-label,
+        .form-label {
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding-top: 0;
+            margin-bottom: 0.3rem;
+        }
+
+        /* each row stacks label above input */
+        #accountForm .row.mb-4,
+        #passwordForm .row.mb-4 {
+            flex-direction: column;
+            gap: 0.2rem;
+            margin-bottom: 1.1rem !important;
+        }
+
+        #accountForm .col-sm-3,
+        #accountForm .col-sm-9,
+        #passwordForm .col-sm-5,
+        #passwordForm .col-sm-7 {
+            width: 100%;
+            max-width: 100%;
+            padding: 0;
+        }
+
+        /* ── Card section headings ─────────────────────── */
+        .dashboard-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 2px solid var(--border-color);
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .dashboard-card h3 i {
+            color: #c0392b;
+        }
+
+        /* ── Primary buttons (Account & Security) ──────── */
+        #accountForm .btn-primary,
+        #passwordForm .btn-primary {
+            background-color: #c0392b !important;
+            border-color: #c0392b !important;
+            color: #fff !important;
+            border-radius: 10px;
+            padding: 0.65rem 2rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            transition: background 0.18s, transform 0.15s, box-shadow 0.18s;
+            box-shadow: 0 3px 10px rgba(192, 57, 43, 0.22);
+        }
+
+        #accountForm .btn-primary:hover,
+        #passwordForm .btn-primary:hover {
+            background-color: #a93226 !important;
+            border-color: #a93226 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 14px rgba(192, 57, 43, 0.32);
+        }
+
+        /* ── Preferences toggle switches ───────────────── */
+        .form-check.form-switch {
+            padding: 0.55rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .form-check.form-switch:last-child {
+            border-bottom: none;
+        }
+
+        .form-check-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            padding-left: 0.5rem;
+        }
+
+        .form-check-input:checked {
+            background-color: #c0392b;
+            border-color: #c0392b;
+        }
+
+        .form-check-input:focus {
+            box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.15);
+            border-color: #c0392b;
+        }
+
+        /* ── Save Preferences button ───────────────────── */
+        .btn-outline-dark {
+            border: 1.5px solid var(--border-color) !important;
+            color: var(--text-color) !important;
+            border-radius: 10px !important;
+            font-weight: 600 !important;
+            font-size: 0.9rem !important;
+            padding: 0.6rem 1rem !important;
+            transition: background 0.15s, border-color 0.15s, color 0.15s !important;
+        }
+
+        .btn-outline-dark:hover {
+            background: #c0392b !important;
+            border-color: #c0392b !important;
+            color: #fff !important;
         }
 
         .profile-header {
