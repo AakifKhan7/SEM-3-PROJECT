@@ -12,6 +12,7 @@ class ProductListingResponse(BaseModel):
     discount_percentage: Optional[float]
     rating: Optional[float]
     availability_status: str
+    delivery_time: Optional[str] = None
     last_scraped_at: datetime
 
     class Config:

@@ -127,7 +127,7 @@ class AmazonScraper(BaseScraper):
         """Extract product data from BeautifulSoup object."""
         try:
             product_data = ScrapedProductData()
-            product_data.platform_url = product_url
+            product_data.platform_url = product_url.split('?')[0] if product_url else None
             
             # Extract ASIN
             asin = self._extract_asin_from_url(product_url)
@@ -468,7 +468,7 @@ class AmazonScraper(BaseScraper):
                                 continue
                         
                         product_data = ScrapedProductData()
-                        product_data.platform_url = product_url
+                        product_data.platform_url = product_url.split('?')[0] if product_url else None
                         
                         name_elem = container.select_one('h2 a span, h2 span')
                         if name_elem:

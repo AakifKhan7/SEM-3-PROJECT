@@ -32,10 +32,14 @@ def search_and_sync_products(query: str, db: Session) -> List[Product]:
     
     fresh_listings = []
 
+    amazon_platform = db.query(Platform).filter(Platform.name == "Amazon").first()
+    flipkart_platform = db.query(Platform).filter(Platform.name == "Flipkart").first()
+
+    amazon_fresh_count = 0
+    flipkart_fresh_count = 0
     
     if existing_products:
         # Check if we have fresh listings for these products
-        # We consider "fresh" if ANY listing for the product was scraped recently
         cutoff_time = datetime.utcnow() - timedelta(hours=24)
         
         for product in existing_products:
@@ -44,37 +48,53 @@ def search_and_sync_products(query: str, db: Session) -> List[Product]:
                 ProductListing.last_scraped_at >= cutoff_time
             ).all()
             
-            if listings:
-                fresh_listings.extend(listings)
+            for l in listings:
+                fresh_listings.append(l)
+                # Check platform
+                if amazon_platform and l.platform_id == amazon_platform.id:
+                    amazon_fresh_count += 1
+                elif flipkart_platform and l.platform_id == flipkart_platform.id:
+                    flipkart_fresh_count += 1
 
+    needs_amazon = amazon_fresh_count == 0
+    needs_flipkart = flipkart_fresh_count == 0
 
-    # If we found fresh listings, return them
-    if fresh_listings:
-        logger.info(f"Found {len(fresh_listings)} fresh listings in DB for query '{query}'")
+    # If we found fresh listings for both platforms, return them
+    if not needs_amazon and not needs_flipkart:
+        logger.info(f"Found fresh listings for both platforms in DB for query '{query}'")
         # Extract unique products from listings
         products = list({l.product for l in fresh_listings})
         return products
     
-    logger.info(f"No fresh listings found for '{query}'. Scraping external platforms...")
+    logger.info(f"Missing fresh listings for '{query}'. needs_amazon={needs_amazon}, needs_flipkart={needs_flipkart}. Scraping external platforms...")
     
     # 2. Scrape External Platforms
     scraped_data: List[ScrapedProductData] = []
     
     # Scrape Amazon
-    try:
-        with AmazonScraper(headless=True) as amazon_scraper:
-            amazon_results = amazon_scraper.search_products(query)
-            scraped_data.extend(amazon_results)
-    except Exception as e:
-        logger.error(f"Error scraping Amazon: {e}")
+    if needs_amazon:
+        try:
+            with AmazonScraper(headless=True) as amazon_scraper:
+                amazon_results = amazon_scraper.search_products(query, fetch_details=False)
+                scraped_data.extend(amazon_results)
+        except Exception as e:
+            logger.error(f"Error scraping Amazon: {e}")
 
     # Scrape Flipkart
-    try:
-        with FlipkartScraper(headless=True) as flipkart_scraper:
-            flipkart_results = flipkart_scraper.search_products(query)
-            scraped_data.extend(flipkart_results)
-    except Exception as e:
-        logger.error(f"Error scraping Flipkart: {e}")
+    if needs_flipkart:
+        try:
+            with FlipkartScraper(headless=True) as flipkart_scraper:
+                flipkart_results = flipkart_scraper.search_products(query, fetch_details=False)
+                scraped_data.extend(flipkart_results)
+        except Exception as e:
+            logger.error(f"Error scraping Flipkart: {e}")
+
+    if not scraped_data:
+        # If we failed to scrape ANY new data, let's at least return ALL existing products from DB (fresh or stale)
+        if existing_products:
+            logger.info("Scraping failed for all missing platforms. Falling back to all existing DB records.")
+            return existing_products
+        return []
 
     # 3. Save/Update DB
     new_listings = []
@@ -129,6 +149,7 @@ def search_and_sync_products(query: str, db: Session) -> List[Product]:
             listing.discount_percentage = item.discount_percentage
             listing.rating = float(item.rating) if item.rating is not None else (float(item.seller_rating) if item.seller_rating is not None else None)
             listing.rating_count = item.rating_count
+            listing.delivery_time = item.delivery_time
         else:
             listing = ProductListing(
                 product_id=product.id,
@@ -141,6 +162,7 @@ def search_and_sync_products(query: str, db: Session) -> List[Product]:
                 rating=float(item.rating) if item.rating is not None else (float(item.seller_rating) if item.seller_rating is not None else None),
                 rating_count=item.rating_count,
                 availability_status=item.availability_status,
+                delivery_time=item.delivery_time,
                 last_scraped_at=datetime.utcnow()
             )
             db.add(listing)
@@ -166,5 +188,11 @@ def search_and_sync_products(query: str, db: Session) -> List[Product]:
         db.commit()
         
     # Extract unique products from new listings
-    products = list({l.product for l in new_listings})
-    return products
+    new_products = list({l.product for l in new_listings})
+    
+    # Combine with existing products so we return BOTH newly scraped and previously cached results
+    all_products = set(new_products)
+    if existing_products:
+        all_products.update(existing_products)
+        
+    return list(all_products)
