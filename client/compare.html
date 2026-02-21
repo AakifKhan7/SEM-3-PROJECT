@@ -27,17 +27,65 @@
     <link rel="stylesheet" href="css/dashboard.css">
 
     <style>
-        /* Overrides to make Bootstrap play nice with Dashboard theme */
+        /* ── Base overrides ──────────────────────────────── */
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
         }
 
+        /* ── Search form card ────────────────────────────── */
+        #compareForm {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem 2rem;
+        }
+
+        /* last row: button spans full width */
+        #compareForm .text-center {
+            grid-column: 1 / -1;
+            margin-top: 0.5rem;
+        }
+
+        /* hide the extra <br> spacers */
+        #compareForm br {
+            display: none;
+        }
+
+        /* each row still wraps label+input nicely */
+        #compareForm .row.mb-3 {
+            margin-bottom: 0 !important;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        #compareForm .col-sm-3,
+        #compareForm .col-sm-9 {
+            width: 100%;
+            max-width: 100%;
+            padding: 0;
+        }
+
+        /* Label typography */
+        #compareForm .col-form-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding: 0;
+            margin-bottom: 0.3rem;
+        }
+
+        /* Inputs & selects */
         .form-control,
         .form-select {
             background-color: var(--input-bg);
-            border: 1px solid var(--border-color);
+            border: 1.5px solid var(--border-color);
+            border-radius: 10px;
             color: var(--text-color);
+            padding: 0.65rem 0.9rem;
+            font-size: 0.92rem;
+            transition: border-color 0.18s, box-shadow 0.18s;
         }
 
         .form-control:focus,
@@ -45,41 +93,210 @@
             background-color: var(--input-bg);
             border-color: var(--accent-color);
             color: var(--text-color);
-            box-shadow: none;
+            box-shadow: 0 0 0 3px rgba(var(--accent-rgb, 102, 16, 242), 0.1);
+            outline: none;
         }
 
         .form-control::placeholder {
             color: var(--text-muted);
         }
 
-        /* Comparison specific styles */
-        .comparison-card {
-            background-color: var(--card-bg);
+        /* Submit button */
+        #compareForm .btn-primary {
+            background-color: #c0392b !important;
+            border-color: #c0392b !important;
+            color: #fff !important;
+            border-radius: 10px;
+            padding: 0.7rem 2.5rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            transition: background 0.18s, transform 0.15s, box-shadow 0.18s;
+            box-shadow: 0 3px 10px rgba(192, 57, 43, 0.25);
+        }
+
+        #compareForm .btn-primary:hover {
+            background-color: #a93226 !important;
+            border-color: #a93226 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 14px rgba(192, 57, 43, 0.35);
+        }
+
+        /* ── Comparison result rows ────────────────── */
+        .cmp-row {
+            background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-            height: 100%;
-            transition: transform 0.2s;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 1.75rem;
+            padding: 1.75rem 2rem;
+            margin-bottom: 1.25rem;
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.2s, transform 0.2s;
         }
 
-        .comparison-card:hover {
-            transform: translateY(-5px);
+        .cmp-row:hover {
+            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.09);
+            transform: translateY(-2px);
         }
 
-        .retailer-logo {
+        .cmp-row.best {
+            border-color: #28a745;
+            box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.18);
+        }
+
+        .cmp-row .side-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 7px;
+            border-radius: 16px 0 0 16px;
+        }
+
+        /* retailer badge */
+        .cmp-retailer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 110px;
+            gap: 0.45rem;
+        }
+
+        .cmp-retailer-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 2rem;
-            margin-bottom: 1rem;
         }
 
-        .price-tag {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--accent-color);
-        }
-
-        .original-price {
-            text-decoration: line-through;
+        .cmp-retailer-name {
+            font-size: 0.75rem;
+            font-weight: 700;
             color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        /* price block */
+        .cmp-price-block {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .cmp-price {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: var(--text-color);
+            line-height: 1.1;
+        }
+
+        .cmp-original {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+
+        .cmp-discount {
+            display: inline-block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            background: #d4edda;
+            color: #155724;
+            border-radius: 20px;
+            padding: 2px 10px;
+            margin-left: 6px;
+        }
+
+        /* meta row */
+        .cmp-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-width: 140px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .cmp-meta-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            gap: 4px;
+        }
+
+        .cmp-meta-item i {
+            font-size: 1.25rem;
+        }
+
+        .cmp-buy {
+            white-space: nowrap;
+            font-size: 0.95rem;
+            font-weight: 700;
+            padding: 0.7rem 1.75rem;
+            border-radius: 12px;
+            color: #fff;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: opacity 0.15s, transform 0.15s;
+        }
+
+        .cmp-buy:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+            color: #fff;
+        }
+
+        .best-ribbon {
+            position: absolute;
+            top: 10px;
+            right: -22px;
+            background: #28a745;
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            padding: 3px 28px;
+            transform: rotate(45deg);
+            transform-origin: top right;
+            box-shadow: 0 2px 6px rgba(40, 167, 69, 0.3);
+        }
+
+        /* rank badge */
+        .cmp-rank {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--border-color);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .cmp-row {
+                flex-wrap: wrap;
+            }
+
+            .cmp-meta {
+                justify-content: flex-start;
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -217,7 +434,7 @@
                     <i class="bi bi-bar-chart"></i> Comparison Results
                 </h3>
 
-                <div class="row" id="resultsContainer">
+                <div id="resultsContainer">
                     <!-- Comparison cards will be populated here -->
                 </div>
             </div>
@@ -232,7 +449,7 @@
 
     <script>
         // API Configuration
-        const API_BASE_URL = 'http://127.0.0.1:8001/api';
+        const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
         // Helper function for authenticated API calls
         async function apiCall(endpoint, options = {}) {
@@ -255,7 +472,7 @@
                 headers: { ...defaultOptions.headers, ...options.headers },
             });
 
-            if (response.status === 401) {
+            if (response.status === 401 || response.status === 403) {
                 // Token expired
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('user');
@@ -409,89 +626,79 @@
             // Data is already sorted by price from backend
             listings.forEach((item, index) => {
                 const isBestDeal = index === 0;
-                const card = createComparisonCard(item, isBestDeal, productName);
+                const card = createComparisonCard(item, isBestDeal, productName, index + 1);
                 resultsContainer.appendChild(card);
             });
 
             comparisonResults.style.display = 'block';
         }
 
-        function createComparisonCard(data, isBestDeal, productName) {
-            const col = document.createElement('div');
-            col.className = 'col-lg-4 col-md-6 col-sm-6 mb-4';
+        function createComparisonCard(data, isBestDeal, productName, rank) {
+            const row = document.createElement('div');
 
             // Platform styling
             const platformName = data.platform_name || 'Unknown Store';
-            let icon = 'bi-shop';
-            let color = '#333';
+            let icon = 'bi-shop', color = '#6c757d', bgColor = '#f0f0f0';
+            const pl = platformName.toLowerCase();
+            if (pl.includes('amazon')) { icon = 'bi-amazon'; color = '#ff9900'; bgColor = '#fff4e0'; }
+            else if (pl.includes('flipkart')) { icon = 'bi-bag-check'; color = '#2874f0'; bgColor = '#e6effe'; }
+            else if (pl.includes('croma')) { icon = 'bi-tv'; color = '#00a484'; bgColor = '#e0f5f0'; }
+            else if (pl.includes('reliance')) { icon = 'bi-lightning-charge'; color = '#e42529'; bgColor = '#fde8e8'; }
+            else if (pl.includes('vijay')) { icon = 'bi-bag'; color = '#f15a22'; bgColor = '#fdeee8'; }
 
-            if (platformName.toLowerCase().includes('amazon')) { icon = 'bi-amazon'; color = '#ff9900'; }
-            else if (platformName.toLowerCase().includes('flipkart')) { icon = 'bi-bag-check'; color = '#2874f0'; }
-            else if (platformName.toLowerCase().includes('croma')) { icon = 'bi-tv'; color = '#00e9bf'; }
-            else if (platformName.toLowerCase().includes('reliance')) { icon = 'bi-lightning-charge'; color = '#e42529'; }
+            const price = data.price ? `₹${Number(data.price).toLocaleString('en-IN')}` : 'N/A';
+            const originalPrice = data.original_price ? `₹${Number(data.original_price).toLocaleString('en-IN')}` : '';
+            const discountRaw = data.discount_percentage;
+            const discount = discountRaw ? `${Math.round(discountRaw)}% OFF` : '';
+            const rating = data.rating ? `${Number(data.rating).toFixed(1)} / 5` : '—';
+            const inStock = data.availability_status === 'in_stock';
+            const stockLabel = inStock ? 'In Stock' : (data.availability_status === 'out_of_stock' ? 'Out of Stock' : (data.availability_status || '—'));
+            const stockColor = inStock ? '#28a745' : '#dc3545';
 
-            const price = data.price ? `₹${data.price.toLocaleString()}` : 'N/A';
-            const originalPrice = data.original_price ? `₹${data.original_price.toLocaleString()}` : '';
-            const discount = data.discount_percentage ? `${data.discount_percentage}% OFF` : '';
+            row.innerHTML = `
+                <div class="cmp-row ${isBestDeal ? 'best' : ''}" style="background:${bgColor};">
+                    <div class="side-bar" style="background:${color};"></div>
+                    ${isBestDeal ? '<div class="best-ribbon">BEST DEAL</div>' : ''}
 
-            const rating = data.rating ? data.rating.toFixed(1) : 'N/A';
-            const availability = data.availability_status === 'in_stock' ? 'In Stock' : (data.availability_status === 'out_of_stock' ? 'Out of Stock' : data.availability_status);
-            const availClass = data.availability_status === 'in_stock' ? 'text-success' : 'text-danger';
+                    <!-- Rank -->
+                    <div class="cmp-rank" style="${isBestDeal ? 'background:' + color + ';color:#fff;' : ''}">${rank}</div>
 
-            col.innerHTML = `
-                <div class="comparison-card h-100 ${isBestDeal ? 'best-deal-card' : ''}" style="position: relative; overflow: hidden; border: ${isBestDeal ? '2px solid #28a745' : '1px solid var(--border-color)'}; box-shadow: ${isBestDeal ? '0 4px 15px rgba(40, 167, 69, 0.2)' : 'var(--card-shadow)'};">
-                    ${isBestDeal ? '<div class="badge bg-success" style="position: absolute; top: 10px; right: 10px; font-size: 0.8rem; padding: 0.5em 0.8em;">BEST DEAL</div>' : ''}
-                    
-                    <div class="card-body d-flex flex-column p-4">
-                        <!-- Retailer Logo Section -->
-                        <div class="text-center mb-3">
-                            <div class="retailer-icon-wrapper mb-2" style="font-size: 2.5rem; color: ${color};">
-                                <i class="bi ${icon}"></i>
-                            </div>
-                            <h4 class="card-title mb-0" style="font-weight: 600; color: var(--text-color);">${platformName}</h4>
+                    <!-- Retailer -->
+                    <div class="cmp-retailer">
+                        <div class="cmp-retailer-icon" style="background:${bgColor}; color:${color};">
+                            <i class="bi ${icon}"></i>
                         </div>
-                        
-                        <hr style="border-color: var(--border-color); opacity: 0.5;">
+                        <span class="cmp-retailer-name">${platformName}</span>
+                    </div>
 
-                        <!-- Product Info -->
-                        <div class="text-center mb-4">
-                            <h5 class="product-name text-muted mb-3" style="font-size: 1rem; font-weight: 400;">${productName}</h5>
-                            
-                            <div class="price-section">
-                                <span class="display-4 fw-bold" style="color: var(--text-color); font-size: 2.5rem;">${price}</span>
-                                ${originalPrice ? `<div class="text-muted text-decoration-line-through small mt-1">${originalPrice}</div>` : ''}
-                                ${discount ? `<div class="badge bg-danger mt-2">${discount}</div>` : ''}
-                            </div>
+                    <!-- Price -->
+                    <div class="cmp-price-block">
+                        <div style="display:flex;align-items:baseline;gap:0.5rem;flex-wrap:wrap;">
+                            <span class="cmp-price">${price}</span>
+                            ${originalPrice ? `<span class="cmp-original">${originalPrice}</span>` : ''}
+                            ${discount ? `<span class="cmp-discount">${discount}</span>` : ''}
                         </div>
-                        
-                        <!-- Details Grid -->
-                        <div class="row g-2 mb-4 small text-muted">
-                            <div class="col-6 text-center border-end" style="border-color: var(--border-color) !important;">
-                                <div class="d-flex flex-column align-items-center">
-                                    <i class="bi bi-star-fill text-warning mb-1"></i>
-                                    <span>${rating} ${rating !== 'N/A' ? '/ 5' : ''}</span>
-                                </div>
-                            </div>
-                            <div class="col-6 text-center">
-                                <div class="d-flex flex-column align-items-center">
-                                    <i class="bi bi-box-seam mb-1"></i>
-                                    <span class="${availClass}">${availability}</span>
-                                </div>
-                            </div>
+                        <div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:340px;">${productName}</div>
+                    </div>
+
+                    <!-- Meta -->
+                    <div class="cmp-meta">
+                        <div class="cmp-meta-item">
+                            <i class="bi bi-star-fill" style="color:#f59e0b;"></i>
+                            <span>${rating}</span>
                         </div>
-                        
-                        <!-- Action Button -->
-                        <div class="mt-auto">
-                            <a href="${data.product_url}" target="_blank" class="btn btn-primary w-100 py-2 fw-semibold" 
-                               style="background-color: ${color}; border-color: ${color}; transition: all 0.2s;">
-                                Buy Now <i class="bi bi-box-arrow-up-right ms-2 small"></i>
-                            </a>
+                        <div class="cmp-meta-item">
+                            <i class="bi bi-box-seam" style="color:${stockColor};"></i>
+                            <span style="color:${stockColor};font-weight:600;">${stockLabel}</span>
                         </div>
+                        <a href="${data.product_url || '#'}" target="_blank"
+                           class="cmp-buy" style="background:${color};">
+                            <i class="bi bi-bag-check"></i> Buy Now
+                        </a>
                     </div>
                 </div>
             `;
-
-            return col;
+            return row;
         }
 
         function showLoadingSpinner() {

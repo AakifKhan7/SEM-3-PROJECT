@@ -35,11 +35,11 @@
                     <div class="brand-tagline">
                         <h1>Saving your time,<br>Bringing you the best deals!!</h1>
                     </div>
-                    <div class="brand-slider-dots">
+                    <!-- <div class="brand-slider-dots">
                         <div class="dot active"></div>
                         <div class="dot"></div>
                         <div class="dot"></div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -62,13 +62,14 @@
                     <i class="bi bi-eye password-toggle" id="togglePassword"></i>
                 </div>
 
-                <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="rememberMe">
                         <label class="form-check-label" for="rememberMe">Remember me</label>
                     </div>
                     <a href="#" class="form-check-label text-decoration-none" id="forgotPassword">Forgot Password</a>
                 </div>
+
 
                 <div class="error-message" id="errorMessage"></div>
                 <div class="success-message" id="successMessage"></div>
@@ -78,7 +79,8 @@
 
 
                 <div class="text-center mt-4" style="color: var(--text-muted); font-size: 0.9rem;">
-                    Don't have an account? <a href="signUp.html" style="color: white; text-decoration: underline;">Sign
+                    Don't have an account? <a href="signUp.html"
+                        style="color: rgba(218, 5, 5, 0.825); text-decoration: underline;">Sign
                         up</a>
                 </div>
             </form>
@@ -138,7 +140,8 @@
 
                 try {
                     // Call backend API
-                    const response = await fetch('http://127.0.0.1:8001/api/auth/login', {
+                    const API_BASE_URL = 'http://127.0.0.1:8000/api';
+                    const response = await fetch(`${API_BASE_URL}/auth/login`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -175,7 +178,7 @@
                         // Show success message
                         showSuccess('Login successful! Redirecting...');
 
-                        // Redirect after 1 second
+                        // Redirect to dashboard
                         setTimeout(function () {
                             window.location.href = 'dashboard.html';
                         }, 1000);

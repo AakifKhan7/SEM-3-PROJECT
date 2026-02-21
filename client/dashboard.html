@@ -67,7 +67,6 @@
                     <h1 class="page-title" style="font-size: 1.5rem; margin-bottom: 0;margin-left: 1rem;">Welcome Back!
                     </h1>
                 </div>
-                <!-- Last login moved/removed to declutter or kept minimal -->
                 <div style="text-align: right; color: var(--text-muted); font-size: 0.8rem;">
                     <span id="lastLogin"></span>
                 </div>
@@ -165,7 +164,7 @@
 
     <script>
         // API Configuration
-        const API_BASE_URL = 'http://127.0.0.1:8001/api';
+        const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
         // Helper function for authenticated API calls
         async function apiCall(endpoint, options = {}) {
@@ -188,7 +187,7 @@
                 headers: { ...defaultOptions.headers, ...options.headers },
             });
 
-            if (response.status === 401) {
+            if (response.status === 401 || response.status === 403) {
                 // Token expired, try to refresh or redirect to login
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('user');

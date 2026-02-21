@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - TechScope</title>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        admin: { DEFAULT: '#c0392b', hover: '#922b21' }
+                    },
+                    borderRadius: { '2xl': '1rem', '3xl': '1.25rem' }
+                }
+            }
+        }
+    </script>
+
+    <!-- Shared Dashboard CSS (sidebar, layout, nav) -->
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body class="font-sans">
+    <button class="mobile-toggle" id="mobileToggle">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <div class="dashboard-container">
+        <!-- ── Sidebar ── -->
+        <aside class="sidebar" id="sidebar">
+            <a href="admin.html" class="brand">
+                <i class="bi bi-shield-fill-check text-[#e74c3c]"></i>
+                <span class="flex items-center gap-1.5 text-sm font-bold tracking-wide">
+                    TechScope
+                    <span
+                        class="bg-[#c0392b] text-white text-[0.5rem] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap tracking-wider">
+                        ADMIN
+                    </span>
+                </span>
+            </a>
+
+            <nav class="nav-links">
+                <a href="#section-overview" class="nav-item active" id="nav-overview">
+                    <i class="bi bi-grid-1x2"></i> Overview
+                </a>
+                <a href="#section-users" class="nav-item" id="nav-users">
+                    <i class="bi bi-people"></i> Users
+                </a>
+                <a href="#section-products" class="nav-item" id="nav-products">
+                    <i class="bi bi-box-seam"></i> Products
+                </a>
+                <hr class="border-[#333] my-1">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="bi bi-house-door"></i> User Dashboard
+                </a>
+            </nav>
+
+            <div class="user-profile">
+                <div class="user-avatar !bg-[#c0392b]" id="userAvatar">A</div>
+                <div class="user-details">
+                    <div class="user-name" id="displayUsername">Admin</div>
+                    <div class="user-role">Administrator</div>
+                </div>
+                <a href="#" class="logout-btn" id="logoutBtn"
+                    style="padding: 4px 8px; border: none; background: transparent;">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
+            </div>
+        </aside>
+
+        <!-- ── Main Content ── -->
+        <main class="main-content">
+            <!-- Header -->
+            <div class="flex justify-between items-start mb-6 pb-3 border-b border-gray-200">
+                <div>
+                    <h1 class="text-2xl font-bold mb-0 flex items-center gap-2">
+                        <i class="bi bi-shield-fill-check text-[#c0392b]"></i>
+                        Admin Dashboard
+                    </h1>
+                    <p class="text-xs text-gray-400 mt-0.5">Full system control panel</p>
+                </div>
+                <div class="text-right text-xs text-gray-400">
+                    <span id="currentTime"></span>
+                </div>
+            </div>
+
+            <!-- ── OVERVIEW STATS ── -->
+            <section id="section-overview">
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+
+                    <div
+                        class="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col gap-2 hover:-translate-y-1 transition-transform">
+                        <div class="text-2xl text-blue-500"><i class="bi bi-people-fill"></i></div>
+                        <div class="text-3xl font-bold text-gray-800" id="statUsers">—</div>
+                        <div class="text-sm text-gray-500">Total Users</div>
+                    </div>
+
+                    <div
+                        class="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col gap-2 hover:-translate-y-1 transition-transform">
+                        <div class="text-2xl text-green-500"><i class="bi bi-box-seam-fill"></i></div>
+                        <div class="text-3xl font-bold text-gray-800" id="statProducts">—</div>
+                        <div class="text-sm text-gray-500">Total Products</div>
+                    </div>
+
+                    <div
+                        class="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col gap-2 hover:-translate-y-1 transition-transform">
+                        <div class="text-2xl text-[#c0392b]"><i class="bi bi-search-heart"></i></div>
+                        <div class="text-3xl font-bold text-gray-800" id="statSearches">—</div>
+                        <div class="text-sm text-gray-500">Total Searches</div>
+                    </div>
+
+                </div>
+
+                <!-- ── GRAPHS ── -->
+                <div class="flex flex-col gap-6 mb-8">
+                    <!-- Main Graph - Full Width -->
+                    <div
+                        class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                                <i class="bi bi-graph-up-arrow text-blue-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-semibold text-gray-800">User Registrations Over Time</h3>
+                                <p class="text-xs text-gray-400">Track user growth trends</p>
+                            </div>
+                        </div>
+                        <div class="w-full flex justify-center items-center min-h-[280px]" id="userGraphContainer">
+                            <div
+                                class="inline-block w-8 h-8 border-[3px] border-gray-300 border-t-[#c0392b] rounded-full animate-spin">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Second Graph - Full Width (Same Size) -->
+                    <div
+                        class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
+                                <i class="bi bi-search-heart-fill text-purple-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-semibold text-gray-800">Searches Per User</h3>
+                                <p class="text-xs text-gray-400">User search activity</p>
+                            </div>
+                        </div>
+                        <div class="w-full flex justify-center items-center min-h-[280px]" id="searchGraphContainer">
+                            <div
+                                class="inline-block w-8 h-8 border-[3px] border-gray-300 border-t-[#c0392b] rounded-full animate-spin">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Third Graph - Full Width (Same Size) -->
+                    <div
+                        class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
+                                <i class="bi bi-box-seam-fill text-green-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-semibold text-gray-800">Products by Category</h3>
+                                <p class="text-xs text-gray-400">Distribution of products across categories</p>
+                            </div>
+                        </div>
+                        <div class="w-full flex justify-center items-center min-h-[280px]" id="productGraphContainer">
+                            <div
+                                class="inline-block w-8 h-8 border-[3px] border-gray-300 border-t-[#c0392b] rounded-full animate-spin">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── USERS TABLE ── -->
+            <section id="section-users" class="bg-white border border-gray-200 rounded-2xl p-5 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-base font-semibold flex items-center gap-2">
+                        <i class="bi bi-people text-gray-500"></i> User Management
+                    </h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-black text-white text-left">
+                                <th class="px-3 py-2.5 rounded-tl-lg">#</th>
+                                <th class="px-3 py-2.5">Name</th>
+                                <th class="px-3 py-2.5 hidden md:table-cell">Email</th>
+                                <th class="px-3 py-2.5 hidden sm:table-cell">Joined</th>
+                                <th class="px-3 py-2.5">Status</th>
+                                <th class="px-3 py-2.5 rounded-tr-lg">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td colspan="6" class="text-center text-gray-400 py-8">
+                                    <div
+                                        class="inline-block w-4 h-4 border-2 border-gray-300 border-t-black rounded-full animate-spin mr-2">
+                                    </div>
+                                    Loading users...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ── PRODUCTS TABLE ── -->
+            <section id="section-products" class="bg-white border border-gray-200 rounded-2xl p-5 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-base font-semibold flex items-center gap-2">
+                        <i class="bi bi-box-seam text-gray-500"></i> Product Management
+                    </h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-black text-white text-left">
+                                <th class="px-3 py-2.5 rounded-tl-lg">#</th>
+                                <th class="px-3 py-2.5">Product Name</th>
+                                <th class="px-3 py-2.5 hidden md:table-cell">Category</th>
+                                <th class="px-3 py-2.5 hidden md:table-cell">Brand</th>
+                                <th class="px-3 py-2.5 hidden sm:table-cell">Listings</th>
+                                <th class="px-3 py-2.5 rounded-tr-lg">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <tr>
+                                <td colspan="6" class="text-center text-gray-400 py-8">
+                                    <div
+                                        class="inline-block w-4 h-4 border-2 border-gray-300 border-t-black rounded-full animate-spin mr-2">
+                                    </div>
+                                    Loading products...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+
+        </main>
+    </div>
+
+    <!-- ── USER DETAIL MODAL ── -->
+    <div id="userModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/40 backdrop-blur-sm"
+        onclick="closeUserModal()">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 relative"
+            onclick="event.stopPropagation()">
+            <button onclick="closeUserModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-xl">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            <h3 class="text-base font-bold mb-4 flex items-center gap-2">
+                <i class="bi bi-person-circle text-gray-500"></i> User Details
+            </h3>
+            <div id="userModalContent" class="space-y-3 text-sm text-gray-700"></div>
+        </div>
+    </div>
+
+    <!-- ── DELETE CONFIRM MODAL ── -->
+    <div id="deleteModal"
+        class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/40 backdrop-blur-sm"
+        onclick="closeDeleteModal()">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6 relative"
+            onclick="event.stopPropagation()">
+            <div class="flex flex-col items-center text-center gap-3">
+                <div class="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center">
+                    <i class="bi bi-trash text-[#c0392b] text-2xl"></i>
+                </div>
+                <h3 id="deleteModalTitle" class="text-base font-bold text-gray-800">Delete?</h3>
+                <p class="text-sm text-gray-500" id="deleteModalMsg">This action cannot be undone.</p>
+                <div class="flex gap-3 w-full mt-2">
+                    <button onclick="closeDeleteModal()"
+                        class="flex-1 border border-gray-300 rounded-xl py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 transition-colors">
+                        Cancel
+                    </button>
+                    <button id="deleteModalConfirmBtn"
+                        class="flex-1 bg-[#c0392b] text-white rounded-xl py-2 text-sm font-semibold hover:bg-[#922b21] transition-colors">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const API_BASE_URL = 'http://127.0.0.1:8000/api';
+
+        // ── AUTH GUARD ─────────────────────────────────────────────
+        if (!localStorage.getItem('authToken')) {
+            window.location.href = 'login.html';
+        }
+
+        // ── HELPERS ────────────────────────────────────────────────
+        async function apiCall(endpoint, options = {}) {
+            const t = localStorage.getItem('authToken');
+            if (!t) { window.location.href = 'login.html'; return null; }
+            const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+                ...options,
+                headers: {
+                    'Authorization': `Bearer ${t}`,
+                    'Content-Type': 'application/json',
+                    ...(options.headers || {})
+                }
+            });
+            // JWTBearer raises 403 (not 401) for expired/invalid tokens
+            if (res.status === 401 || res.status === 403) {
+                localStorage.removeItem('authToken');
+                window.location.href = 'login.html';
+                return null;
+            }
+            return res;
+        }
+
+        function showNotice(action) { alert(`${action}: This feature requires backend integration.`); }
+
+        function badge(status) {
+            const map = {
+                active: 'bg-green-100 text-green-800',
+                inactive: 'bg-red-100 text-red-800',
+                pending: 'bg-yellow-100 text-yellow-800',
+            };
+            return `<span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ${map[status] || map.active}">${status}</span>`;
+        }
+
+        function actionBtns(viewFn, deleteFn) {
+            return `
+                <button onclick="${viewFn}" class="border border-gray-300 rounded-md px-2 py-1 text-xs hover:bg-black hover:text-white hover:border-black transition-colors">
+                    <i class="bi bi-eye"></i>
+                </button>
+                <button onclick="${deleteFn}" class="border border-gray-300 rounded-md px-2 py-1 text-xs ml-1 hover:bg-[#c0392b] hover:text-white hover:border-[#c0392b] transition-colors">
+                    <i class="bi bi-trash"></i>
+                </button>
+            `;
+        }
+
+        function tdClass() { return 'px-3 py-2.5 border-b border-gray-100 text-gray-700 align-middle'; }
+
+        // ── INIT ───────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', async function () {
+            const username = localStorage.getItem('username') || 'Admin';
+            document.getElementById('displayUsername').textContent = username;
+            document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+
+            // Clock
+            const updateClock = () => {
+                document.getElementById('currentTime').textContent =
+                    new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            };
+            updateClock();
+            setInterval(updateClock, 60000);
+
+            // Mobile sidebar
+            const mobileToggle = document.getElementById('mobileToggle');
+            const sidebar = document.getElementById('sidebar');
+            mobileToggle.addEventListener('click', e => {
+                e.stopPropagation();
+                sidebar.classList.toggle('active');
+                mobileToggle.innerHTML = sidebar.classList.contains('active')
+                    ? '<i class="bi bi-x-lg"></i>' : '<i class="bi bi-list"></i>';
+            });
+            document.addEventListener('click', e => {
+                if (window.innerWidth <= 992 && !sidebar.contains(e.target) && !mobileToggle.contains(e.target) && sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                    mobileToggle.innerHTML = '<i class="bi bi-list"></i>';
+                }
+            });
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', e => {
+                e.preventDefault();
+                ['authToken', 'user', 'username', 'isAdmin'].forEach(k => localStorage.removeItem(k));
+                window.location.href = 'login.html';
+            });
+
+            // Nav scroll
+            document.querySelectorAll('.nav-item[href^="#"]').forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                    this.classList.add('active');
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            });
+
+            await Promise.all([loadUsers(), loadProducts(), loadGraphs()]);
+            document.getElementById('statSearches').textContent = '24+';
+        });
+
+        async function loadGraphs() {
+            try {
+                const res = await apiCall('/admin/stats/graphs');
+                if (res && res.ok) {
+                    const data = await res.json();
+                    document.getElementById('userGraphContainer').innerHTML = `<img src="${data.user_graph}" alt="User Graph" class="w-full h-auto object-contain max-h-[400px]">`;
+                    document.getElementById('searchGraphContainer').innerHTML = `<img src="${data.search_graph}" alt="Search Graph" class="w-full h-auto object-contain max-h-[400px]">`;
+                    document.getElementById('productGraphContainer').innerHTML = `<img src="${data.product_graph}" alt="Product Graph" class="w-full h-auto object-contain max-h-[400px]">`;
+                } else {
+                    document.getElementById('userGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Failed to load diagram</div>`;
+                    document.getElementById('searchGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Failed to load diagram</div>`;
+                    document.getElementById('productGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Failed to load diagram</div>`;
+                }
+            } catch (error) {
+                console.error('Error fetching graphs:', error);
+                document.getElementById('userGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Error loading diagram</div>`;
+                document.getElementById('searchGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Error loading diagram</div>`;
+                document.getElementById('productGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Error loading diagram</div>`;
+            }
+        }
+
+        // ── USERS ──────────────────────────────────────────────────
+        let usersData = [];
+
+        async function loadUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            try {
+                const res = await apiCall('/users/list');
+                if (res && res.ok) {
+                    usersData = await res.json();
+                    document.getElementById('statUsers').textContent = usersData.length;
+                    renderUsersTable(tbody, usersData);
+                } else {
+                    console.warn('loadUsers: API returned', res?.status, '— showing mock data');
+                    renderMockUsers(tbody);
+                }
+            } catch (e) { console.error('loadUsers error:', e); renderMockUsers(tbody); }
+        }
+
+        function renderUsersTable(tbody, users) {
+            tbody.innerHTML = users.map((u, i) => `
+                <tr class="hover:bg-gray-50" id="user-row-${u.id}">
+                    <td class="${tdClass()}">${i + 1}</td>
+                    <td class="${tdClass()} font-medium">${((u.first_name || '') + ' ' + (u.last_name || '')).trim() || u.email?.split('@')[0] || '—'}</td>
+                    <td class="${tdClass()} hidden md:table-cell">${u.email || '—'}</td>
+                    <td class="${tdClass()} hidden sm:table-cell">${u.created_at ? new Date(u.created_at).toLocaleDateString() : '—'}</td>
+                    <td class="${tdClass()}" id="user-status-${u.id}">${badge(u.is_active ? 'active' : 'inactive')}</td>
+                    <td class="${tdClass()}">
+                        <button onclick="viewUser(${u.id})" class="border border-gray-300 rounded-md px-2 py-1 text-xs hover:bg-black hover:text-white hover:border-black transition-colors" title="View">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button onclick="toggleUserActive(${u.id}, this)" id="deact-btn-${u.id}" class="border border-gray-300 rounded-md px-2 py-1 text-xs ml-1 hover:bg-yellow-500 hover:text-white hover:border-yellow-500 transition-colors" title="${u.is_active ? 'Deactivate' : 'Activate'}">
+                            <i class="bi ${u.is_active ? 'bi-person-dash' : 'bi-person-check'}"></i>
+                        </button>
+                        <button onclick="deleteUser(${u.id}, '${(u.email || '').replace(/'/g, '')}')" class="border border-gray-300 rounded-md px-2 py-1 text-xs ml-1 hover:bg-[#c0392b] hover:text-white hover:border-[#c0392b] transition-colors" title="Delete">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>`).join('');
+        }
+
+        function viewUser(userId) {
+            const u = usersData.find(x => x.id === userId);
+            if (!u) return;
+            const name = ((u.first_name || '') + ' ' + (u.last_name || '')).trim() || '—';
+            document.getElementById('userModalContent').innerHTML = `
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center text-lg font-bold">${(u.first_name || u.email || '?')[0].toUpperCase()}</div>
+                    <div>
+                        <div class="font-semibold text-base">${name}</div>
+                        <div class="text-gray-400 text-xs">${u.email || '—'}</div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-xs bg-gray-50 rounded-xl p-4">
+                    <div class="text-gray-400">User ID</div><div class="font-medium">#${u.id}</div>
+                    <div class="text-gray-400">Phone</div><div class="font-medium">${u.phone || '—'}</div>
+                    <div class="text-gray-400">Status</div><div>${badge(u.is_active ? 'active' : 'inactive')}</div>
+                    <div class="text-gray-400">Joined</div><div class="font-medium">${u.created_at ? new Date(u.created_at).toLocaleDateString() : '—'}</div>
+                </div>`;
+            document.getElementById('userModal').classList.remove('hidden');
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').classList.add('hidden');
+        }
+
+        async function toggleUserActive(userId, btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-arrow-repeat animate-spin"></i>';
+            try {
+                const res = await apiCall(`/users/${userId}/deactivate`, { method: 'PATCH' });
+                if (res && res.ok) {
+                    const data = await res.json();
+                    const u = usersData.find(x => x.id === userId);
+                    if (u) u.is_active = data.is_active;
+                    document.getElementById(`user-status-${userId}`).innerHTML = badge(data.is_active ? 'active' : 'inactive');
+                    btn.title = data.is_active ? 'Deactivate' : 'Activate';
+                    btn.innerHTML = `<i class="bi ${data.is_active ? 'bi-person-dash' : 'bi-person-check'}"></i>`;
+                } else {
+                    alert('Failed to update user status.');
+                    const u = usersData.find(x => x.id === userId);
+                    btn.innerHTML = `<i class="bi ${u?.is_active ? 'bi-person-dash' : 'bi-person-check'}"></i>`;
+                }
+            } catch (e) {
+                alert('Error: ' + e.message);
+                btn.innerHTML = '<i class="bi bi-person-dash"></i>';
+            }
+            btn.disabled = false;
+        }
+
+        async function deleteUser(userId, email) {
+            // Show styled confirm modal
+            document.getElementById('deleteModalTitle').textContent = 'Delete User?';
+            document.getElementById('deleteModalMsg').textContent =
+                `Permanently delete "${email || '#' + userId}"? This cannot be undone.`;
+            document.getElementById('deleteModal').classList.remove('hidden');
+
+            // Wait for user to click Confirm or Cancel
+            await new Promise(resolve => {
+                const confirmBtn = document.getElementById('deleteModalConfirmBtn');
+                const handler = async () => {
+                    confirmBtn.removeEventListener('click', handler);
+                    closeDeleteModal();
+                    confirmBtn.disabled = true;
+                    confirmBtn.innerHTML = '<i class="bi bi-arrow-repeat animate-spin"></i> Deleting...';
+                    try {
+                        const res = await apiCall(`/users/${userId}`, { method: 'DELETE' });
+                        if (res && (res.ok || res.status === 204)) {
+                            usersData = usersData.filter(x => x.id !== userId);
+                            const row = document.getElementById(`user-row-${userId}`);
+                            if (row) {
+                                row.style.transition = 'opacity 0.3s';
+                                row.style.opacity = '0';
+                                setTimeout(() => row.remove(), 300);
+                            }
+                            document.getElementById('statUsers').textContent = usersData.length;
+                        } else if (res) {
+                            const err = await res.json().catch(() => ({}));
+                            alert('Failed to delete user: ' + (err.detail || `HTTP ${res.status}`));
+                        } else {
+                            alert('Failed to delete user: no response (possibly redirected to login).');
+                        }
+                    } catch (e) {
+                        alert('Network error — check the browser console for details.\n' + e.message);
+                    }
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerHTML = 'Delete';
+                    resolve();
+                };
+                confirmBtn.addEventListener('click', handler, { once: true });
+            });
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+        }
+
+        function renderMockUsers(tbody) {
+            const mock = [
+                { name: 'Alice Johnson', email: 'alice@example.com', joined: '2025-01-10', status: 'active' },
+                { name: 'Bob Smith', email: 'bob@example.com', joined: '2025-02-14', status: 'active' },
+                { name: 'Carol White', email: 'carol@example.com', joined: '2025-03-01', status: 'inactive' },
+            ];
+            document.getElementById('statUsers').textContent = mock.length + '+';
+            tbody.innerHTML = mock.map((u, i) => `
+                <tr class="hover:bg-gray-50">
+                    <td class="${tdClass()}">${i + 1}</td>
+                    <td class="${tdClass()} font-medium">${u.name}</td>
+                    <td class="${tdClass()} hidden md:table-cell">${u.email}</td>
+                    <td class="${tdClass()} hidden sm:table-cell">${u.joined}</td>
+                    <td class="${tdClass()}">${badge(u.status)}</td>
+                    <td class="${tdClass()}">${actionBtns("showNotice('View user')", "showNotice('Deactivate user')")}</td>
+                </tr>`).join('');
+        }
+
+        // ── PRODUCTS ───────────────────────────────────────────────
+        let productsData = [];
+
+        async function loadProducts() {
+            const tbody = document.getElementById('productsTableBody');
+            try {
+                const res = await apiCall('/products/list?limit=50');
+                if (res && res.ok) {
+                    const data = await res.json();
+                    productsData = data.products || data;
+                    document.getElementById('statProducts').textContent = productsData.length;
+                    renderProductsTable(tbody, productsData);
+                } else {
+                    console.warn('loadProducts: API returned', res?.status, '— showing mock data');
+                    renderMockProducts(tbody);
+                }
+            } catch (e) { console.error('loadProducts error:', e); renderMockProducts(tbody); }
+        }
+
+        function renderProductsTable(tbody, products) {
+            tbody.innerHTML = products.map((p, i) => `
+                <tr class="hover:bg-gray-50" id="product-row-${p.id}">
+                    <td class="${tdClass()}">${i + 1}</td>
+                    <td class="${tdClass()} font-medium">${p.name || '—'}</td>
+                    <td class="${tdClass()} hidden md:table-cell">${p.category || '—'}</td>
+                    <td class="${tdClass()} hidden md:table-cell">${p.brand || '—'}</td>
+                    <td class="${tdClass()} hidden sm:table-cell">${p.listings ? p.listings.length : '—'}</td>
+                    <td class="${tdClass()}">
+                        <button onclick="window.open('productDetails.html?id=${p.id}','_blank')" class="border border-gray-300 rounded-md px-2 py-1 text-xs hover:bg-black hover:text-white hover:border-black transition-colors" title="View">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button onclick="deleteProduct(${p.id}, '${(p.name || '').replace(/'/g, '')}')" class="border border-gray-300 rounded-md px-2 py-1 text-xs ml-1 hover:bg-[#c0392b] hover:text-white hover:border-[#c0392b] transition-colors" title="Delete">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>`).join('');
+        }
+
+        async function deleteProduct(productId, name) {
+            document.getElementById('deleteModalTitle').textContent = 'Delete Product?';
+            document.getElementById('deleteModalMsg').textContent =
+                `Permanently delete product "${name || '#' + productId}"? This cannot be undone.`;
+            document.getElementById('deleteModal').classList.remove('hidden');
+
+            await new Promise(resolve => {
+                const confirmBtn = document.getElementById('deleteModalConfirmBtn');
+                const handler = async () => {
+                    confirmBtn.removeEventListener('click', handler);
+                    closeDeleteModal();
+                    confirmBtn.disabled = true;
+                    confirmBtn.innerHTML = '<i class="bi bi-arrow-repeat animate-spin"></i> Deleting...';
+                    try {
+                        const res = await apiCall(`/products/${productId}`, { method: 'DELETE' });
+                        if (res && (res.ok || res.status === 204)) {
+                            productsData = productsData.filter(x => x.id !== productId);
+                            const row = document.getElementById(`product-row-${productId}`);
+                            if (row) {
+                                row.style.transition = 'opacity 0.3s';
+                                row.style.opacity = '0';
+                                setTimeout(() => row.remove(), 300);
+                            }
+                            document.getElementById('statProducts').textContent = productsData.length;
+                        } else if (res) {
+                            const err = await res.json().catch(() => ({}));
+                            alert('Failed to delete product: ' + (err.detail || `HTTP ${res.status}`));
+                        } else {
+                            alert('Failed to delete product: no response.');
+                        }
+                    } catch (e) {
+                        alert('Network error: ' + e.message);
+                    }
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerHTML = 'Delete';
+                    resolve();
+                };
+                confirmBtn.addEventListener('click', handler, { once: true });
+            });
+        }
+
+        function renderMockProducts(tbody) {
+            const mock = [
+                { name: 'iPhone 15 Pro', category: 'Smartphones', brand: 'Apple', listings: 4, status: 'active' },
+                { name: 'MacBook Pro M3', category: 'Laptops', brand: 'Apple', listings: 3, status: 'active' },
+                { name: 'Samsung Galaxy S24', category: 'Smartphones', brand: 'Samsung', listings: 5, status: 'active' },
+                { name: 'Sony WH-1000XM5', category: 'Headphones', brand: 'Sony', listings: 2, status: 'pending' },
+            ];
+            document.getElementById('statProducts').textContent = mock.length + '+';
+            tbody.innerHTML = mock.map((p, i) => `
+                <tr class="hover:bg-gray-50">
+                    <td class="${tdClass()}">${i + 1}</td>
+                    <td class="${tdClass()} font-medium">${p.name}</td>
+                    <td class="${tdClass()} hidden md:table-cell">${p.category}</td>
+                    <td class="${tdClass()} hidden md:table-cell">${p.brand}</td>
+                    <td class="${tdClass()} hidden sm:table-cell">${p.listings}</td>
+                    <td class="${tdClass()}">${actionBtns("showNotice('View product')", "showNotice('Delete product')")}</td>
+                </tr>`).join('');
+        }
+
+
+    </script>
+</body>
+
+</html>

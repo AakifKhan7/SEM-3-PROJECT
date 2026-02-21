@@ -142,11 +142,7 @@ body {
 
 .user-role {
     font-size: 0.8rem;
-
-    .user-role {
-        font-size: 0.8rem;
-        color: #a0a0a0;
-    }
+    color: #a0a0a0;
 }
 
 /* Main Content */
