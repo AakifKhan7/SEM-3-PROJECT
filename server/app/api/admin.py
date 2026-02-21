@@ -19,33 +19,43 @@ router = APIRouter(
 
 @router.get("/stats/graphs")
 async def get_admin_graphs(db: Session = Depends(get_db)):
-    # 1. User registrations over time
+    # 1. User registrations over time (cumulative growth)
     users_by_date = db.query(func.date(User.createdAt), func.count(User.id)).group_by(func.date(User.createdAt)).order_by(func.date(User.createdAt)).all()
     
     # 2. Products by category
     products_by_category = db.query(Product.category, func.count(Product.id)).group_by(Product.category).all()
     
-    # 3. Searches per user
+    # 3. Searches per user (all users, including those with 0 searches)
     searches_by_user = db.query(
         UserAuth.email, 
         func.count(SavedSearch.id)
-    ).join(UserAuth, UserAuth.user_id == SavedSearch.user_id).group_by(UserAuth.email).order_by(func.count(SavedSearch.id).desc()).limit(10).all()
+    ).select_from(UserAuth).outerjoin(SavedSearch, UserAuth.user_id == SavedSearch.user_id).group_by(UserAuth.email).order_by(func.count(SavedSearch.id).desc()).all()
     
-    # Generate User Graph
+    # Generate User Graph with cumulative data
     user_dates = [str(r[0]) for r in users_by_date]
-    user_counts = [r[1] for r in users_by_date]
+    daily_counts = [r[1] for r in users_by_date]
+    
+    # Calculate cumulative totals
+    cumulative_counts = []
+    running_total = 0
+    for count in daily_counts:
+        running_total += count
+        cumulative_counts.append(running_total)
     
     if not user_dates:
         user_dates = ['No Data']
-        user_counts = [0]
+        cumulative_counts = [0]
         
     # INCREASED SIZE HERE
     plt.figure(figsize=(10, 6)) 
-    plt.plot(user_dates, user_counts, marker='o', color='#3b82f6')
+    plt.plot(user_dates, cumulative_counts, marker='o', color='#3b82f6', linewidth=2, markersize=8)
+    plt.fill_between(user_dates, cumulative_counts, alpha=0.3, color='#3b82f6')
     plt.xlabel('Date', fontsize=15)
-    plt.ylabel('Count', fontsize=15)
+    plt.ylabel('Total Users', fontsize=15)
     plt.gca().yaxis.set_major_locator(MaxNLocator(integer=True))
     plt.xticks(rotation=45)
+    plt.title(f'User Growth Over Time (Total: {running_total})', fontsize=16, fontweight='bold')
+    plt.grid(True, alpha=0.3)
     plt.tight_layout()
     
     buf_user = io.BytesIO()
@@ -85,13 +95,23 @@ async def get_admin_graphs(db: Session = Depends(get_db)):
         search_users = ['No Data']
         search_counts = [0]
 
-    # INCREASED SIZE HERE
-    plt.figure(figsize=(10, 6))
-    plt.bar(search_users, search_counts, color='#8b5cf6')
+    # Dynamic figure width based on number of users
+    fig_width = max(10, len(search_users) * 0.8)
+    plt.figure(figsize=(fig_width, 6))
+    bars = plt.bar(search_users, search_counts, color='#8b5cf6', edgecolor='white', linewidth=0.5)
+    
+    # Add value labels on top of bars
+    for bar, count in zip(bars, search_counts):
+        if count > 0:
+            plt.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.1, 
+                    str(count), ha='center', va='bottom', fontsize=9, fontweight='bold')
+    
     plt.xlabel('User', fontsize=15)
     plt.ylabel('Searches', fontsize=15)
     plt.gca().yaxis.set_major_locator(MaxNLocator(integer=True))
-    plt.xticks(rotation=45)
+    plt.xticks(rotation=45, ha='right')
+    plt.title(f'Searches Per User (Total Users: {len(search_users)})', fontsize=16, fontweight='bold')
+    plt.grid(True, axis='y', alpha=0.3)
     plt.tight_layout()
 
     buf_search = io.BytesIO()

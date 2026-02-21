@@ -124,26 +124,58 @@
                 </div>
 
                 <!-- ── GRAPHS ── -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-white border border-gray-200 rounded-2xl p-5">
-                        <h3 class="text-base font-semibold mb-4 text-gray-800">User Registrations Over Time</h3>
-                        <div class="w-full flex justify-center items-center min-h-[300px]" id="userGraphContainer">
+                <div class="flex flex-col gap-6 mb-8">
+                    <!-- Main Graph - Full Width -->
+                    <div
+                        class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                                <i class="bi bi-graph-up-arrow text-blue-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-semibold text-gray-800">User Registrations Over Time</h3>
+                                <p class="text-xs text-gray-400">Track user growth trends</p>
+                            </div>
+                        </div>
+                        <div class="w-full flex justify-center items-center min-h-[280px]" id="userGraphContainer">
                             <div
                                 class="inline-block w-8 h-8 border-[3px] border-gray-300 border-t-[#c0392b] rounded-full animate-spin">
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white border border-gray-200 rounded-2xl p-5">
-                        <h3 class="text-base font-semibold mb-4 text-gray-800">Products By Category</h3>
-                        <div class="w-full flex justify-center items-center min-h-[300px]" id="productGraphContainer">
+
+                    <!-- Second Graph - Full Width (Same Size) -->
+                    <div
+                        class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
+                                <i class="bi bi-search-heart-fill text-purple-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-semibold text-gray-800">Searches Per User</h3>
+                                <p class="text-xs text-gray-400">User search activity</p>
+                            </div>
+                        </div>
+                        <div class="w-full flex justify-center items-center min-h-[280px]" id="searchGraphContainer">
                             <div
                                 class="inline-block w-8 h-8 border-[3px] border-gray-300 border-t-[#c0392b] rounded-full animate-spin">
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white border border-gray-200 rounded-2xl p-5">
-                        <h3 class="text-base font-semibold mb-4 text-gray-800">Searches Per User</h3>
-                        <div class="w-full flex justify-center items-center min-h-[300px]" id="searchGraphContainer">
+
+                    <!-- Third Graph - Full Width (Same Size) -->
+                    <div
+                        class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
+                                <i class="bi bi-box-seam-fill text-green-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-semibold text-gray-800">Products by Category</h3>
+                                <p class="text-xs text-gray-400">Distribution of products across categories</p>
+                            </div>
+                        </div>
+                        <div class="w-full flex justify-center items-center min-h-[280px]" id="productGraphContainer">
                             <div
                                 class="inline-block w-8 h-8 border-[3px] border-gray-300 border-t-[#c0392b] rounded-full animate-spin">
                             </div>
@@ -158,10 +190,6 @@
                     <h3 class="text-base font-semibold flex items-center gap-2">
                         <i class="bi bi-people text-gray-500"></i> User Management
                     </h3>
-                    <button onclick="showNotice('Add User')"
-                        class="bg-black text-white text-xs px-4 py-2 rounded-lg font-semibold hover:bg-gray-800 transition-colors">
-                        <i class="bi bi-plus-circle me-1"></i> Add User
-                    </button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm border-collapse">
@@ -195,10 +223,6 @@
                     <h3 class="text-base font-semibold flex items-center gap-2">
                         <i class="bi bi-box-seam text-gray-500"></i> Product Management
                     </h3>
-                    <button onclick="showNotice('Add Product')"
-                        class="bg-black text-white text-xs px-4 py-2 rounded-lg font-semibold hover:bg-gray-800 transition-colors">
-                        <i class="bi bi-plus-circle me-1"></i> Add Product
-                    </button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm border-collapse">
@@ -383,18 +407,18 @@
                 if (res && res.ok) {
                     const data = await res.json();
                     document.getElementById('userGraphContainer').innerHTML = `<img src="${data.user_graph}" alt="User Graph" class="w-full h-auto object-contain max-h-[400px]">`;
-                    document.getElementById('productGraphContainer').innerHTML = `<img src="${data.product_graph}" alt="Product Graph" class="w-full h-auto object-contain max-h-[400px]">`;
                     document.getElementById('searchGraphContainer').innerHTML = `<img src="${data.search_graph}" alt="Search Graph" class="w-full h-auto object-contain max-h-[400px]">`;
+                    document.getElementById('productGraphContainer').innerHTML = `<img src="${data.product_graph}" alt="Product Graph" class="w-full h-auto object-contain max-h-[400px]">`;
                 } else {
                     document.getElementById('userGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Failed to load diagram</div>`;
-                    document.getElementById('productGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Failed to load diagram</div>`;
                     document.getElementById('searchGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Failed to load diagram</div>`;
+                    document.getElementById('productGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Failed to load diagram</div>`;
                 }
             } catch (error) {
                 console.error('Error fetching graphs:', error);
                 document.getElementById('userGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Error loading diagram</div>`;
-                document.getElementById('productGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Error loading diagram</div>`;
                 document.getElementById('searchGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Error loading diagram</div>`;
+                document.getElementById('productGraphContainer').innerHTML = `<div class="text-gray-400 text-sm">Error loading diagram</div>`;
             }
         }
 
